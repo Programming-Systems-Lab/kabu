@@ -15,7 +15,6 @@ public class MetamorphicInjector {
 		try {
 			Class c = l.loadClass("edu.columbia.cs.psl.mountaindew.example.SimpleExample");
 			String[] args = {"abc","def"};
-			System.out.println(">>>Returned a class " + c.getName());
 			c.getMethod("main", String[].class).invoke(null, (Object) args);
 			
 //			c.getMethod("go",String.class).invoke(c.newInstance(),"zzz");

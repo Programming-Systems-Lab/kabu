@@ -53,7 +53,6 @@ public class EnhancingClassLoader extends ClassLoader {
 		}
 		if(shouldRewrite)
 		{
-			System.out.println("Rewriting class " + c);
 			try {
 				ClassReader cr = new ClassReader(c.getName());
 				  ClassWriter cw = new ClassWriter(cr,
@@ -61,9 +60,9 @@ public class EnhancingClassLoader extends ClassLoader {
 			ClassWriter.COMPUTE_FRAMES);
 				  InterceptingAdaptor cv = new InterceptingAdaptor(cw);
 				  cv.setClassName(c.getName());
-				  cr.accept(cv, 0);
+				  cr.accept(cv, ClassReader.EXPAND_FRAMES);
+				  
 				Class r = defineClass(c.getName(), cw.toByteArray(), 0, cw.toByteArray().length);
-//				System.out.println(r);
 				return r;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

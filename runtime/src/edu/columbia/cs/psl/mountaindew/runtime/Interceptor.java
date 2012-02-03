@@ -1,15 +1,14 @@
 package edu.columbia.cs.psl.mountaindew.runtime;
 
-import java.lang.reflect.Method;
 
 public class Interceptor{
-   
-	public static void catchParam(Object name, Object val)
+
+	public void catchParam(int name, Object val)
 	{
-		System.out.println("Local var: <" + name+"> =" + val);
+		System.out.println("Local var: <" + name+">=" + val);
 	}
 	
-	public static void onExit(Object val, int op)
+	public void onExit(Object val, int op)
 	{
 		System.out.println("On exit: <" + val+"> " + op);
 	}
