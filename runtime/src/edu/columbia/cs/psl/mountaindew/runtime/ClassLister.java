@@ -9,7 +9,7 @@ import java.util.jar.JarFile;
 
 import edu.columbia.cs.psl.mountaindew.struct.Package;
 public class ClassLister {
-	EnhancingClassLoader tempLoader;
+	InterceptorClassLoader tempLoader;
 	public void go()
 	{
 		generateClassList();
@@ -25,7 +25,7 @@ public class ClassLister {
 		return packages;
 	}
 	private void generateClassList() {
-		tempLoader = new EnhancingClassLoader();
+		tempLoader = new InterceptorClassLoader();
 		packages = new ArrayList<Package>();
 		String classpath = System.getProperty("java.class.path");
 		String[] locations = classpath.split(System.getProperty("path.separator"));
