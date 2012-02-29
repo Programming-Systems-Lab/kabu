@@ -7,7 +7,7 @@ import edu.columbia.cs.psl.mountaindew.runtime.Interceptor;
 import edu.columbia.cs.psl.mountaindew.runtime.annotation.Metamorphic;
 
 @Metamorphic
-public class SimpleExample {
+public class SimpleExample extends AbstractExample {
 
 	@Metamorphic
 	public String go(String in,String in2, String[] in3)
@@ -21,10 +21,11 @@ public class SimpleExample {
 
 		return in.toLowerCase();
 	}
+	
 	@Metamorphic
-	public int addThree(int input)
+	public int timesThree(int input)
 	{
-		return input+3;
+		return input * 3;
 	}
 	
 	@Metamorphic
@@ -61,8 +62,13 @@ public class SimpleExample {
 		System.out.println(ex.addThree(0));
 		System.out.println(ex.addThree(1));
 		System.out.println(ex.addThree(2));
-		System.out.println(ex.sort(new int[] {3,4,5}));
-		System.out.println(ex.sort(new int[] {4,3,5}));
+		
+//		System.out.println(ex.timesThree(2));
+//		System.out.println(ex.timesThree(3));
+//		System.out.println(ex.timesThree(4));
+		
+//		System.out.println(ex.sort(new int[] {3,4,5}));
+//		System.out.println(ex.sort(new int[] {4,3,5}));
 
 //		System.out.println(new SimpleExample().go("abc","def",barzzz));
 	}

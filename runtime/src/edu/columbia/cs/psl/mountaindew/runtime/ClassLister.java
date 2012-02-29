@@ -7,7 +7,7 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import edu.columbia.cs.psl.mountaindew.struct.Package;
+import edu.columbia.cs.psl.metamorphic.struct.Package;
 public class ClassLister {
 	InterceptorClassLoader tempLoader;
 	public void go()

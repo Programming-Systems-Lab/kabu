@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/weka/!svn/ver/8062/trunk/weka
+END
+.classpath.default
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/weka/!svn/ver/6888/trunk/weka/.classpath.default
+END
+.project.default
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/weka/!svn/ver/4711/trunk/weka/.project.default
+END
+pom.xml
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/weka/!svn/ver/8060/trunk/weka/pom.xml
+END
+build.xml
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/weka/!svn/ver/8059/trunk/weka/build.xml
+END
+parsers.xml
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/weka/!svn/ver/5967/trunk/weka/parsers.xml
+END

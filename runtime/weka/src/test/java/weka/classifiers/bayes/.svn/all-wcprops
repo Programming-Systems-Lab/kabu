@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/bayes
+END
+NaiveBayesMultinomialTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/bayes/NaiveBayesMultinomialTest.java
+END
+NaiveBayesMultinomialTextTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/bayes/NaiveBayesMultinomialTextTest.java
+END
+NaiveBayesTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/bayes/NaiveBayesTest.java
+END
+NaiveBayesMultinomialUpdateableTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/bayes/NaiveBayesMultinomialUpdateableTest.java
+END
+BayesNetTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/bayes/BayesNetTest.java
+END
+NaiveBayesUpdateableTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/bayes/NaiveBayesUpdateableTest.java
+END

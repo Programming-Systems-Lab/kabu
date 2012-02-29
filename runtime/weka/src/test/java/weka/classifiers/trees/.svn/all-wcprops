@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/trees
+END
+RandomTreeTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/trees/RandomTreeTest.java
+END
+M5PTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/trees/M5PTest.java
+END
+RandomForestTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/trees/RandomForestTest.java
+END
+J48Test.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/trees/J48Test.java
+END
+DecisionStumpTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/trees/DecisionStumpTest.java
+END
+REPTreeTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/trees/REPTreeTest.java
+END
+LMTTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/trees/LMTTest.java
+END

@@ -12,8 +12,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import edu.columbia.cs.psl.metamorphic.struct.Package;
 import edu.columbia.cs.psl.mountaindew.runtime.ClassLister;
-import edu.columbia.cs.psl.mountaindew.struct.Package;
 
 public class MethodSelector extends JPanel {
 	public MethodSelector()

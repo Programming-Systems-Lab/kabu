@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/clusterers
+END
+CobwebTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/clusterers/CobwebTest.java
+END
+EMTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/clusterers/EMTest.java
+END
+MakeDensityBasedClustererTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/clusterers/MakeDensityBasedClustererTest.java
+END
+FilteredClustererTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/clusterers/FilteredClustererTest.java
+END
+HierarchicalClustererTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/clusterers/HierarchicalClustererTest.java
+END
+FarthestFirstTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/clusterers/FarthestFirstTest.java
+END
+SimpleKMeansTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/clusterers/SimpleKMeansTest.java
+END
+AllTests.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/clusterers/AllTests.java
+END
+AbstractClustererTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/clusterers/AbstractClustererTest.java
+END

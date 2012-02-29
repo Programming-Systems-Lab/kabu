@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/weka/!svn/ver/8020/trunk/weka/lib
+END
+java-cup.jar
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/weka/!svn/ver/4939/trunk/weka/lib/java-cup.jar
+END
+packageManager.jar
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/weka/!svn/ver/8020/trunk/weka/lib/packageManager.jar
+END
+JFlex.jar
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/weka/!svn/ver/4939/trunk/weka/lib/JFlex.jar
+END
+junit.jar
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/weka/!svn/ver/4946/trunk/weka/lib/junit.jar
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/weka/!svn/ver/4946/trunk/weka/lib/README
+END

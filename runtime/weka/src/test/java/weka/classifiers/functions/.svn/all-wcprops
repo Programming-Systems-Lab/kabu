@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions
+END
+GaussianProcessesTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions/GaussianProcessesTest.java
+END
+SGDTextTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions/SGDTextTest.java
+END
+VotedPerceptronTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions/VotedPerceptronTest.java
+END
+SimpleLinearRegressionTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions/SimpleLinearRegressionTest.java
+END
+SimpleLogisticTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions/SimpleLogisticTest.java
+END
+MultilayerPerceptronTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions/MultilayerPerceptronTest.java
+END
+LinearRegressionTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions/LinearRegressionTest.java
+END
+SMOregTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions/SMOregTest.java
+END
+LogisticTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions/LogisticTest.java
+END
+SGDTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions/SGDTest.java
+END
+SMOTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/functions/SMOTest.java
+END

@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/misc
+END
+SerializedClassifierTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/misc/SerializedClassifierTest.java
+END
+InputMappedClassifierTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/classifiers/misc/InputMappedClassifierTest.java
+END

@@ -10,8 +10,6 @@ public class MetamorphicInjector {
 		InterceptorClassLoader l = new InterceptorClassLoader();
 		Thread.currentThread().setContextClassLoader(l);
 		try {
-			MetamorphicObserver.getInstance().reportResults();
-
 			Class c = l.loadClass(args[0]);
 			String[] args2 = new String[args.length-1];
 			for(int i = 1; i<args.length;i++)

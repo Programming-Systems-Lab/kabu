@@ -1,0 +1,86 @@
+10
+
+dir
+8063
+https://svn.scms.waikato.ac.nz/svn/weka/trunk/weka/src/test/java/weka
+https://svn.scms.waikato.ac.nz/svn/weka
+
+
+
+2012-02-15T01:12:10.572616Z
+8034
+fracpete
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+e0a1b77d-ad91-4216-81b1-defd5f83fa92
+
+associations
+dir
+
+test
+dir
+
+datagenerators
+dir
+
+classifiers
+dir
+
+core
+dir
+
+filters
+dir
+
+attributeSelection
+dir
+
+clusterers
+dir
+
+AllTests.java
+file
+
+
+
+
+2012-02-22T18:52:54.000000Z
+39bfbacf26e5e8f06110830766b82aff
+2012-02-15T01:12:10.572616Z
+8034
+fracpete
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2023
+

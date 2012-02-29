@@ -1,0 +1,15 @@
+K 10
+svn:ignore
+V 74
+*~
+*.swp
+build
+dist
+doc
+.classpath
+.project
+.checkstyle
+.settings
+reports
+
+END

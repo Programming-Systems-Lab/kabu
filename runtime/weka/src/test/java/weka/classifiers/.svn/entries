@@ -1,0 +1,123 @@
+10
+
+dir
+8063
+https://svn.scms.waikato.ac.nz/svn/weka/trunk/weka/src/test/java/weka/classifiers
+https://svn.scms.waikato.ac.nz/svn/weka
+
+
+
+2012-02-15T01:12:10.572616Z
+8034
+fracpete
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+e0a1b77d-ad91-4216-81b1-defd5f83fa92
+
+lazy
+dir
+
+trees
+dir
+
+bayes
+dir
+
+pmml
+dir
+
+meta
+dir
+
+functions
+dir
+
+AbstractClassifierTest.java
+file
+
+
+
+
+2012-02-22T18:52:53.000000Z
+31ee07fa707300bd02ea99e4c5028fbe
+2012-02-15T01:12:10.572616Z
+8034
+fracpete
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+32922
+
+data
+dir
+
+rules
+dir
+
+misc
+dir
+
+AllTests.java
+file
+
+
+
+
+2012-02-22T18:52:53.000000Z
+5631d88c9cfe9b336bfc07ca19509d4d
+2012-02-15T01:12:10.572616Z
+8034
+fracpete
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1554
+

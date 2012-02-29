@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import edu.columbia.cs.psl.metamorphic.struct.MethodInvocation;
+import edu.columbia.cs.psl.metamorphic.struct.Variable;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult;
 import edu.columbia.cs.psl.mountaindew.runtime.visitor.TaintClassVisitor;
-import edu.columbia.cs.psl.mountaindew.struct.MethodInvocation;
-import edu.columbia.cs.psl.mountaindew.struct.Variable;
 
 
 /**
@@ -47,6 +47,7 @@ public class Interceptor extends AbstractInterceptor {
 				{
 					try {
 						MetamorphicProperty p = c.newInstance();
+						p.setMethod(method);
 						properties.get(method).add(p);
 					} catch (InstantiationException e) {
 						// TODO Auto-generated catch block
@@ -89,7 +90,7 @@ public class Interceptor extends AbstractInterceptor {
 	{
 		for(Method m : properties.keySet())
 		{
-			System.out.println(m.getName());
+			System.out.println(m);
 			for(MetamorphicProperty p : properties.get(m))
 			{
 				PropertyResult r = p.propertyHolds();

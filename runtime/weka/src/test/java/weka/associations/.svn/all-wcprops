@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/associations
+END
+FPGrowthTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/associations/FPGrowthTest.java
+END
+AprioriTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/associations/AprioriTest.java
+END
+FilteredAssociatorTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/associations/FilteredAssociatorTest.java
+END
+AbstractAssociatorTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/associations/AbstractAssociatorTest.java
+END
+AllTests.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/weka/!svn/ver/8034/trunk/weka/src/test/java/weka/associations/AllTests.java
+END
