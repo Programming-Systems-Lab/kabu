@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import edu.columbia.cs.psl.metamorphic.processor.MetamorphicInputProcessor;
+import edu.columbia.cs.psl.metamorphic.processor.impl.Shuffle;
 import edu.columbia.cs.psl.metamorphic.struct.MethodInvocation;
-import edu.columbia.cs.psl.metamorphic.struct.Variable;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult.Result;
 
 public class Shufflable extends PairwiseMetamorphicProperty {
@@ -29,10 +30,10 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 
 	@Override
 	protected boolean propertyApplies(MethodInvocation i1, MethodInvocation i2, int interestedVariable) {
-		Object o1 = i1.params[interestedVariable].value;
-		Object o2 = i2.params[interestedVariable].value;
+		Object o1 = i1.params[interestedVariable];
+		Object o2 = i2.params[interestedVariable];
 		for(int i = 0;i<i1.params.length;i++)
-			if(i!=interestedVariable && !i1.params[i].value.equals(i2.params[i].value))
+			if(i!=interestedVariable && !i1.params[i].equals(i2.params[i]))
 				return false;
 		
 		if(o1.getClass().isArray() && o2.getClass().isArray())
@@ -71,6 +72,10 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 		for(int i = 0;i<rets.size();i++)
 			ret[i]=rets.get(i);
 		return ret;
+	}
+	@Override
+	public MetamorphicInputProcessor getInputProcessor() {
+		return new Shuffle();
 	}
 
 }

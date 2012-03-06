@@ -1,12 +1,12 @@
 package edu.columbia.cs.psl.mountaindew.runtime;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import edu.columbia.cs.psl.metamorphic.struct.MethodInvocation;
-import edu.columbia.cs.psl.metamorphic.struct.Variable;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult;
 import edu.columbia.cs.psl.mountaindew.runtime.visitor.TaintClassVisitor;
@@ -61,15 +61,7 @@ public class Interceptor extends AbstractInterceptor {
 			}
 		}
 		MethodInvocation inv = new MethodInvocation();
-		inv.params = new Variable[params.length];
-		for(int i=0;i<params.length;i++)
-		{
-			Variable v = new Variable();
-			v.position = i;
-			v.value = params[i];
-			inv.params[i]=v;
-			i++;
-		}
+		inv.params = params;
 		inv.method = method;
 		invocations.put(retId, inv);
 		return retId;
@@ -82,6 +74,20 @@ public class Interceptor extends AbstractInterceptor {
 		for(MetamorphicProperty p : properties.get(inv.method))
 		{
 			p.logExecution(inv);
+			try {
+				MethodInvocation inv2 = new MethodInvocation();
+				Object ret = inv.method.invoke(inv.callee,p.getInputProcessor().applyToVariables(inv.params));
+
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 //		System.out.println("On exit: <" + val+"> " + op);
 	}
