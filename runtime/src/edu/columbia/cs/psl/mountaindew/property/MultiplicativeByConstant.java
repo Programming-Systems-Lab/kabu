@@ -2,6 +2,8 @@ package edu.columbia.cs.psl.mountaindew.property;
 
 import java.util.ArrayList;
 
+import edu.columbia.cs.psl.metamorphic.processor.MetamorphicInputProcessor;
+import edu.columbia.cs.psl.metamorphic.processor.impl.MultiplyByNumericConstant;
 import edu.columbia.cs.psl.metamorphic.struct.MethodInvocation;
 
 public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
@@ -78,5 +80,10 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		for(int i = 0;i<rets.size();i++)
 			ret[i]=rets.get(i);
 		return ret;
+	}
+
+	@Override
+	public MetamorphicInputProcessor getInputProcessor() {
+		return new MultiplyByNumericConstant(42); //TODO
 	}
 }

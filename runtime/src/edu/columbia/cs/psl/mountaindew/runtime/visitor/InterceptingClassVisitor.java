@@ -17,7 +17,8 @@ public class InterceptingClassVisitor extends ClassVisitor {
 
 	private String className;
 	
-	
+	public static String IS_CHILD_FIELD = "__metamorphicIsChild";
+
 	public InterceptingClassVisitor(ClassVisitor cv) {
 		super(Opcodes.ASM4, cv);
 	}
@@ -46,6 +47,10 @@ public class InterceptingClassVisitor extends ClassVisitor {
 		fn.accept(cv);
 		
 		
+		FieldNode fn2 = new FieldNode(Opcodes.ASM4, Opcodes.ACC_PUBLIC,
+				IS_CHILD_FIELD,
+				Type.BOOLEAN_TYPE.getDescriptor(), null, false); //TODO: abstract the interceptor type
+		fn2.accept(cv);
 		
 	}
 

@@ -3,7 +3,6 @@ package edu.columbia.cs.psl.mountaindew.property;
 import java.util.Collection;
 
 import edu.columbia.cs.psl.metamorphic.struct.MethodInvocation;
-import edu.columbia.cs.psl.metamorphic.struct.Variable;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult.Result;
 
@@ -21,13 +20,13 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 		{
 			for(int k : interestedIndices)
 			{
-				Variable v = i.params[k];
+				Object v = i.params[k];
 					for(MethodInvocation j : getInvocations())
 					{
 						if(i!=j)
 						{
-							Object o1 = v.value;
-							Object o2 = j.params[v.position].value;
+							Object o1 = v;
+							Object o2 = j.params[k];
 							if(propertyApplies(i,j,k))
 							{
 								if(returnValuesApply(o1,i.returnValue,o2,j.returnValue))

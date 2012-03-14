@@ -78,9 +78,9 @@ public class InterceptingMethodVisitor extends AdviceAdapter{
 		}
 		
 		loadArgArray();
-		invokeVirtual(Type.getType(Interceptor.class), Method.getMethod("int __onEnter (java.lang.String, java.lang.String[], java.lang.Object[])"));
+		loadThis();
+		invokeVirtual(Type.getType(Interceptor.class), Method.getMethod("int __onEnter (java.lang.String, java.lang.String[], java.lang.Object[], java.lang.Object)"));
 		storeLocal(refIdForInterceptor);
-		
 		super.onMethodEnter();
 	}
 	

@@ -1,12 +1,13 @@
 package edu.columbia.cs.psl.mountaindew.runtime;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import edu.columbia.cs.psl.metamorphic.runtime.AbstractInterceptor;
 import edu.columbia.cs.psl.metamorphic.struct.MethodInvocation;
-import edu.columbia.cs.psl.metamorphic.struct.Variable;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult;
 import edu.columbia.cs.psl.mountaindew.runtime.visitor.TaintClassVisitor;
@@ -33,8 +34,10 @@ public class Interceptor extends AbstractInterceptor {
 		propertyPrototypes = MetamorphicObserver.getInstance().registerInterceptor(this);
 	}
 	
-	public int onEnter(Method method, Object[] params)
+	public int onEnter(Object callee, Method method, Object[] params)
 	{
+		if(isChild(callee))
+			return -1;
 		int retId = 0;
 		synchronized(invocationId)
 		{
@@ -61,27 +64,40 @@ public class Interceptor extends AbstractInterceptor {
 			}
 		}
 		MethodInvocation inv = new MethodInvocation();
-		inv.params = new Variable[params.length];
-		for(int i=0;i<params.length;i++)
-		{
-			Variable v = new Variable();
-			v.position = i;
-			v.value = params[i];
-			inv.params[i]=v;
-			i++;
-		}
+		inv.params = params;
 		inv.method = method;
+		inv.callee = getInterceptedObject();
 		invocations.put(retId, inv);
 		return retId;
 	}
 	
 	public void onExit(Object val, int op, int id)
 	{
+		if(id < 0)
+			return;
 		MethodInvocation inv = invocations.remove(id);
 		inv.returnValue = val;
 		for(MetamorphicProperty p : properties.get(inv.method))
 		{
 			p.logExecution(inv);
+			try {
+				MethodInvocation inv2 = new MethodInvocation();
+				inv2.callee=inv.callee;
+				setChild(inv2.callee,true);
+				inv2.params=p.getInputProcessor().applyToVariables(inv.params);
+				inv2.returnValue = inv.method.invoke(inv.callee,inv2.params);
+				setChild(inv2.callee,false);
+				p.logExecution(inv2);
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 //		System.out.println("On exit: <" + val+"> " + op);
 	}
@@ -99,5 +115,6 @@ public class Interceptor extends AbstractInterceptor {
 
 		}
 	}
+
 } 
 
