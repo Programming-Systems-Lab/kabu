@@ -3,8 +3,8 @@ package edu.columbia.cs.psl.mountaindew.example;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 import edu.columbia.cs.psl.mountaindew.runtime.Interceptor;
-import edu.columbia.cs.psl.mountaindew.runtime.annotation.Metamorphic;
 
 @Metamorphic
 public class SimpleExample extends AbstractExample {

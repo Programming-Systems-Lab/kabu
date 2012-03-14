@@ -10,7 +10,6 @@ import edu.columbia.cs.psl.metamorphic.runtime.AbstractInterceptor;
 import edu.columbia.cs.psl.metamorphic.struct.MethodInvocation;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult;
-import edu.columbia.cs.psl.mountaindew.runtime.visitor.TaintClassVisitor;
 
 
 /**
@@ -83,7 +82,7 @@ public class Interceptor extends AbstractInterceptor {
 			try {
 				MethodInvocation inv2 = new MethodInvocation();
 				inv2.callee=inv.callee;
-				setChild(inv2.callee,true);
+				setAsChild(inv2.callee);
 				inv2.params=p.getInputProcessor().applyToVariables(inv.params);
 				inv2.returnValue = inv.method.invoke(inv.callee,inv2.params);
 				setChild(inv2.callee,false);

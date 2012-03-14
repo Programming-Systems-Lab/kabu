@@ -3,7 +3,7 @@ package edu.columbia.cs.psl.mountaindew.property;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import edu.columbia.cs.psl.metamorphic.processor.MetamorphicInputProcessor;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.struct.MethodInvocation;
 
 public abstract class MetamorphicProperty {
