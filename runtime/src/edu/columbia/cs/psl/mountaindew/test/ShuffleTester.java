@@ -2,10 +2,10 @@ package edu.columbia.cs.psl.mountaindew.test;
 
 import java.util.ArrayList;
 
-import edu.columbia.cs.psl.metamorphic.processor.MetamorphicInputProcessor;
-import edu.columbia.cs.psl.metamorphic.processor.impl.MultiplyByNumericConstant;
-import edu.columbia.cs.psl.metamorphic.processor.impl.Reverse;
-import edu.columbia.cs.psl.metamorphic.processor.impl.Shuffle;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.MultiplyByNumericConstant;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.Reverse;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.Shuffle;
 
 public class ShuffleTester {
 	public static void main(String[] args) {
