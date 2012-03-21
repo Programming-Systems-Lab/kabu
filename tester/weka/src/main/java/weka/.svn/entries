@@ -1,0 +1,92 @@
+10
+
+dir
+8063
+https://svn.scms.waikato.ac.nz/svn/weka/trunk/weka/src/main/java/weka
+https://svn.scms.waikato.ac.nz/svn/weka
+
+
+
+2012-02-22T02:14:08.500061Z
+8062
+mhall
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+e0a1b77d-ad91-4216-81b1-defd5f83fa92
+
+associations
+dir
+
+experiment
+dir
+
+datagenerators
+dir
+
+gui
+dir
+
+Run.java
+file
+
+
+
+
+2012-02-22T18:53:24.000000Z
+042f34146754c31d4a0d9fd0f2d304a3
+2012-02-15T01:12:10.572616Z
+8034
+fracpete
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+10359
+
+classifiers
+dir
+
+core
+dir
+
+filters
+dir
+
+attributeSelection
+dir
+
+estimators
+dir
+
+clusterers
+dir
+

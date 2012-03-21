@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/weka/!svn/ver/7915/trunk/weka/src/main/java/weka/gui/beans/templates
+END
+templates.props
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/weka/!svn/ver/7724/trunk/weka/src/main/java/weka/gui/beans/templates/templates.props
+END
+ROCcurves.kfml
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/weka/!svn/ver/7713/trunk/weka/src/main/java/weka/gui/beans/templates/ROCcurves.kfml
+END
+iris.arff
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/weka/!svn/ver/7714/trunk/weka/src/main/java/weka/gui/beans/templates/iris.arff
+END
+incrementalLearning.kfml
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/weka/!svn/ver/7262/trunk/weka/src/main/java/weka/gui/beans/templates/incrementalLearning.kfml
+END
+credit-g.arff
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/weka/!svn/ver/7714/trunk/weka/src/main/java/weka/gui/beans/templates/credit-g.arff
+END
+saveCharts.kfml
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/weka/!svn/ver/7915/trunk/weka/src/main/java/weka/gui/beans/templates/saveCharts.kfml
+END
+cvTemplate.kfml
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/weka/!svn/ver/7713/trunk/weka/src/main/java/weka/gui/beans/templates/cvTemplate.kfml
+END
+learnAndSaveModel.kfml
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/weka/!svn/ver/7713/trunk/weka/src/main/java/weka/gui/beans/templates/learnAndSaveModel.kfml
+END
+twoClusterers.kfml
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/weka/!svn/ver/7713/trunk/weka/src/main/java/weka/gui/beans/templates/twoClusterers.kfml
+END

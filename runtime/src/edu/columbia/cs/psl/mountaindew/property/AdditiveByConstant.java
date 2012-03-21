@@ -3,9 +3,9 @@ package edu.columbia.cs.psl.mountaindew.property;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.AddNumericConstant;
-import edu.columbia.cs.psl.metamorphic.struct.MethodInvocation;
 
 public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 
@@ -75,7 +75,7 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 
 	@Override
 	public MetamorphicInputProcessor getInputProcessor() {
-		return new AddNumericConstant(42); //TODO how do we make this parameterized
+		return new AddNumericConstant(); //TODO how do we make this parameterized
 	}
 
 }

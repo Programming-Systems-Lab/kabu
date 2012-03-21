@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import edu.columbia.cs.psl.metamorphic.runtime.AbstractInterceptor;
-import edu.columbia.cs.psl.metamorphic.struct.MethodInvocation;
+import edu.columbia.cs.psl.invivo.runtime.AbstractInterceptor;
+import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult;
 
