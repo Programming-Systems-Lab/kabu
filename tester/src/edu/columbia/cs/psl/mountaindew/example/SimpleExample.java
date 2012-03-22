@@ -59,9 +59,9 @@ public class SimpleExample extends AbstractExample {
 		String[] barzzz = {"aa","bb"};
 //		Interceptor.catchParam(args, args);
 		SimpleExample ex = new SimpleExample();
-		System.out.println(ex.addThree(0));
-		System.out.println(ex.addThree(1));
-		System.out.println(ex.addThree(2));
+//		System.out.println(ex.addThree(0));
+//		System.out.println(ex.addThree(1));
+		System.out.println(ex.addThree(2,null));
 		
 //		System.out.println(ex.timesThree(2));
 //		System.out.println(ex.timesThree(3));

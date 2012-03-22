@@ -35,13 +35,15 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 									result.result=Result.HOLDS;
 									result.holds=true;
 									result.supportingSize++;
+									result.supportingInvocations.add(new MethodInvocation[] {i, j});
 								}
 								else
 								{
 									//Property definitely doesn't hold
 									result.result=Result.DOES_NOT_HOLD;
 									result.holds=false;
-									result.supportingSize++;
+									result.antiSupportingSize++;
+									result.antiSupportingInvocations.add(new MethodInvocation[] {i, j});
 									return result;
 								}
 							}

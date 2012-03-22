@@ -14,11 +14,6 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 		return "Additive";
 	}
 
-	@Override
-	public boolean propertyApplies() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	boolean returnDoesntChange;
 	
 	@Override

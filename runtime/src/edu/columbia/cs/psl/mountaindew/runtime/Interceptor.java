@@ -42,31 +42,45 @@ public class Interceptor extends AbstractInterceptor {
 		{
 			invocationId++;
 			retId = invocationId;
-			if(!properties.containsKey(method))
+		}
+		if(!properties.containsKey(method))
+		{
+			properties.put(method, new HashSet<MetamorphicProperty>());
+			for(Class<? extends MetamorphicProperty> c : propertyPrototypes)
 			{
-				properties.put(method, new HashSet<MetamorphicProperty>());
-				for(Class<? extends MetamorphicProperty> c : propertyPrototypes)
-				{
-					try {
-						MetamorphicProperty p = c.newInstance();
-						p.setMethod(method);
-						properties.get(method).add(p);
-					} catch (InstantiationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				try {
+					MetamorphicProperty p = c.newInstance();
+					p.setMethod(method);
+					properties.get(method).add(p);
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				
 			}
+			
 		}
 		MethodInvocation inv = new MethodInvocation();
 		inv.params = params;
 		inv.method = method;
 		inv.callee = getInterceptedObject();
 		invocations.put(retId, inv);
+		ArrayList<MethodInvocation> children = new ArrayList<MethodInvocation>();
+		for(MetamorphicProperty p : properties.get(inv.method))
+		{
+			for(MethodInvocation child : p.createChildren(inv))
+			{
+				child.callee = deepClone(inv.callee);
+				child.method = inv.method;
+				children.add(child);
+				child.thread = createChildThread(child);
+				child.thread.start();
+			}
+		}
+		inv.children = new MethodInvocation[children.size()];
+		inv.children = children.toArray(inv.children);
 		return retId;
 	}
 	
@@ -76,29 +90,25 @@ public class Interceptor extends AbstractInterceptor {
 			return;
 		MethodInvocation inv = invocations.remove(id);
 		inv.returnValue = val;
-		for(MetamorphicProperty p : properties.get(inv.method))
+		
+		for(MethodInvocation inv2 : inv.children)
 		{
-			p.logExecution(inv);
 			try {
-				MethodInvocation inv2 = new MethodInvocation();
-				inv2.callee=inv.callee;
-				setAsChild(inv2.callee);
-				inv2.params=p.getInputProcessor().applyToVariables(inv.params);
-				inv2.returnValue = inv.method.invoke(inv.callee,inv2.params);
-				setChild(inv2.callee,false);
-				p.logExecution(inv2);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
+				inv2.thread.join();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			for(MetamorphicProperty p : properties.get(inv.method))
+			{
+				p.logExecution(inv2);
+			}
 		}
-//		System.out.println("On exit: <" + val+"> " + op);
+		for(MetamorphicProperty p : properties.get(inv.method))
+		{
+			p.logExecution(inv);
+		}
+
 	}
 	
 	public void reportPropertyResults()

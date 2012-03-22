@@ -8,7 +8,6 @@ import java.util.HashSet;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.Shuffle;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
-import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult.Result;
 
 public class Shufflable extends PairwiseMetamorphicProperty {
 
@@ -16,11 +15,7 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 	public String getName() {
 		return "Shuffleable";
 	}
-	@Override
-	public boolean propertyApplies() {
-		// TODO Auto-generated method stub
-		return true;
-	}
+
 
 	@Override
 	protected boolean returnValuesApply(Object p1, Object returnValue1,

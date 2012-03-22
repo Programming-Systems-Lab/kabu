@@ -13,12 +13,6 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 	}
 
 	@Override
-	public boolean propertyApplies() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
 			Object p2, Object returnValue2) {
 		try
