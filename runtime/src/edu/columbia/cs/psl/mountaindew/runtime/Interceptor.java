@@ -29,6 +29,7 @@ public class Interceptor extends AbstractInterceptor {
 	
 	public Interceptor(Object intercepted) {
 		super(intercepted);
+		System.out.println("Interceptor created");
 		propertyPrototypes = MetamorphicObserver.getInstance().registerInterceptor(this);
 	}
 	

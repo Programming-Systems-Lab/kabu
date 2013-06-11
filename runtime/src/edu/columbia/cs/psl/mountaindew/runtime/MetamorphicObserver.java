@@ -2,7 +2,9 @@ package edu.columbia.cs.psl.mountaindew.runtime;
 
 import java.util.HashSet;
 
+import edu.columbia.cs.psl.mountaindew.property.AdditiveByConstant;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
+import edu.columbia.cs.psl.mountaindew.property.MultiplicativeByConstant;
 import edu.columbia.cs.psl.mountaindew.property.Shufflable;
 
 public class MetamorphicObserver {
@@ -11,8 +13,8 @@ public class MetamorphicObserver {
 	private static MetamorphicObserver instance = new MetamorphicObserver();
 	static
 	{
-//		properties.add(AdditiveByConstant.class);
-//		properties.add(MultiplicativeByConstant.class);
+		properties.add(AdditiveByConstant.class);
+		properties.add(MultiplicativeByConstant.class);
 		properties.add(Shufflable.class);
 	}
 	public static MetamorphicObserver getInstance() {

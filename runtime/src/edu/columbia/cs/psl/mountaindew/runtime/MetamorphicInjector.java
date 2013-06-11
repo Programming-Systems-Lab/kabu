@@ -16,6 +16,7 @@ public class MetamorphicInjector {
 				args2[i-1] = args[i];
 			c.getMethod("main", String[].class).invoke(null, (Object) args2);
 			
+			System.out.println("Reporting results");
 			MetamorphicObserver.getInstance().reportResults();
 //			c.getMethod("go",String.class).invoke(c.newInstance(),"zzz");
 		} catch (Exception e) {
