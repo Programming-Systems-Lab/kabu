@@ -1,0 +1,5 @@
+This is the command I use on my computer (jon):
+
+java -javaagent:lib/mountaindew.jar -cp lib/asm-all-4.0.jar:../../in-vivo/invivo-core/invivo.jar:../../in-vivo/invivo-core/lib/log4j-1.2.16.jar:lib/mountaindew.jar:lib/junit-4.10.jar:lib/columbus2.jar:bin/:../../in-vivo/invivo-core/lib/cloning-1.7.9.jar:../../in-vivo/invivo-core/lib/objenesis-1.2.jar edu.columbia.cs.psl.mountaindew.runtime.MetamorphicInjector edu.columbia.cs.psl.mountaindew.example.SimpleExample
+
+
