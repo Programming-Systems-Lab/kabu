@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="MacRoman" standalone="no"?>
+<jardesc>
+    <jar path="mtndew-tester/lib/mountaindew.jar"/>
+    <options buildIfNeeded="true" compress="false" descriptionLocation="/mtndew-runtime/jar-descriptor.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="true" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="false" manifestLocation="/mtndew-runtime/META-INF/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <file path="/mtndew-runtime/.project"/>
+        <javaElement handleIdentifier="=mtndew-runtime/.apt_generated"/>
+        <file path="/mtndew-runtime/.DS_Store"/>
+        <javaElement handleIdentifier="=mtndew-runtime/src"/>
+        <file path="/mtndew-runtime/.gitignore"/>
+        <file path="/mtndew-runtime/.classpath"/>
+        <folder path="/mtndew-runtime/META-INF"/>
+        <folder path="/mtndew-runtime/lib"/>
+    </selectedElements>
+</jardesc>
