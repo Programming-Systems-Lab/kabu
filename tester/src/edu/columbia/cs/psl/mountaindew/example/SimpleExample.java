@@ -3,6 +3,8 @@ package edu.columbia.cs.psl.mountaindew.example;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import weka.classifiers.functions.supportVector.PukTest;
+
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 import edu.columbia.cs.psl.mountaindew.runtime.Interceptor;
 
@@ -58,10 +60,10 @@ public class SimpleExample extends AbstractExample {
 	public static void main(String[] args) {
 		String[] barzzz = {"aa","bb"};
 //		Interceptor.catchParam(args, args);
-		SimpleExample ex = new SimpleExample();
+//		SimpleExample ex = new SimpleExample();
 //		System.out.println(ex.addThree(0));
 //		System.out.println(ex.addThree(1));
-		System.out.println(ex.addThree(2,null));
+//		System.out.println(ex.addThree(2,null));
 		
 //		System.out.println(ex.timesThree(2));
 //		System.out.println(ex.timesThree(3));
@@ -69,7 +71,8 @@ public class SimpleExample extends AbstractExample {
 		
 //		System.out.println(ex.sort(new int[] {3,4,5}));
 //		System.out.println(ex.sort(new int[] {4,3,5}));
-
+//		PukTest test = new PukTest("foo");
+		junit.textui.TestRunner.run(PukTest.suite());
 //		System.out.println(new SimpleExample().go("abc","def",barzzz));
 	}
 }

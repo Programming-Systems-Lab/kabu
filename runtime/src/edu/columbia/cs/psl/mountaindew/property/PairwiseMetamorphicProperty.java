@@ -1,9 +1,6 @@
 package edu.columbia.cs.psl.mountaindew.property;
 
-import java.util.Collection;
-
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
-import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult.Result;
 
 public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{

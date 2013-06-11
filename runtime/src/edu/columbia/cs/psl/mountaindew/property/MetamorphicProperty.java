@@ -1,16 +1,13 @@
 package edu.columbia.cs.psl.mountaindew.property;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 
 import com.rits.cloning.Cloner;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
-import edu.columbia.cs.psl.mountaindew.struct.Parameter;
 import edu.columbia.cs.psl.mountaindew.struct.PossiblyMetamorphicMethodInvocation;
 
 public abstract class MetamorphicProperty {
@@ -108,7 +105,7 @@ public abstract class MetamorphicProperty {
 							child.propertyParams[i] = propertyParams;
 							child.params[i] = getInputProcessor().apply((Object) cloner.deepClone(inv.params[i]), propertyParams);
 						} catch (Exception ex) {
-//							ex.printStackTrace();
+							ex.printStackTrace();
 							continue CombiLoop;
 						}
 

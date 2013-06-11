@@ -704,7 +704,7 @@ public abstract class AbstractKernelTest
   protected String useKernel(Instances data) throws Exception {
     Kernel kernel = null;
     StringBuffer text = new StringBuffer();
-    System.out.println(data);
+
     try {
       kernel = Kernel.makeCopy(m_Kernel);
     } 

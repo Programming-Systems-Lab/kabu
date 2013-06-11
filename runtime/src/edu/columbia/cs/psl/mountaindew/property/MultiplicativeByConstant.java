@@ -2,9 +2,9 @@ package edu.columbia.cs.psl.mountaindew.property;
 
 import java.util.ArrayList;
 
+import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.MultiplyByNumericConstant;
-import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 
 public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 	@Override
