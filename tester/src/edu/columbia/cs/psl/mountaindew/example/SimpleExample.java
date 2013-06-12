@@ -57,6 +57,14 @@ public class SimpleExample extends AbstractExample {
 		
 		return result;
 	}
+	
+	@Metamorphic
+	public int[] increArray(int[] in) {
+		for (int i = 0 ; i < in.length; i++) {
+			in[i]++;
+		}
+		return in;
+	}
 	public static void main(String[] args) {
 		String[] barzzz = {"aa","bb"};
 //		Interceptor.catchParam(args, args);
@@ -65,11 +73,12 @@ public class SimpleExample extends AbstractExample {
 //		System.out.println(ex.addThree(1));
 //		System.out.println(ex.addThree(2,null));
 		
-		System.out.println(ex.timesThree(2));
-		System.out.println(ex.timesThree(3));
+//		System.out.println(ex.timesThree(2));
+//		System.out.println(ex.timesThree(3));
 //		System.out.println(ex.timesThree(4));
 		
-//		System.out.println(ex.sort(new int[] {3,4,5}));
+		System.out.println(ex.sort(new int[] {3,4,5}));
+		System.out.println(ex.increArray(new int[] {7, 8, 9}));
 //		System.out.println(ex.sort(new int[] {4,3,5}));
 //		PukTest test = new PukTest("foo");
 //		junit.textui.TestRunner.run(PukTest.suite());
