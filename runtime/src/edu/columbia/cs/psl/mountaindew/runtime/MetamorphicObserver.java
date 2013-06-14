@@ -18,10 +18,10 @@ public class MetamorphicObserver {
 	{
 //		properties.add(AdditiveByConstant.class);
 //		properties.add(MultiplicativeByConstant.class);
-		properties.add(InclusiveByMax.class);
-		properties.add(InclusiveByMin.class);
-//		properties.add(Shufflable.class);
-		properties.add(Exclusivable.class);
+//		properties.add(InclusiveByMax.class);
+//		properties.add(InclusiveByMin.class);
+		properties.add(Shufflable.class);
+//		properties.add(Exclusivable.class);
 	}
 	public static MetamorphicObserver getInstance() {
 		return instance;

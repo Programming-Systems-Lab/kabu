@@ -20,6 +20,27 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 	@Override
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
 			Object p2, Object returnValue2) {
+
+		//For array
+		if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
+			int rt1Length = Array.getLength(returnValue1);
+			int rt2Length = Array.getLength(returnValue2);
+			
+			if (rt1Length != rt2Length)
+				return false;
+			
+			double tmp1, tmp2;
+			for (int i = 0; i < rt1Length; i++) {
+				tmp1 = ((Number)Array.get(returnValue1, i)).doubleValue();
+				tmp2 = ((Number)Array.get(returnValue2, i)).doubleValue();
+				
+				if (tmp1 != tmp2)
+					return false;
+			}
+			return true;
+		}
+		
+		//For other type, includind Collection
 		return returnValue1.equals(returnValue2);
 	}
 
@@ -39,6 +60,9 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 			HashSet<Object> o2h = new HashSet<Object>();
 			for(int i = 0;i<Array.getLength(o1);i++)
 			{
+				System.out.println("Test oriInput: " + (Number)Array.get(o1, i));
+				System.out.println("Test transInput: " + (Number)Array.get(o2, i));
+				
 				o1h.add(Array.get(o1, i));
 				o2h.add(Array.get(o2, i));
 			}
@@ -51,6 +75,11 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 			o1h.addAll((Collection) o1);
 			o2h.addAll((Collection) o2);
 			return o1h.equals(o2h);
+		}
+		else if(Number.class.isAssignableFrom(o1.getClass()) && Number.class.isAssignableFrom(o2.getClass())) {
+			System.out.println("Check o1 value: " + ((Number)o1).doubleValue());
+			System.out.println("Check o2 value: " + ((Number)o2).doubleValue());
+			return (((Number)o1).doubleValue() == ((Number)o2).doubleValue());
 		}
 		return false;
 	}

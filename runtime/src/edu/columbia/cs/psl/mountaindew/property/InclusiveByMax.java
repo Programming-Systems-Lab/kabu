@@ -13,12 +13,19 @@ import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.InclusiveMax;
 
 public class InclusiveByMax extends ClusiveAbstract{
 
+	/**
+	 * Inclusive property needs to catch the "predictive" behavior of a method.
+	 * Need to think about this. Current version is not strong enough.
+	 */
 	@Override
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
 			Object p2, Object returnValue2) {
 		// TODO Auto-generated method stub
 		double rt1Max, rt1Sum, rt2Max, rt2Sum;
 		if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
+			if (Array.getLength(returnValue1) + 1 != Array.getLength(returnValue2))
+				return false;
+			
 			rt1Max = this.findMax(returnValue1);
 			rt1Sum = this.calSum(returnValue1);
 			
@@ -38,6 +45,9 @@ public class InclusiveByMax extends ClusiveAbstract{
 		System.out.println("Returvalue1 class: " + returnValue1.getClass().getName() + " " + Collection.class.isAssignableFrom(returnValue2.getClass()));*/
 		
 		if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
+			if (((Collection)returnValue1).size() + 1 != ((Collection)returnValue2).size())
+				return false;
+			
 			rt1Max = this.findMax(returnValue1);
 			rt1Sum = this.calSum(returnValue1);
 			
@@ -51,6 +61,11 @@ public class InclusiveByMax extends ClusiveAbstract{
 			
 			if (rt2Max - rt1Max == 1 && rt2Sum - rt1Sum == rt2Max)
 				return true;
+		}
+		
+		//This is targeting for method that aims to select max currently. "Predictive" is a tricky word for defining this property 
+		if (Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
+			
 		}
 
 		return false;

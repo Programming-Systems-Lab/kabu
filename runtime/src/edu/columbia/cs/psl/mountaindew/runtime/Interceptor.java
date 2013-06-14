@@ -1,9 +1,12 @@
 package edu.columbia.cs.psl.mountaindew.runtime;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+
+import com.rits.cloning.Cloner;
 
 import edu.columbia.cs.psl.invivo.runtime.AbstractInterceptor;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
@@ -26,6 +29,7 @@ public class Interceptor extends AbstractInterceptor {
 	private HashSet<Class<? extends MetamorphicProperty>> propertyPrototypes;
 	private HashMap<Integer, MethodInvocation> invocations = new HashMap<Integer, MethodInvocation>();
 	private Integer invocationId = 0;
+	private Cloner cloner = new Cloner();
 	
 	public Interceptor(Object intercepted) {
 		super(intercepted);
@@ -62,8 +66,10 @@ public class Interceptor extends AbstractInterceptor {
 			}
 			
 		}
+		
 		MethodInvocation inv = new MethodInvocation();
-		inv.params = params;
+		//inv.params = params;
+		inv.params = cloner.deepClone(params);
 		inv.method = method;
 		inv.callee = getInterceptedObject();
 		invocations.put(retId, inv);
@@ -91,24 +97,30 @@ public class Interceptor extends AbstractInterceptor {
 		MethodInvocation inv = invocations.remove(id);
 		inv.returnValue = val;
 		
+		/*for (int i = 0; i < Array.getLength(val); i++) {
+			System.out.println("On Exit check return value: " + (Number)Array.get(val, i));
+		}*/
+				
 		for(MethodInvocation inv2 : inv.children)
 		{
 			try {
+				System.out.println("Children goes first");
 				inv2.thread.join();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			for(MetamorphicProperty p : properties.get(inv.method))
+			for(MetamorphicProperty p : properties.get(inv2.method))
 			{
 				p.logExecution(inv2);
 			}
 		}
+		
 		for(MetamorphicProperty p : properties.get(inv.method))
 		{
+			System.out.println("Then parents");
 			p.logExecution(inv);
 		}
-
 	}
 	
 	public void reportPropertyResults()

@@ -14,6 +14,6 @@
 	<classpathentry kind="lib" path="weka/lib/JFlex.jar"/>
 	<classpathentry kind="lib" path="weka/lib/junit.jar"/>
 	<classpathentry kind="lib" path="weka/lib/packageManager.jar"/>
-	<classpathentry kind="lib" path="/Users/mike/Documents/metamorphic-projects/mountaindew/invivo.jar"/>
+	<classpathentry kind="lib" path="lib/invivo.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

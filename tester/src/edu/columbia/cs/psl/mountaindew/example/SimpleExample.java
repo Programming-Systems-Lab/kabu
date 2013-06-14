@@ -59,11 +59,40 @@ public class SimpleExample extends AbstractExample {
 	}
 	
 	@Metamorphic
-	public int[] increArray(int[] in) {
+	public int[] increArrayInPlace(int[] in) {
 		for (int i = 0 ; i < in.length; i++) {
 			in[i]++;
 		}
 		return in;
+	}
+	
+	@Metamorphic
+	public int[] increArray(int[] in) {
+		int[] ret = new int[in.length];
+		
+		for (int i = 0; i < in.length; i++) {
+			ret[i] = in[i] + 1;
+		}
+		return ret;
+	}	
+	
+	@Metamorphic
+	public double selectMax(int[] in) {
+		double max = Double.MIN_VALUE;
+		
+		for (int i = 0; i < in.length; i++) {
+			if (in[i] > max) {
+				max = in[i];
+			}
+		}
+		
+		return max;
+	}
+	
+	@Metamorphic
+	public ArrayList<Integer> increAndSort(int[] in) {
+		int result[] = increArray(in);
+		return sort(result);
 	}
 	public static void main(String[] args) {
 		String[] barzzz = {"aa","bb"};
@@ -77,8 +106,11 @@ public class SimpleExample extends AbstractExample {
 //		System.out.println(ex.timesThree(3));
 //		System.out.println(ex.timesThree(4));
 		
-		System.out.println(ex.sort(new int[] {3,4,5}));
-		System.out.println(ex.increArray(new int[] {7, 8, 9}));
+//		System.out.println(ex.sort(new int[] {3,4,5}));
+//		System.out.println(ex.increArray(new int[] {7, 8, 9}));
+		System.out.println(ex.increArrayInPlace(new int[] {7, 8, 9}));
+//		System.out.println(ex.increAndSort(new int[] {1, 2, 3}));
+//		System.out.println(ex.selectMax(new int[]{1, 2, 3}));
 //		System.out.println(ex.sort(new int[] {4,3,5}));
 //		PukTest test = new PukTest("foo");
 //		junit.textui.TestRunner.run(PukTest.suite());

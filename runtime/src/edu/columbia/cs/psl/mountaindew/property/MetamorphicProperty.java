@@ -1,5 +1,6 @@
 package edu.columbia.cs.psl.mountaindew.property;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -118,6 +119,16 @@ public abstract class MetamorphicProperty {
 				}
 			}
 		}
+		
+		for (int i = 0; i < Array.getLength(inv.params[0]); i++) {
+			System.out.println("Ori input in MP: " + (Number)Array.get(inv.params[0], i));
+			int j = 0;
+			for (PossiblyMetamorphicMethodInvocation child: ret) {
+				System.out.println("Transformed input " + j + " in MP: " + (Number)Array.get(child.params[0], i));
+				j++;
+			}
+		}
+		
 		return ret;
 	}
 	private ArrayList<boolean[]> computeCombinations(boolean[] restOfVals) {
