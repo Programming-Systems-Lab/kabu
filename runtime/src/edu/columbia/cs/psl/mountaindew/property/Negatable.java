@@ -13,7 +13,7 @@ import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.Negate;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.Reverse;
 
-public class Invertable extends PairwiseMetamorphicProperty{
+public class Negatable extends PairwiseMetamorphicProperty{
 	
 	@Override
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
@@ -32,14 +32,19 @@ public class Invertable extends PairwiseMetamorphicProperty{
 				tmp1 = ((Number)Array.get(returnValue1, i)).doubleValue();
 				tmp2 = ((Number)Array.get(returnValue2, rt1Length - i - 1)).doubleValue();
 				
-				if (tmp1 != tmp2)
+				if (tmp1 != tmp2 * -1)
 					return false;
 			}
 			return true;
 			
 		} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
-			List o1List = new ArrayList((Collection)returnValue1);
+			List o1List = new ArrayList();
 			List o2List = new ArrayList((Collection)returnValue2);
+			
+			Iterator rt1IT = ((Collection)returnValue1).iterator();
+			while(rt1IT.hasNext()) {
+				o1List.add(((Number)rt1IT.next()).doubleValue() * -1);
+			}
 						
 			Collections.sort(o1List);
 			Collections.sort(o2List);
@@ -59,7 +64,7 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			
 			return true;
 		} else if (Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
-			if (((Number)returnValue1).doubleValue() != ((Number)returnValue2).doubleValue())
+			if (((Number)returnValue1).doubleValue() != ((Number)returnValue2).doubleValue() * -1)
 				return false;
 			else
 				return true;
@@ -96,12 +101,12 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			double o1Val, o2Val;
 			for (int i = 0; i < o1Length; i++) {
 				o1Val = ((Number)Array.get(o1, i)).doubleValue();
-				o2Val = ((Number)Array.get(o2, o1Length - i - 1)).doubleValue();
+				o2Val = ((Number)Array.get(o2, i)).doubleValue();
 				
 				System.out.println("Check o1Val in Invertable: " + o1Val);
 				System.out.println("Check o2Val in Invertable: " + o2Val);
 				
-				if (o1Val != o2Val)
+				if (o1Val != o2Val * -1)
 					return false;
 			}
 			
@@ -120,14 +125,22 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			
 			for (int i = 0; i < o1Length; i++) {
 				o1Val = ((Number)o1Array[i]).doubleValue();
-				o2Val = ((Number)o2Array[o1Length - i - 1]).doubleValue();
+				o2Val = ((Number)o2Array[i]).doubleValue();
 				
-				if (o1Val != o2Val)
+				if (o1Val != o2Val * -1)
 					return false;
 			}
 			
 			return true;
-		} 
+		} else if (Number.class.isAssignableFrom(o1.getClass()) && Number.class.isAssignableFrom(o2.getClass())) {
+			double o1Val = ((Number)o1).doubleValue();
+			double o2Val = ((Number)o2).doubleValue();
+			
+			if (o1Val != -1 * o2Val)
+				return false;
+			else
+				return true;
+		}
 		
 		return false;
 	}
@@ -150,13 +163,14 @@ public class Invertable extends PairwiseMetamorphicProperty{
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "Invertable";
+		return "Negatable";
 	}
 
 	@Override
 	public MetamorphicInputProcessor getInputProcessor() {
 		// TODO Auto-generated method stub
-		return new Reverse();
+		return new Negate();
 	}
 
 }
+
