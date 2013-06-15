@@ -120,12 +120,14 @@ public abstract class MetamorphicProperty {
 			}
 		}
 		
+		//For debuggin purpose
 		for (int i = 0; i < Array.getLength(inv.params[0]); i++) {
 			System.out.println("Ori input in MP: " + (Number)Array.get(inv.params[0], i));
-			int j = 0;
-			for (PossiblyMetamorphicMethodInvocation child: ret) {
-				System.out.println("Transformed input " + j + " in MP: " + (Number)Array.get(child.params[0], i));
-				j++;
+		}
+		
+		for (PossiblyMetamorphicMethodInvocation child: ret) {
+			for (int j = 0; j < Array.getLength(child.params[0]); j++) {
+				System.out.println("Transformed input " + j + " in MP: " + (Number)Array.get(child.params[0], j));
 			}
 		}
 		

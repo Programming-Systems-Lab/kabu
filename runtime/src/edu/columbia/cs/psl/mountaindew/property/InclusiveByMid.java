@@ -9,9 +9,9 @@ import java.util.Collections;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
-import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.InclusiveMax;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.InclusiveMid;
 
-public class InclusiveByMax extends ClusiveAbstract{
+public class InclusiveByMid extends ClusiveAbstract{
 
 	/**
 	 * Inclusive property needs to catch the "predictive" behavior of a method.
@@ -21,26 +21,28 @@ public class InclusiveByMax extends ClusiveAbstract{
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
 			Object p2, Object returnValue2) {
 		// TODO Auto-generated method stub
-		double rt1Max, rt1Sum, rt2Max, rt2Sum;
+		double rt1Max, rt1Min, rt1Avg, rt2Max, rt2Min, rt2Avg;
 		if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 			if (Array.getLength(returnValue1) + 1 != Array.getLength(returnValue2))
 				return false;
 			
 			rt1Max = this.findMax(returnValue1);
-			//rt1Sum = this.calSum(returnValue1);
+			rt1Min = this.findMin(returnValue1);
+			rt1Avg = this.findAvg(returnValue1);
 			
 			rt2Max = this.findMax(returnValue2);
-			//rt2Sum = this.calSum(returnValue2);
+			rt2Min = this.findMin(returnValue2);
+			rt2Avg = this.findAvg(returnValue2);
 			
-			/*System.out.println("rt1Max: " + rt1Max);
-			System.out.println("rt2Max: " + rt2Max);
-			System.out.println("rt1Sum: " + rt1Sum);
-			System.out.println("rt2Sum: " + rt2Sum);*/
+			System.out.println("Check ori output max: " + rt1Max);
+			System.out.println("Check ori output min: " + rt1Min);
+			System.out.println("Check ori output avg: " + rt1Avg);
 			
-			/*if (rt2Max - rt1Max == 1 && rt2Sum - rt1Sum == rt2Max)
-				return true;*/
+			System.out.println("Check transformed output max: " + rt2Max);
+			System.out.println("Check transformed output min: " + rt2Min);
+			System.out.println("Check transformed output avg: " + rt2Avg);
 			
-			if (rt2Max > rt1Max)
+			if (rt1Max == rt2Max && rt1Min == rt2Min && rt2Avg > rt1Avg)
 				return true;
 		}
 		
@@ -52,25 +54,17 @@ public class InclusiveByMax extends ClusiveAbstract{
 				return false;
 			
 			rt1Max = this.findMax(returnValue1);
-			rt1Sum = this.calSum(returnValue1);
+			rt1Min = this.findMin(returnValue2);
+			rt1Avg = this.findAvg(returnValue1);
 			
 			rt2Max = this.findMax(returnValue2);
-			rt2Sum = this.calSum(returnValue2);
+			rt2Min = this.findMin(returnValue2);
+			rt2Avg = this.findAvg(returnValue2);
 			
-			/*System.out.println("rt1Max: " + rt1Max);
-			System.out.println("rt2Max: " + rt2Max);
-			System.out.println("rt1Sum: " + rt1Sum);
-			System.out.println("rt2Sum: " + rt2Sum);*/
-			
-			/*if (rt2Max - rt1Max == 1 && rt2Sum - rt1Sum == rt2Max)
-				return true;*/
-			
-			//Make it more general first
-			if (rt2Max > rt1Max)
+			if (rt1Max  == rt2Max && rt1Min == rt2Min && rt2Avg > rt1Avg)
 				return true;
 		}
 		
-		//This is targeting for method that aims to select max/min currently. "Predictive" is a tricky word for defining this property 
 		if (Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
 			//Check if this method try to find out max, min
 			double rt1 = ((Number)returnValue1).doubleValue();
@@ -87,7 +81,7 @@ public class InclusiveByMax extends ClusiveAbstract{
 			
 			//Find a way to simulate the method here
 			
-			//Make it general first. Suitable for selectMax, selectMin, calAvg, etc
+			//If the return value is only a number, hard to tell what it is doing. Let rt2 > rt1 first. This handles selectMin, selectMax, calAvg or so..
 			if (rt2 >= rt1)
 				return true;
 		}
@@ -108,8 +102,8 @@ public class InclusiveByMax extends ClusiveAbstract{
 			}
 		}
 		
-		//If i1 is not i2's parent, no need to compare
-		if (i2.getParent() != i1) {			
+		//If i1 is not i2's parents, no need to compare;
+		if (i2.getParent() != i1) {
 			return false;
 		}
 		
@@ -121,22 +115,21 @@ public class InclusiveByMax extends ClusiveAbstract{
 				return false;
 			
 			double o1Max = this.findMax(o1);
+			double o1Min = this.findMin(o1);
 			double o1Sum = this.calSum(o1);
 			
+			System.out.println("Check ori input max in propertyApplies: " + o1Max);
+			System.out.println("Check ori input min in propertyApplies: " + o1Min);
+			
 			double o2Max = this.findMax(o2);
+			double o2Min = this.findMin(o2);
 			double o2Sum = this.calSum(o2);
 			
-			/*System.out.println("i1 is i2's parent");
-			
-			for (int i = 0; i < Array.getLength(o1); i++) {
-				System.out.println("o1 params in InclusiveByMax: " + (Number)Array.get(o1, i));
-			}
-			
-			for (int i = 0; i < Array.getLength(o2); i++) {
-				System.out.println("o2 params in InclusiveByMax: " + (Number)Array.get(o2, i));
-			}*/
-			
-			if (o1Max + 1 == o2Max && o2Sum - o1Sum == o2Max) {
+			System.out.println("Check transformed input max in propertyApplies: " + o2Max);
+			System.out.println("Check transformed input min in propertyApplies: " + o2Min);
+						
+			//Because frontend add one more max in the transformed input
+			if (o1Max == o2Max && o1Min == o2Min && o2Sum - o1Sum == o2Max) {
 				return true;
 			}
 		} else if (Collection.class.isAssignableFrom(o1.getClass()) && (Collection.class.isAssignableFrom(o2.getClass()))) {
@@ -147,17 +140,15 @@ public class InclusiveByMax extends ClusiveAbstract{
 				return false;
 			
 			double o1Max = this.findMax(o1);
+			double o1Min = this.findMin(o1);
 			double o1Sum = this.calSum(o1);
 			
 			double o2Max = this.findMax(o2);
+			double o2Min = this.findMin(o2);
 			double o2Sum = this.calSum(o2);
 			
-			/*System.out.println("DEBUG inclusiveByMax list: o1Max" + o1Max);
-			System.out.println("DEBUG inclusiveByMax list: o2Max" + o2Max);
-			System.out.println("DEBUG inclusiveByMax list: o1Sum" + o1Sum);
-			System.out.println("DEBUG inclusiveByMax list: o2Sum" + o2Sum);*/
-			
-			if (o1Max + 1 == o2Max && o2Sum - o1Sum == o2Max)
+			//Because frontend add one more max in the transformed input
+			if (o1Max == o2Max && o1Min == o2Min && o2Sum - o1Sum == o2Max)
 				return true;
 		}
 		
@@ -173,7 +164,8 @@ public class InclusiveByMax extends ClusiveAbstract{
 	@Override
 	public MetamorphicInputProcessor getInputProcessor() {
 		// TODO Auto-generated method stub
-		return new InclusiveMax();
+		return new InclusiveMid();
 	}
 
 }
+

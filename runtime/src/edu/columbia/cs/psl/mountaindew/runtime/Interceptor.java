@@ -104,7 +104,7 @@ public class Interceptor extends AbstractInterceptor {
 		for(MethodInvocation inv2 : inv.children)
 		{
 			try {
-				System.out.println("Children goes first");
+//				System.out.println("Children goes first");
 				inv2.thread.join();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -118,7 +118,7 @@ public class Interceptor extends AbstractInterceptor {
 		
 		for(MetamorphicProperty p : properties.get(inv.method))
 		{
-			System.out.println("Then parents");
+//			System.out.println("Then parents");
 			p.logExecution(inv);
 		}
 	}

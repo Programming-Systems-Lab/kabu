@@ -3,12 +3,15 @@ package edu.columbia.cs.psl.mountaindew.runtime;
 import java.util.HashSet;
 
 import edu.columbia.cs.psl.mountaindew.property.AdditiveByConstant;
+import edu.columbia.cs.psl.mountaindew.property.InclusiveByMid;
 import edu.columbia.cs.psl.mountaindew.property.InclusiveByMin;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.property.MultiplicativeByConstant;
 import edu.columbia.cs.psl.mountaindew.property.Shufflable;
 import edu.columbia.cs.psl.mountaindew.property.InclusiveByMax;
-import edu.columbia.cs.psl.mountaindew.property.Exclusivable;
+import edu.columbia.cs.psl.mountaindew.property.ExclusiveByMax;
+import edu.columbia.cs.psl.mountaindew.property.ExclusiveByMid;
+import edu.columbia.cs.psl.mountaindew.property.ExclusiveByMin;
 
 public class MetamorphicObserver {
 	HashSet<Interceptor> interceptors = new HashSet<Interceptor>();
@@ -18,9 +21,13 @@ public class MetamorphicObserver {
 	{
 //		properties.add(AdditiveByConstant.class);
 //		properties.add(MultiplicativeByConstant.class);
-//		properties.add(InclusiveByMax.class);
-//		properties.add(InclusiveByMin.class);
-		properties.add(Shufflable.class);
+		properties.add(InclusiveByMax.class);
+		properties.add(InclusiveByMin.class);
+		properties.add(InclusiveByMid.class);
+		properties.add(ExclusiveByMax.class);
+		properties.add(ExclusiveByMid.class);
+		properties.add(ExclusiveByMin.class);
+//		properties.add(Shufflable.class);
 //		properties.add(Exclusivable.class);
 	}
 	public static MetamorphicObserver getInstance() {

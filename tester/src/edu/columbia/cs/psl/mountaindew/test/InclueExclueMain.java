@@ -3,17 +3,18 @@ package edu.columbia.cs.psl.mountaindew.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.Exclusive;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.ExclusiveMax;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.ExclusiveMid;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.ExclusiveMin;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.InclusiveMax;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.InclusiveMid;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.InclusiveMin;
 
 public class InclueExclueMain {
 	
-	public static void main(String args[]) {
-		InclusiveMax inc = new InclusiveMax();
-		
+	public static void main(String args[]) {		
 		int[] a = {1, 2, 6, 8, 10};
-		int[] b = inc.apply(a);
+		/*int[] b = inc.apply(a);
 		
 		for (int i = 0 ; i < b.length; i++) {
 			System.out.println("DEBUG InclusiveMax: " + b[i]);
@@ -55,7 +56,50 @@ public class InclueExclueMain {
 		
 		for (Integer i: cList) {
 			System.out.println("DEBUG Exclusive list: " + i);
+		}*/
+		
+		/*InclusiveMax inc = new InclusiveMax();
+		int[] maxTest = inc.apply(a);
+		
+		for (int i = 0 ; i < maxTest.length; i++) {
+			System.out.println("DEBUG InclusiveMax: " + maxTest[i]);
+		}*/
+		
+		/*InclusiveMid incMid = new InclusiveMid();
+		int[] midTest = incMid.apply(a);
+		
+		for (int i = 0 ; i < midTest.length; i++) {
+			System.out.println("DEBUG InclusiveMid: " + midTest[i]);
+		}*/
+		
+		/*InclusiveMin inMin = new InclusiveMin();
+		int[] minTest = inMin.apply(a);
+		
+		for (int i = 0; i < minTest.length; i++) {
+			System.out.println("DEBUG InclusiveMin: " + minTest[i]);
+		}*/
+		
+		/*ExclusiveMax exMax = new ExclusiveMax();
+		int[] exMaxTest = exMax.apply(a);
+		
+		for (int i = 0; i < exMaxTest.length; i++) {
+			System.out.println("DEBUG ExclusiveMax: " + exMaxTest[i]);
+		}*/
+		
+		/*ExclusiveMid exMid = new ExclusiveMid();
+		int[] exMidTest = exMid.apply(a);
+		
+		for (int i = 0; i < exMidTest.length; i++) {
+			System.out.println("DEBUG ExclusiveMid: " + exMidTest[i]);
+		}*/
+		
+		ExclusiveMin exMin = new ExclusiveMin();
+		int[] exMinTest = exMin.apply(a);
+		
+		for (int i = 0; i < exMinTest.length; i++) {
+			System.out.println("DEBUG ExclusiveMin: " + exMinTest[i]);
 		}
+		
 	}
 
 }

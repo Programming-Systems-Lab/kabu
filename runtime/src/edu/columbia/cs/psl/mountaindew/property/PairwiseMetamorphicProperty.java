@@ -24,11 +24,14 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 					{
 						if(i!=j)
 						{
-//							Object o1 = v;
-//							Object o2 = j.params[k];
+							Object o1 = v;
+							Object o2 = j.params[k];
 							// In order to make o1 is the ori (parent) and o2 is the transformation (child)
-							Object o1;
+							/*Object o1;
 							Object o2;
+							
+							System.out.println("Test i: " + i + " " + i.getParent() + " " + i.getReturnValue());
+							System.out.println("Test j: " + j + " " + j.getParent() + " " + j.getReturnValue());
 							
 							if (i == j.getParent()) {
 //								System.out.println("i is parent of j");
@@ -45,11 +48,13 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 							} else {
 								System.err.println("Two input has no relation to compare");
 								return null;
-							}
+							}*/
 							
-							if(propertyApplies(parent,child,k))
+							if(propertyApplies(i, j, k))
 							{
-								if(returnValuesApply(parent,parent.returnValue,child,child.returnValue))
+								//o2 is parent and o1 is child
+								if(returnValuesApply(o1, i.returnValue, o2, j.returnValue))
+								//if (returnValuesApply(o2, j.returnValue, o1, i.returnValue))
 								{
 									//Property may hold
 									result.result=Result.HOLDS;

@@ -17,17 +17,17 @@ public class InclusiveByMin extends ClusiveAbstract {
 		double rt1Min, rt1Sum, rt2Min, rt2Sum;
 		if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 			rt1Min = this.findMin(returnValue1);
-			rt1Sum = this.calSum(returnValue1);
+			//rt1Sum = this.calSum(returnValue1);
 			
 			rt2Min = this.findMin(returnValue2);
-			rt2Sum = this.calSum(returnValue2);
+			//rt2Sum = this.calSum(returnValue2);
 			
 			/*System.out.println("rt1Min: " + rt1Min);
 			System.out.println("rt2Min: " + rt2Min);
 			System.out.println("rt1Sum: " + rt1Sum);
 			System.out.println("rt2Sum: " + rt2Sum);*/
 			
-			if (rt1Min - rt2Min == 1 && rt2Sum - rt1Sum == rt2Min)
+			if (rt1Min > rt2Min)
 				return true;
 		}
 		
@@ -36,17 +36,30 @@ public class InclusiveByMin extends ClusiveAbstract {
 		
 		if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
 			rt1Min = this.findMin(returnValue1);
-			rt1Sum = this.calSum(returnValue1);
+			//rt1Sum = this.calSum(returnValue1);
 			
 			rt2Min = this.findMin(returnValue2);
-			rt2Sum = this.calSum(returnValue2);
+			//rt2Sum = this.calSum(returnValue2);
 			
 			/*System.out.println("rt1Min: " + rt1Min);
 			System.out.println("rt2Min: " + rt2Min);
 			System.out.println("rt1Sum: " + rt1Sum);
 			System.out.println("rt2Sum: " + rt2Sum);*/
 			
-			if (rt1Min - rt2Min == 1 && rt2Sum - rt1Sum == rt2Min)
+			/*if (rt1Min - rt2Min == 1 && rt2Sum - rt1Sum == rt2Min)
+				return true;*/
+			
+			if (rt1Min > rt2Min)
+				return true;
+		}
+		
+		//This is targeting for method that aims to select min currently. "Predictive" is a tricky word for defining this property 
+		if (Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
+			double rt1 = ((Number)returnValue1).doubleValue();
+			double rt2 = ((Number)returnValue2).doubleValue();
+			
+			//If the method is going to select min value, this cannot work...
+			if (rt2 >= rt1)
 				return true;
 		}
 
@@ -64,6 +77,11 @@ public class InclusiveByMin extends ClusiveAbstract {
 			if (i != interestedVariable && i1.params[i] != i2.params[i]) {
 				return false;
 			}
+		}
+		
+		//If i1 is not i2's parent, no need to compare
+		if (i2.getParent() != i1) {
+			return false;
 		}
 				
 		//If parameter is array or collection, check length if i2 = i1 +1, check sum
@@ -85,7 +103,6 @@ public class InclusiveByMin extends ClusiveAbstract {
 			System.out.println("DEBUG inclusiveByMin array: o2Sum" + o2Sum);*/
 					
 			if (o1Min - 1 == o2Min && o2Sum - o1Sum == o2Min) {
-				System.out.println("It's true");
 				return true;
 			}
 		} else if (Collection.class.isAssignableFrom(o1.getClass()) && (Collection.class.isAssignableFrom(o2.getClass()))) {
@@ -113,36 +130,7 @@ public class InclusiveByMin extends ClusiveAbstract {
 		return false;
 	}
 	
-	private double findMin(Object arrayList) {
-		double min = Double.MAX_VALUE;
-		double tmp;
-		
-		if (arrayList.getClass().isArray()) {
-			int arrayLength = Array.getLength(arrayList);
-			
-			for (int i = 0; i < arrayLength; i++) {
-				tmp = ((Number)Array.get(arrayList, i)).doubleValue();
-				
-				if (tmp < min) {
-					min = tmp;
-				}
-			}
-			
-			return min;
-		} else if (Collection.class.isAssignableFrom(arrayList.getClass())) {
-			Iterator colIT = ((Collection)arrayList).iterator();
-			while(colIT.hasNext()) {
-				tmp = ((Number)colIT.next()).doubleValue();
-				
-				if (tmp < min) {
-					min = tmp;
-				} 
-			}
-			
-			return min;
-		}
-		throw new IllegalArgumentException("Only allow array and collection to find max");
-	}
+
 
 	@Override
 	public String getName() {
