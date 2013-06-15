@@ -94,6 +94,17 @@ public class SimpleExample extends AbstractExample {
 		int result[] = increArray(in);
 		return sort(result);
 	}
+	
+	@Metamorphic
+	public int sum(int[] in) {
+		int sum = 0;
+		for (int i = 0; i < in.length; i++) {
+			sum = sum + in[i];
+		}
+		
+		return sum;
+	}
+	
 	public static void main(String[] args) {
 		String[] barzzz = {"aa","bb"};
 		System.out.println("Max memory: " + Runtime.getRuntime().maxMemory());
@@ -107,12 +118,13 @@ public class SimpleExample extends AbstractExample {
 //		System.out.println(ex.timesThree(3));
 //		System.out.println(ex.timesThree(4));
 		
-		System.out.println(ex.sort(new int[] {3,4,5}));
-		System.out.println(ex.increArray(new int[] {7, 8, 9}));
-		System.out.println(ex.increArrayInPlace(new int[] {7, 8, 9}));
+//		System.out.println(ex.sort(new int[] {3,4,5}));
+//		System.out.println(ex.increArray(new int[] {7, 8, 9}));
+		System.out.println(ex.sum(new int[] {7, 8, 9}));
+//		System.out.println(ex.increArrayInPlace(new int[] {7, 8, 9}));
 //		System.out.println(ex.increAndSort(new int[] {1, 2, 3}));
 //		System.out.println(ex.selectMax(new int[]{1, 2, 3}));
-		System.out.println(ex.sort(new int[] {4,3,5}));
+//		System.out.println(ex.sort(new int[] {4,3,5}));
 //		PukTest test = new PukTest("foo");
 //		junit.textui.TestRunner.run(PukTest.suite());
 //		System.out.println(new SimpleExample().go("abc","def",barzzz));

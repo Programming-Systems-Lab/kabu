@@ -121,6 +121,9 @@ public class Interceptor extends AbstractInterceptor {
 //			System.out.println("Then parents");
 			p.logExecution(inv);
 		}
+		
+		//Try to alleviate heap space issue
+		System.gc();
 	}
 	
 	public void reportPropertyResults()
