@@ -103,8 +103,8 @@ public class Negatable extends PairwiseMetamorphicProperty{
 				o1Val = ((Number)Array.get(o1, i)).doubleValue();
 				o2Val = ((Number)Array.get(o2, i)).doubleValue();
 				
-				System.out.println("Check o1Val in Invertable: " + o1Val);
-				System.out.println("Check o2Val in Invertable: " + o2Val);
+//				System.out.println("Check o1Val in Negatable: " + o1Val);
+//				System.out.println("Check o2Val in Negatable: " + o2Val);
 				
 				if (o1Val != o2Val * -1)
 					return false;

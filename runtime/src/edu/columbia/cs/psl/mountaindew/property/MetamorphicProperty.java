@@ -9,12 +9,15 @@ import com.rits.cloning.Cloner;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
+import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 import edu.columbia.cs.psl.mountaindew.struct.PossiblyMetamorphicMethodInvocation;
 
-public abstract class MetamorphicProperty {
+public abstract class MetamorphicProperty implements Comparable{
 	public abstract String getName();
 
 	public abstract MetamorphicInputProcessor getInputProcessor();
+	
+	public abstract MethodProfiler getMethodProfiler();
 
 	public String getDescription() {
 		return "Metamorphic property: " + getName();
@@ -121,7 +124,7 @@ public abstract class MetamorphicProperty {
 		}
 		
 		//For debuggin purpose
-		for (int i = 0; i < Array.getLength(inv.params[0]); i++) {
+		/*for (int i = 0; i < Array.getLength(inv.params[0]); i++) {
 			System.out.println("Ori input in MP: " + (Number)Array.get(inv.params[0], i));
 		}
 		
@@ -129,7 +132,7 @@ public abstract class MetamorphicProperty {
 			for (int j = 0; j < Array.getLength(child.params[0]); j++) {
 				System.out.println("Transformed input " + j + " in MP: " + (Number)Array.get(child.params[0], j));
 			}
-		}
+		}*/
 		
 		return ret;
 	}
@@ -186,6 +189,12 @@ public abstract class MetamorphicProperty {
 			ret.add(r);
 		}
 		return ret;
+	}
+	
+	public int compareTo(Object obj) {
+		MetamorphicProperty tmpProperty = (MetamorphicProperty)obj;
+		return this.getName().compareTo(tmpProperty.getName());
+			
 	}
 
 }

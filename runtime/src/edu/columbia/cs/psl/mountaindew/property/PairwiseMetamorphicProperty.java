@@ -1,20 +1,33 @@
 package edu.columbia.cs.psl.mountaindew.property;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult.Result;
+import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 
 public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
+	
+	private MethodProfiler mProfiler = new MethodProfiler();
 
 
 	@Override
-	public final PropertyResult propertyHolds() {
+	public final PropertyResult propertyHolds() {		
 		PropertyResult result = new PropertyResult();
 		result.result=Result.UNKNOWN;
 		result.property=this.getClass();
 		
 		int[] interestedIndices = getInterestedVariableIndices();
-		MethodInvocation parent;
-		MethodInvocation child;
+		//Check interestedIndeices
+		/*System.out.println("Indice length:  " + interestedIndices.length);
+		for (int i = 0; i < interestedIndices.length; i++) {
+			System.out.println("Check index: " + interestedIndices[i]);
+		}*/
+		
 		for(MethodInvocation i : getInvocations())
 		{
 			for(int k : interestedIndices)
@@ -52,7 +65,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 							
 							if(propertyApplies(i, j, k))
 							{
-								//o2 is parent and o1 is child
+								mProfiler.addMethodProfile(i, j, result);
 								if(returnValuesApply(o1, i.returnValue, o2, j.returnValue))
 								//if (returnValuesApply(o2, j.returnValue, o1, i.returnValue))
 								{
@@ -77,6 +90,28 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 			}
 		}
 		return result;
+	}
+	
+	protected List returnList(Object val) {
+		
+		List retList = null;
+		
+		if (val.getClass().isArray()) {
+			retList = new ArrayList();
+			
+			for (int i = 0; i < Array.getLength(val); i++) {
+				retList.add(Array.get(val, i));
+			}
+		}
+		else if (Collection.class.isAssignableFrom(val.getClass()))
+			retList = new ArrayList((Collection)val);
+		
+		return retList;
+		
+	}
+	
+	public MethodProfiler getMethodProfiler() {
+		return this.mProfiler;
 	}
 
 	protected abstract boolean returnValuesApply(Object p1, Object returnValue1, Object p2, Object returnValue2);

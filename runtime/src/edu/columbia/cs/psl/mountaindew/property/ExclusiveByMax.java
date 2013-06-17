@@ -24,8 +24,8 @@ public class ExclusiveByMax extends ClusiveAbstract{
 			rt1Sum = this.calSum(returnValue1);
 			rt2Sum = this.calSum(returnValue2);
 			
-			System.out.println("ExclusiveByMax rt1Max, rt1Min, rt1Sum " + rt1Max + " " + rt1Min + " " + rt1Sum);
-			System.out.println("ExclusiveByMax rt2Max, rt2Min, rt2Sum " + rt2Max + " " + rt2Min + " " + rt2Sum);
+//			System.out.println("ExclusiveByMax rt1Max, rt1Min, rt1Sum " + rt1Max + " " + rt1Min + " " + rt1Sum);
+//			System.out.println("ExclusiveByMax rt2Max, rt2Min, rt2Sum " + rt2Max + " " + rt2Min + " " + rt2Sum);
 			
 			//Equal is for if an array/list has two elements that are the max
 			if (rt1Max >= rt2Max && rt1Min == rt2Min && rt1Sum > rt2Sum)

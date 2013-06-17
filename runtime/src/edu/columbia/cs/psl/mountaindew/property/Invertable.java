@@ -98,8 +98,8 @@ public class Invertable extends PairwiseMetamorphicProperty{
 				o1Val = ((Number)Array.get(o1, i)).doubleValue();
 				o2Val = ((Number)Array.get(o2, o1Length - i - 1)).doubleValue();
 				
-				System.out.println("Check o1Val in Invertable: " + o1Val);
-				System.out.println("Check o2Val in Invertable: " + o2Val);
+//				System.out.println("Check o1Val in Invertable: " + o1Val);
+//				System.out.println("Check o2Val in Invertable: " + o2Val);
 				
 				if (o1Val != o2Val)
 					return false;

@@ -24,8 +24,8 @@ public class ExclusiveByMid extends ClusiveAbstract{
 			rt1Sum = this.calSum(returnValue1);
 			rt2Sum = this.calSum(returnValue2);
 			
-			System.out.println("ExclusiveByMid rt1Max, rt1Min, rt1Sum " + rt1Max + " " + rt1Min + " " + rt1Sum);
-			System.out.println("ExclusiveByMid rt2Max, rt2Min, rt2Sum " + rt2Max + " " + rt2Min + " " + rt2Sum);
+//			System.out.println("ExclusiveByMid rt1Max, rt1Min, rt1Sum " + rt1Max + " " + rt1Min + " " + rt1Sum);
+//			System.out.println("ExclusiveByMid rt2Max, rt2Min, rt2Sum " + rt2Max + " " + rt2Min + " " + rt2Sum);
 			
 			if (rt1Max == rt2Max && rt1Min == rt2Min && rt1Sum > rt1Min)
 				return true;

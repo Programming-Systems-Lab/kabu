@@ -34,13 +34,13 @@ public class InclusiveByMid extends ClusiveAbstract{
 			rt2Min = this.findMin(returnValue2);
 			rt2Avg = this.findAvg(returnValue2);
 			
-			System.out.println("Check ori output max: " + rt1Max);
+			/*System.out.println("Check ori output max: " + rt1Max);
 			System.out.println("Check ori output min: " + rt1Min);
 			System.out.println("Check ori output avg: " + rt1Avg);
 			
 			System.out.println("Check transformed output max: " + rt2Max);
 			System.out.println("Check transformed output min: " + rt2Min);
-			System.out.println("Check transformed output avg: " + rt2Avg);
+			System.out.println("Check transformed output avg: " + rt2Avg);*/
 			
 			if (rt1Max == rt2Max && rt1Min == rt2Min && rt2Avg > rt1Avg)
 				return true;
@@ -118,15 +118,15 @@ public class InclusiveByMid extends ClusiveAbstract{
 			double o1Min = this.findMin(o1);
 			double o1Sum = this.calSum(o1);
 			
-			System.out.println("Check ori input max in propertyApplies: " + o1Max);
-			System.out.println("Check ori input min in propertyApplies: " + o1Min);
+//			System.out.println("Check ori input max in propertyApplies: " + o1Max);
+//			System.out.println("Check ori input min in propertyApplies: " + o1Min);
 			
 			double o2Max = this.findMax(o2);
 			double o2Min = this.findMin(o2);
 			double o2Sum = this.calSum(o2);
 			
-			System.out.println("Check transformed input max in propertyApplies: " + o2Max);
-			System.out.println("Check transformed input min in propertyApplies: " + o2Min);
+//			System.out.println("Check transformed input max in propertyApplies: " + o2Max);
+//			System.out.println("Check transformed input min in propertyApplies: " + o2Min);
 						
 			//Because frontend add one more max in the transformed input
 			if (o1Max == o2Max && o1Min == o2Min && o2Sum - o1Sum == o2Max) {

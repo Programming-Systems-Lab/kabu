@@ -52,24 +52,31 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 			if(i!=interestedVariable && !i1.params[i].equals(i2.params[i]))
 				return false;
 		
+		//If i1 is not i2's parent, no need to compare
+		if (i2.getParent() != i1) {
+			return false;
+		}
+		
 		if(o1.getClass().isArray() && o2.getClass().isArray())
 		{
 			if(Array.getLength(o1) != Array.getLength(o2))
 				return false;
-			HashSet<Object> o1h = new HashSet<Object>();
-			HashSet<Object> o2h = new HashSet<Object>();
+			HashSet<Double> o1h = new HashSet<Double>();
+			HashSet<Double> o2h = new HashSet<Double>();
 			for(int i = 0;i<Array.getLength(o1);i++)
 			{
-				System.out.println("Test oriInput: " + (Number)Array.get(o1, i));
-				System.out.println("Test transInput: " + (Number)Array.get(o2, i));
+//				System.out.println("Test oriInput: " + (Number)Array.get(o1, i));
+//				System.out.println("Test transInput: " + (Number)Array.get(o2, i));
 				
-				o1h.add(Array.get(o1, i));
-				o2h.add(Array.get(o2, i));
+				o1h.add(((Number)Array.get(o1, i)).doubleValue());
+				o2h.add(((Number)Array.get(o2, i)).doubleValue());
 			}
 			return o1h.equals(o2h);
 		}
 		else if(Collection.class.isAssignableFrom(o1.getClass()) && Collection.class.isAssignableFrom(o2.getClass()))
 		{
+			if (((Collection)o1).size() != ((Collection)o2).size())
+				return false;
 			HashSet<Object> o1h = new HashSet<Object>();
 			HashSet<Object> o2h = new HashSet<Object>();
 			o1h.addAll((Collection) o1);
@@ -77,8 +84,8 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 			return o1h.equals(o2h);
 		}
 		else if(Number.class.isAssignableFrom(o1.getClass()) && Number.class.isAssignableFrom(o2.getClass())) {
-			System.out.println("Check o1 value: " + ((Number)o1).doubleValue());
-			System.out.println("Check o2 value: " + ((Number)o2).doubleValue());
+//			System.out.println("Check o1 value: " + ((Number)o1).doubleValue());
+//			System.out.println("Check o2 value: " + ((Number)o2).doubleValue());
 			return (((Number)o1).doubleValue() == ((Number)o2).doubleValue());
 		}
 		return false;

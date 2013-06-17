@@ -1,10 +1,16 @@
 package edu.columbia.cs.psl.mountaindew.runtime;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.TreeSet;
 
 import com.rits.cloning.Cloner;
 
@@ -12,6 +18,8 @@ import edu.columbia.cs.psl.invivo.runtime.AbstractInterceptor;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult;
+import edu.columbia.cs.psl.mountaindew.stats.Correlationer;
+import edu.columbia.cs.psl.mountaindew.struct.MethodProfile;
 
 
 /**
@@ -25,11 +33,15 @@ import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResu
  *
  */
 public class Interceptor extends AbstractInterceptor {
+	private static String header = 
+			"Method name,ori_input,ori_output,trans_input,trans_output,ori_input_vs_ori_output,trans_input_vs_trans_output,ori_input_vs_trans_input,ori_output_vs_trans_output,MetamorphicProperty,Holds\n";
+	private static String profileRoot = "/Users/mike/Documents/metamorphic-projects/mountaindew/tester/profiles/";
 	private HashMap<Method, HashSet<MetamorphicProperty>> properties = new HashMap<Method, HashSet<MetamorphicProperty>>();
 	private HashSet<Class<? extends MetamorphicProperty>> propertyPrototypes;
 	private HashMap<Integer, MethodInvocation> invocations = new HashMap<Integer, MethodInvocation>();
 	private Integer invocationId = 0;
-	private Cloner cloner = new Cloner();
+	private List<MethodProfiler> profilerList = new ArrayList<MethodProfiler>();
+//	private Cloner cloner = new Cloner();
 	
 	public Interceptor(Object intercepted) {
 		super(intercepted);
@@ -69,7 +81,8 @@ public class Interceptor extends AbstractInterceptor {
 		
 		MethodInvocation inv = new MethodInvocation();
 		//inv.params = params;
-		inv.params = cloner.deepClone(params);
+		//In case the input param is also the output of the method
+		inv.params = deepClone(params);
 		inv.method = method;
 		inv.callee = getInterceptedObject();
 		invocations.put(retId, inv);
@@ -96,10 +109,6 @@ public class Interceptor extends AbstractInterceptor {
 			return;
 		MethodInvocation inv = invocations.remove(id);
 		inv.returnValue = val;
-		
-		/*for (int i = 0; i < Array.getLength(val); i++) {
-			System.out.println("On Exit check return value: " + (Number)Array.get(val, i));
-		}*/
 				
 		for(MethodInvocation inv2 : inv.children)
 		{
@@ -122,6 +131,9 @@ public class Interceptor extends AbstractInterceptor {
 			p.logExecution(inv);
 		}
 		
+		//Calculate correlation coefficient between ori_input and output
+		//The length of correlation array depends on how many input in inv.getParams()
+		
 		//Try to alleviate heap space issue
 		System.gc();
 	}
@@ -135,10 +147,32 @@ public class Interceptor extends AbstractInterceptor {
 			{
 				PropertyResult r = p.propertyHolds();
 				System.out.println(r);
+				profilerList.add(p.getMethodProfiler());
 			}
-
 		}
 	}
-
+	
+	public void exportMethodProfile() {
+		
+		StringBuilder sBuilder = new StringBuilder();
+		
+		sBuilder.append(header);
+		
+		for (MethodProfiler mProfiler: this.profilerList) {
+			for (MethodProfile mProfile: mProfiler.getMethodProfiles()) {
+				sBuilder.append(mProfile.toString());
+			}
+		}
+		System.out.println("Test export string: " + sBuilder.toString());
+		
+		try {
+			FileWriter fWriter = new FileWriter(profileRoot + (new Date()).toString().replaceAll(" ", "") + ".csv");
+			BufferedWriter bWriter = new BufferedWriter(fWriter);
+			bWriter.write(sBuilder.toString());
+			bWriter.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
 } 
 
