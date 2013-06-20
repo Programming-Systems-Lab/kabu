@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import weka.classifiers.functions.supportVector.PukTest;
 
+import edu.columbia.cs.psl.metamorphic.runtime.ConfigLoader;
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 import edu.columbia.cs.psl.mountaindew.runtime.Interceptor;
 
@@ -28,6 +29,11 @@ public class SimpleExample extends AbstractExample {
 	public int timesThree(int input)
 	{
 		return input * 3;
+	}
+	
+	@Metamorphic
+	public int addThree(int input) {
+		return input + 3;
 	}
 	
 	@Metamorphic
@@ -118,15 +124,19 @@ public class SimpleExample extends AbstractExample {
 //		System.out.println(ex.timesThree(3));
 //		System.out.println(ex.timesThree(4));
 		
-//		System.out.println(ex.sort(new int[] {3,4,5}));
-		System.out.println(ex.increArray(new int[] {7, 8, 9}));
+		System.out.println(ex.sort(new int[] {3,4,5}));
+//		System.out.println(ex.increArray(new int[] {7, 8, 9}));
 //		System.out.println(ex.sum(new int[] {7, 8, 9}));
 //		System.out.println(ex.increArrayInPlace(new int[] {7, 8, 9}));
 //		System.out.println(ex.increAndSort(new int[] {1, 2, 3}));
 //		System.out.println(ex.selectMax(new int[]{1, 2, 3}));
-		System.out.println(ex.sort(new int[] {4,3,5}));
+//		System.out.println(ex.sort(new int[] {4,3,5}));
 //		PukTest test = new PukTest("foo");
 //		junit.textui.TestRunner.run(PukTest.suite());
 //		System.out.println(new SimpleExample().go("abc","def",barzzz));
+/*		ArrayList<Double> properties = ConfigLoader.getInstance().getProperty("Additive");
+		for (Double d: properties) {
+			System.out.println("Check properties: " + d);
+		}*/
 	}
 }

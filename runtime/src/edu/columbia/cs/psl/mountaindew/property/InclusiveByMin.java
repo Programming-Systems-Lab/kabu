@@ -14,20 +14,22 @@ public class InclusiveByMin extends ClusiveAbstract {
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
 			Object p2, Object returnValue2) {
 		// TODO Auto-generated method stub
-		double rt1Min, rt1Sum, rt2Min, rt2Sum;
+		double rt1Min, rt1Sum, rt1Max, rt2Min, rt2Sum, rt2Max;
 		if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 			rt1Min = this.findMin(returnValue1);
-			//rt1Sum = this.calSum(returnValue1);
+			rt1Sum = this.calSum(returnValue1);
+			rt1Max = this.findMax(returnValue1);
 			
 			rt2Min = this.findMin(returnValue2);
-			//rt2Sum = this.calSum(returnValue2);
+			rt2Sum = this.calSum(returnValue2);
+			rt2Max = this.findMax(returnValue2);
 			
 			/*System.out.println("rt1Min: " + rt1Min);
 			System.out.println("rt2Min: " + rt2Min);
 			System.out.println("rt1Sum: " + rt1Sum);
 			System.out.println("rt2Sum: " + rt2Sum);*/
 			
-			if (rt1Min > rt2Min)
+			if (rt1Min > rt2Min && rt1Sum < rt2Sum && rt1Max == rt2Max)
 				return true;
 		}
 		
@@ -36,10 +38,12 @@ public class InclusiveByMin extends ClusiveAbstract {
 		
 		if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
 			rt1Min = this.findMin(returnValue1);
-			//rt1Sum = this.calSum(returnValue1);
+			rt1Sum = this.calSum(returnValue1);
+			rt1Max = this.findMax(returnValue1);
 			
 			rt2Min = this.findMin(returnValue2);
-			//rt2Sum = this.calSum(returnValue2);
+			rt2Sum = this.calSum(returnValue2);
+			rt2Max = this.findMax(returnValue2);
 			
 			/*System.out.println("rt1Min: " + rt1Min);
 			System.out.println("rt2Min: " + rt2Min);
@@ -49,7 +53,7 @@ public class InclusiveByMin extends ClusiveAbstract {
 			/*if (rt1Min - rt2Min == 1 && rt2Sum - rt1Sum == rt2Min)
 				return true;*/
 			
-			if (rt1Min > rt2Min)
+			if (rt1Min > rt2Min && rt1Sum < rt2Sum && rt1Max == rt2Max)
 				return true;
 		}
 		

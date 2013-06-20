@@ -12,7 +12,7 @@ import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 import edu.columbia.cs.psl.mountaindew.struct.PossiblyMetamorphicMethodInvocation;
 
-public abstract class MetamorphicProperty implements Comparable{
+public abstract class MetamorphicProperty {
 	public abstract String getName();
 
 	public abstract MetamorphicInputProcessor getInputProcessor();
@@ -191,10 +191,10 @@ public abstract class MetamorphicProperty implements Comparable{
 		return ret;
 	}
 	
-	public int compareTo(Object obj) {
+	/*public int compareTo(Object obj) {
 		MetamorphicProperty tmpProperty = (MetamorphicProperty)obj;
 		return this.getName().compareTo(tmpProperty.getName());
 			
-	}
+	}*/
 
 }

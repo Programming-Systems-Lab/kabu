@@ -114,7 +114,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		}
 		
 		//Only use multiplied by 2
-		double o1Val, o2Val;
+		/*double o1Val, o2Val;
 		if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			for (int i = 0; i < Array.getLength(o1); i++) {
 				o1Val = ((Number)Array.get(o1, i)).doubleValue();
@@ -136,7 +136,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					return false;
 			}
 			return true;
-		}
+		}*/
 		
 		return true;
 	}

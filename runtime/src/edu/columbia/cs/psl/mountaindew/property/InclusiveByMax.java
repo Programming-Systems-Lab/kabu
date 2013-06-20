@@ -21,16 +21,18 @@ public class InclusiveByMax extends ClusiveAbstract{
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
 			Object p2, Object returnValue2) {
 		// TODO Auto-generated method stub
-		double rt1Max, rt1Sum, rt2Max, rt2Sum;
+		double rt1Max, rt1Sum, rt1Min, rt2Max, rt2Sum, rt2Min;
 		if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 			if (Array.getLength(returnValue1) + 1 != Array.getLength(returnValue2))
 				return false;
 			
 			rt1Max = this.findMax(returnValue1);
-			//rt1Sum = this.calSum(returnValue1);
+			rt1Sum = this.calSum(returnValue1);
+			rt1Min = this.findMin(returnValue1);
 			
 			rt2Max = this.findMax(returnValue2);
-			//rt2Sum = this.calSum(returnValue2);
+			rt2Sum = this.calSum(returnValue2);
+			rt2Min = this.findMin(returnValue1);
 			
 			/*System.out.println("rt1Max: " + rt1Max);
 			System.out.println("rt2Max: " + rt2Max);
@@ -40,7 +42,7 @@ public class InclusiveByMax extends ClusiveAbstract{
 			/*if (rt2Max - rt1Max == 1 && rt2Sum - rt1Sum == rt2Max)
 				return true;*/
 			
-			if (rt2Max > rt1Max)
+			if (rt2Max > rt1Max && rt2Min == rt1Min && rt2Sum > rt1Sum)
 				return true;
 		}
 		
@@ -53,9 +55,11 @@ public class InclusiveByMax extends ClusiveAbstract{
 			
 			rt1Max = this.findMax(returnValue1);
 			rt1Sum = this.calSum(returnValue1);
+			rt1Min = this.findMin(returnValue1);
 			
 			rt2Max = this.findMax(returnValue2);
 			rt2Sum = this.calSum(returnValue2);
+			rt2Min = this.findMin(returnValue2);
 			
 			/*System.out.println("rt1Max: " + rt1Max);
 			System.out.println("rt2Max: " + rt2Max);
@@ -66,7 +70,7 @@ public class InclusiveByMax extends ClusiveAbstract{
 				return true;*/
 			
 			//Make it more general first
-			if (rt2Max > rt1Max)
+			if (rt2Max > rt1Max && rt2Min == rt1Min && rt2Sum > rt1Sum)
 				return true;
 		}
 		

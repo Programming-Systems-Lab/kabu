@@ -22,16 +22,16 @@ public class MetamorphicObserver {
 	static
 	{
 		properties.add(AdditiveByConstant.class);
-		properties.add(MultiplicativeByConstant.class);
-		properties.add(InclusiveByMax.class);
+//		properties.add(MultiplicativeByConstant.class);
+//		properties.add(InclusiveByMax.class);
 //		properties.add(InclusiveByMin.class);
 //		properties.add(InclusiveByMid.class);
-		properties.add(ExclusiveByMax.class);
+//		properties.add(ExclusiveByMax.class);
 //		properties.add(ExclusiveByMid.class);
 //		properties.add(ExclusiveByMin.class);
-		properties.add(Invertable.class);
-		properties.add(Negatable.class);
-		properties.add(Shufflable.class);
+//		properties.add(Invertable.class);
+//		properties.add(Negatable.class);
+//		properties.add(Shufflable.class);
 //		properties.add(Exclusivable.class);
 	}
 	public static MetamorphicObserver getInstance() {
@@ -48,7 +48,7 @@ public class MetamorphicObserver {
 		for(Interceptor i : interceptors)
 		{
 			i.reportPropertyResults();
-			i.exportMethodProfile();
+			//i.exportMethodProfile();
 		}
 	}
 }

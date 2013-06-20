@@ -65,7 +65,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 							
 							if(propertyApplies(i, j, k))
 							{
-								mProfiler.addMethodProfile(i, j, result);
+								//mProfiler.addMethodProfile(i, j, result);
 								if(returnValuesApply(o1, i.returnValue, o2, j.returnValue))
 								//if (returnValuesApply(o2, j.returnValue, o1, i.returnValue))
 								{

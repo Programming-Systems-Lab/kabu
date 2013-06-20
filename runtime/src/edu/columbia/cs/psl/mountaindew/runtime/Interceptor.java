@@ -78,7 +78,7 @@ public class Interceptor extends AbstractInterceptor {
 			}
 			
 		}
-		
+
 		MethodInvocation inv = new MethodInvocation();
 		//inv.params = params;
 		//In case the input param is also the output of the method
@@ -98,6 +98,7 @@ public class Interceptor extends AbstractInterceptor {
 				child.thread.start();
 			}
 		}
+		System.out.println("Children size: " + children.size());
 		inv.children = new MethodInvocation[children.size()];
 		inv.children = children.toArray(inv.children);
 		return retId;
