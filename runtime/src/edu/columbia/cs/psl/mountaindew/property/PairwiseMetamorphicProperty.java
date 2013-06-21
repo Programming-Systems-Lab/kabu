@@ -13,6 +13,58 @@ import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 	
 	private MethodProfiler mProfiler = new MethodProfiler();
+	
+	
+	@Override
+	public final List<PropertyResult> propertiesHolds() {
+		List<PropertyResult> propertyList = new ArrayList<PropertyResult>();
+		
+		int[] interestedIndices = getInterestedVariableIndices();
+		
+		for(MethodInvocation i : getInvocations())
+		{
+			for(int k : interestedIndices)
+			{
+				Object v = i.params[k];
+					for(MethodInvocation j : getInvocations())
+					{
+						if(i!=j)
+						{
+							Object o1 = v;
+							Object o2 = j.params[k];
+							
+							if(propertyApplies(i, j, k))
+							{
+								PropertyResult result = new PropertyResult();
+								result.result = Result.UNKNOWN;
+								if(returnValuesApply(o1, i.returnValue, o2, j.returnValue))
+								{
+									//Property may hold
+									result.result=Result.HOLDS;
+									result.holds=true;
+									result.supportingSize++;
+									result.supportingInvocations.add(new MethodInvocation[] {i, j});
+									result.combinedProperty = j.getFrontend() + "=>" + j.getBackend();
+								}
+								else
+								{
+									//Property definitely doesn't hold
+									result.result=Result.DOES_NOT_HOLD;
+									result.holds=false;
+									result.antiSupportingSize++;
+									result.antiSupportingInvocations.add(new MethodInvocation[] {i, j});
+									result.combinedProperty = j.getFrontend() + "=>" + j.getBackend();
+								}
+								propertyList.add(result);
+							}
+						}
+					}
+			}
+		}
+		
+		return propertyList;
+		
+	}
 
 
 	@Override
@@ -74,6 +126,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 									result.holds=true;
 									result.supportingSize++;
 									result.supportingInvocations.add(new MethodInvocation[] {i, j});
+									result.combinedProperty = j.getFrontend() + "=>" + j.getBackend();
 								}
 								else
 								{
@@ -82,6 +135,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 									result.holds=false;
 									result.antiSupportingSize++;
 									result.antiSupportingInvocations.add(new MethodInvocation[] {i, j});
+									result.combinedProperty = j.getFrontend() + "=>" + j.getBackend();
 									return result;
 								}
 							}

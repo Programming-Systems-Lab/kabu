@@ -22,7 +22,7 @@ public class MetamorphicObserver {
 	static
 	{
 		properties.add(AdditiveByConstant.class);
-//		properties.add(MultiplicativeByConstant.class);
+		properties.add(MultiplicativeByConstant.class);
 //		properties.add(InclusiveByMax.class);
 //		properties.add(InclusiveByMin.class);
 //		properties.add(InclusiveByMid.class);
@@ -47,7 +47,9 @@ public class MetamorphicObserver {
 	{
 		for(Interceptor i : interceptors)
 		{
-			i.reportPropertyResults();
+			//i.reportPropertyResults();
+			i.reportPropertyResultList();
+			System.out.println("");
 			//i.exportMethodProfile();
 		}
 	}

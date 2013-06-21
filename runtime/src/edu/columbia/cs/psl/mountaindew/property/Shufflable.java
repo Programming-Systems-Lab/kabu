@@ -57,6 +57,9 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 			return false;
 		}
 		
+		if (!i2.getBackend().equals(this.getName()))
+			return false;
+		
 		if(o1.getClass().isArray() && o2.getClass().isArray())
 		{
 			if(Array.getLength(o1) != Array.getLength(o2))

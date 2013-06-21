@@ -117,6 +117,9 @@ public class InclusiveByMax extends ClusiveAbstract{
 			return false;
 		}
 		
+		if (!i2.getBackend().equals(this.getName()))
+			return false;
+		
 		//If parameter is array or collection, check length if i2 = i1 +1, check sum
 		if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			int o1Length = Array.getLength(o1);
@@ -171,7 +174,7 @@ public class InclusiveByMax extends ClusiveAbstract{
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "InclusiveByMax";
+		return "C:InclusiveByMax";
 	}
 
 	@Override

@@ -16,7 +16,7 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 
 	@Override
 	public String getName() {
-		return "Additive";
+		return "C:Additive";
 	}
 
 	boolean returnDoesntChange;
@@ -48,6 +48,8 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 					System.out.println("DEBUG Additive rt1 element: " + rt1Element);
 					System.out.println("DEBUG Additive rt2 element: " + rt2Element);*/
 					
+					//System.out.println("Add ori_input trans_input ori_output trans_output: " + p1Element + " " + p2Element + " " + rt1Element + " " + rt2Element);
+					
 					if (getDifference(p1Element, p2Element) != getDifference(rt1Element, rt2Element))
 						return false;
 				}
@@ -65,6 +67,8 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 					p2Element = ((Number)p2List.get(i)).doubleValue();
 					rt1Element = ((Number)rt1List.get(i)).doubleValue();
 					rt2Element = ((Number)rt2List.get(i)).doubleValue();
+					
+					//System.out.println("Add ori_input trans_input ori_output trans_output: " + p1Element + " " + p2Element + " " + rt1Element + " " + rt2Element);
 					
 					if (getDifference(p1Element, p2Element) != getDifference(rt1Element, rt2Element))
 						return false;
@@ -106,15 +110,29 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 		if (i2.getParent() != i1) {			
 			return false;
 		}
+
+		//If i2's checker is not this one, return false
+		if (!i2.getBackend().equals(this.getName())) {
+			return false;
+		}
 		
-		//Only use increment by 1
-		/*double o1Val, o2Val;
+		/*System.out.println("Add i1: " + i1.getFrontend() + " " + i1.getBackend());
+		System.out.println("Add i2: " + i2.getFrontend() + " " + i2.getBackend());*/
+				
+		double o1Val, o2Val;
 		if (o1.getClass().isArray() && o2.getClass().isArray()) {
+			
+			double o1Checker = ((Number)Array.get(o1, 0)).doubleValue();
+			double o2Checker = ((Number)Array.get(o2, 0)).doubleValue();
+			double checkDiff = getDifference(o1Checker, o2Checker);
+						
 			for (int i = 0; i < Array.getLength(o1); i++) {
 				o1Val = ((Number)Array.get(o1, i)).doubleValue();
 				o2Val = ((Number)Array.get(o2, i)).doubleValue();
 				
-				if (o1Val+1 != o2Val)
+				//System.out.println("Add ori trans input: " + o1Val + " " + o2Val);
+				
+				if (getDifference(o1Val, o2Val) != checkDiff)
 					return false;
 			}
 			return true;
@@ -122,15 +140,21 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 			List o1List = this.returnList(o1);
 			List o2List = this.returnList(o2);
 			
+			double o1Checker = ((Number)o1List.get(0)).doubleValue();
+			double o2Checker = ((Number)o2List.get(0)).doubleValue();
+			double checkDiff = getDifference(o1Checker, o2Checker);
+			
 			for (int i = 0; i < o1List.size(); i++) {
 				o1Val = ((Number)o1List.get(i)).doubleValue();
 				o2Val = ((Number)o2List.get(i)).doubleValue();
 				
-				if (o1Val+1 != o2Val)
+				//System.out.println("Add ori trans input: " + o1Val + " " + o2Val);
+				
+				if (getDifference(o1Val, o2Val) != checkDiff)
 					return false;
 			}
 			return true;
-		}*/
+		}
 		
 		return true;
 	}

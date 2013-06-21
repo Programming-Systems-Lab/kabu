@@ -58,6 +58,9 @@ public class ExclusiveByMax extends ClusiveAbstract{
 			return false;
 		}
 		
+		if (!i2.getBackend().equals(this.getName()))
+			return false;
+		
 		//If parameter is array or collection, check length if i2 = i1-1, find out dif/uf, check sum
 		if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			int o1Length = Array.getLength(o1);
@@ -91,7 +94,7 @@ public class ExclusiveByMax extends ClusiveAbstract{
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "ExclusiveByMax";
+		return "C:ExclusiveByMax";
 	}
 
 	@Override

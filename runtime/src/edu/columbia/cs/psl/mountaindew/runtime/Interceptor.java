@@ -16,6 +16,8 @@ import com.rits.cloning.Cloner;
 
 import edu.columbia.cs.psl.invivo.runtime.AbstractInterceptor;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
+import edu.columbia.cs.psl.metamorphic.runtime.MetamorphicInputProcessorGroup;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult;
 import edu.columbia.cs.psl.mountaindew.stats.Correlationer;
@@ -38,6 +40,7 @@ public class Interceptor extends AbstractInterceptor {
 	private static String profileRoot = "/Users/mike/Documents/metamorphic-projects/mountaindew/tester/profiles/";
 	private HashMap<Method, HashSet<MetamorphicProperty>> properties = new HashMap<Method, HashSet<MetamorphicProperty>>();
 	private HashSet<Class<? extends MetamorphicProperty>> propertyPrototypes;
+	private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes;
 	private HashMap<Integer, MethodInvocation> invocations = new HashMap<Integer, MethodInvocation>();
 	private Integer invocationId = 0;
 	private List<MethodProfiler> profilerList = new ArrayList<MethodProfiler>();
@@ -47,6 +50,7 @@ public class Interceptor extends AbstractInterceptor {
 		super(intercepted);
 		System.out.println("Interceptor created");
 		propertyPrototypes = MetamorphicObserver.getInstance().registerInterceptor(this);
+		processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
 	}
 	
 	public int onEnter(Object callee, Method method, Object[] params)
@@ -67,6 +71,7 @@ public class Interceptor extends AbstractInterceptor {
 				try {
 					MetamorphicProperty p = c.newInstance();
 					p.setMethod(method);
+					p.loadInputProcessors();
 					properties.get(method).add(p);
 				} catch (InstantiationException e) {
 					// TODO Auto-generated catch block
@@ -91,6 +96,7 @@ public class Interceptor extends AbstractInterceptor {
 		{
 			for(MethodInvocation child : p.createChildren(inv))
 			{
+				//System.out.println("Check children frontend backend: " + child.getFrontend() + " " + child.getBackend());
 				child.callee = deepClone(inv.callee);
 				child.method = inv.method;
 				children.add(child);
@@ -98,9 +104,11 @@ public class Interceptor extends AbstractInterceptor {
 				child.thread.start();
 			}
 		}
-		System.out.println("Children size: " + children.size());
 		inv.children = new MethodInvocation[children.size()];
 		inv.children = children.toArray(inv.children);
+		
+		System.out.println("Method name " + inv.getMethod().getName());
+		System.out.println("Children size: " + inv.children.length);
 		return retId;
 	}
 	
@@ -148,7 +156,21 @@ public class Interceptor extends AbstractInterceptor {
 			{
 				PropertyResult r = p.propertyHolds();
 				System.out.println(r);
-				profilerList.add(p.getMethodProfiler());
+				//profilerList.add(p.getMethodProfiler());
+			}
+		}
+	}
+	
+	public void reportPropertyResultList() {
+		for (Method m: properties.keySet()) {
+			System.out.println(m);
+			
+			for (MetamorphicProperty p: properties.get(m)) {
+				List<PropertyResult> resultList = p.propertiesHolds();
+				
+				for (PropertyResult result: resultList) {
+					System.out.println(result + "\n");
+				}
 			}
 		}
 	}

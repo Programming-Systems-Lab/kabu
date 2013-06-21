@@ -4,11 +4,13 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import com.rits.cloning.Cloner;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
+import edu.columbia.cs.psl.metamorphic.runtime.MetamorphicInputProcessorGroup;
 import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 import edu.columbia.cs.psl.mountaindew.struct.PossiblyMetamorphicMethodInvocation;
 
@@ -22,6 +24,10 @@ public abstract class MetamorphicProperty {
 	public String getDescription() {
 		return "Metamorphic property: " + getName();
 	}
+	
+	private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
+	
+	private List<MetamorphicInputProcessor> processors = new ArrayList<MetamorphicInputProcessor>();
 
 	private ArrayList<MethodInvocation> invocations = new ArrayList<MethodInvocation>();
 
@@ -30,6 +36,8 @@ public abstract class MetamorphicProperty {
 	}
 
 	public abstract PropertyResult propertyHolds();
+	
+	public abstract List<PropertyResult> propertiesHolds();
 
 	public void logExecution(MethodInvocation data) {
 		invocations.add(data);
@@ -50,13 +58,14 @@ public abstract class MetamorphicProperty {
 		public Result result;
 		public Object data;
 		public Class<? extends MetamorphicProperty> property;
+		public String combinedProperty;
 
 		@Override
 		public String toString() {
 			String supportingInvocationsString = "[";
 			String antiSupportingInvocationsString = "[";
 			for (MethodInvocation[] ar : supportingInvocations) {
-				supportingInvocationsString += "{" + ar[0] + "," + ar[1] + "}, ";
+				supportingInvocationsString += "{ORI: " + ar[0] + ", TRANS: " + ar[1] + "}, ";
 			}
 			supportingInvocationsString = supportingInvocationsString.substring(0,
 					(supportingInvocationsString.length() > 2 ? supportingInvocationsString.length() - 2 : 1))
@@ -68,9 +77,13 @@ public abstract class MetamorphicProperty {
 					(antiSupportingInvocationsString.length() > 2 ? antiSupportingInvocationsString.length() - 2 : 1))
 					+ "]";
 
-			return "PropertyResult [holds=" + holds + ", supportingSize=" + supportingSize + ", probability=" + probability + ", antiSupportingSize="
+			/*return "PropertyResult [holds=" + holds + ", supportingSize=" + supportingSize + ", probability=" + probability + ", antiSupportingSize="
 					+ antiSupportingSize + ", supportingInvocations=" + supportingInvocationsString + ", antiSupportingInvocations="
-					+ antiSupportingInvocationsString + ", result=" + result + ", property=" + property + "]";
+					+ antiSupportingInvocationsString + ", result=" + result + ", property=" + property + ", combinedProperty=" + combinedProperty + "]";*/
+			
+			return "PropertyResult [holds=" + holds + ", supportingSize=" + supportingSize + ", probability=" + probability + ", antiSupportingSize="
+			+ antiSupportingSize + ", supportingInvocations=" + supportingInvocationsString + ", antiSupportingInvocations="
+			+ antiSupportingInvocationsString + ", result=" + result + ", combinedProperty=" + combinedProperty + "]";
 		}
 
 	}
@@ -84,15 +97,64 @@ public abstract class MetamorphicProperty {
 	public void setMethod(Method method) {
 		this.method = method;
 	}
+	
+	public void loadInputProcessors() {
+		for (Class<? extends MetamorphicInputProcessor> processorClass: this.processorPrototypes) {
+			try {
+				MetamorphicInputProcessor inputProcessor = processorClass.newInstance();
+				this.processors.add(inputProcessor);
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	private Cloner cloner = new Cloner();
 
 	public HashSet<PossiblyMetamorphicMethodInvocation> createChildren(MethodInvocation inv) {
 		HashSet<PossiblyMetamorphicMethodInvocation> ret = new HashSet<PossiblyMetamorphicMethodInvocation>();
-		boolean[] paramFlipping = new boolean[inv.params.length];
 		
-		ArrayList<boolean[]> combis = computeCombinations(paramFlipping);
+		for (MetamorphicInputProcessor processor: this.processors) {
+			boolean[] paramFlipping = new boolean[inv.params.length];
+			
+			ArrayList<boolean[]> combis = computeCombinations(paramFlipping);		
+			for (Object[] propertyParams: processor.getBoundaryDefaultParameters()) {
+				CombiLoop: for (boolean[] pset : combis) {
+					PossiblyMetamorphicMethodInvocation child = new PossiblyMetamorphicMethodInvocation();
+					child.parent = inv;
+					child.params = new Object[inv.params.length];
+					child.inputFlippedParams = new boolean[pset.length];
+					child.propertyParams = new Object[pset.length][];
+					child.setFrontend(processor.getName());
+					child.setBackendC(this.getName());
+					boolean atLeastOneTrue = false;
+					for (int i = 0; i < pset.length; i++) {
+						atLeastOneTrue = atLeastOneTrue || pset[i];
+						if (pset[i]) {
+							child.inputFlippedParams[i] = true;
+							try {
+								child.propertyParams[i] = propertyParams;
+								child.params[i] = processor.apply((Object) cloner.deepClone(inv.params[i]), propertyParams);
+							} catch (Exception ex) {
+								ex.printStackTrace();
+								continue CombiLoop;
+							}
+
+						} else
+							child.params[i] = cloner.deepClone(inv.params[i]);
+					}
+					if(atLeastOneTrue)
+					{
+						ret.add(child);
+					}
+				}
+			}
+			
+		}
+
+		/*boolean[] paramFlipping = new boolean[inv.params.length];
 		
+		ArrayList<boolean[]> combis = computeCombinations(paramFlipping);		
 		for (Object[] propertyParams : getInputProcessor().getBoundaryDefaultParameters()) {
 			CombiLoop: for (boolean[] pset : combis) {
 				PossiblyMetamorphicMethodInvocation child = new PossiblyMetamorphicMethodInvocation();
@@ -121,7 +183,7 @@ public abstract class MetamorphicProperty {
 					ret.add(child);
 				}
 			}
-		}
+		}*/
 		
 		//For debuggin purpose
 		/*for (int i = 0; i < Array.getLength(inv.params[0]); i++) {
@@ -136,6 +198,7 @@ public abstract class MetamorphicProperty {
 		
 		return ret;
 	}
+	
 	private ArrayList<boolean[]> computeCombinations(boolean[] restOfVals) {
 		return computeCombinations(new boolean[0], restOfVals);
 	}
@@ -190,11 +253,4 @@ public abstract class MetamorphicProperty {
 		}
 		return ret;
 	}
-	
-	/*public int compareTo(Object obj) {
-		MetamorphicProperty tmpProperty = (MetamorphicProperty)obj;
-		return this.getName().compareTo(tmpProperty.getName());
-			
-	}*/
-
 }

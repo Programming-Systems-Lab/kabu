@@ -87,6 +87,9 @@ public class InclusiveByMin extends ClusiveAbstract {
 		if (i2.getParent() != i1) {
 			return false;
 		}
+		
+		if (!i2.getBackend().equals(this.getName()))
+			return false;
 				
 		//If parameter is array or collection, check length if i2 = i1 +1, check sum
 		if (o1.getClass().isArray() && o2.getClass().isArray()) {
@@ -139,7 +142,7 @@ public class InclusiveByMin extends ClusiveAbstract {
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "InclusiveByMin";
+		return "C:InclusiveByMin";
 	}
 
 	@Override

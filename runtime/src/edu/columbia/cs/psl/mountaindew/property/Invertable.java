@@ -85,6 +85,9 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			return false;
 		}
 		
+		if (!i2.getBackend().equals(this.getName()))
+			return false;
+		
 		if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			int o1Length = Array.getLength(o1);
 			int o2Length = Array.getLength(o2);
@@ -150,7 +153,7 @@ public class Invertable extends PairwiseMetamorphicProperty{
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "Invertable";
+		return "C:Invertable";
 	}
 
 	@Override
