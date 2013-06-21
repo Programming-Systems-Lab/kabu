@@ -20,17 +20,25 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			Object p2, Object returnValue2) {
 		try
 		{
-			if(returnValue1.equals(returnValue2))
-				return true;
-			else if (Number.class.isAssignableFrom(p1.getClass()) && Number.class.isAssignableFrom(p2.getClass()) 
+
+			/*if(returnValue1.equals(returnValue2))
+				return true;*/
+			if (Number.class.isAssignableFrom(p1.getClass()) && Number.class.isAssignableFrom(p2.getClass()) 
 					&& Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass()))
 				return getDivisor(p1, p2) == getDivisor(returnValue1, returnValue2);
 			else if (p1.getClass().isArray() && p2.getClass().isArray()) {
+				//Because propertiesApply now not check length, check them here
+				if (Array.getLength(p1) != Array.getLength(p2))
+					return false;
+				
 				double p1Element, p2Element, rt1Element, rt2Element;
 				
 				List rt1List = this.returnList(returnValue1);
 				List rt2List = this.returnList(returnValue2);
 				
+				if (rt1List.size() != rt2List.size())
+					return false;
+
 				for (int i = 0; i < Array.getLength(p1); i++) {
 					p1Element = ((Number)Array.get(p1, i)).doubleValue();
 					p2Element = ((Number)Array.get(p2, i)).doubleValue();
@@ -42,7 +50,8 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					System.out.println("rt1 element: " + rt1Element);
 					System.out.println("rt2 element: " + rt2Element);*/
 					
-					//System.out.println("Mul ori_input trans_input ori_output trans_output: " + p1Element + " " + p2Element + " " + rt1Element + " " + rt2Element);
+					/*System.out.println("Mul ori_input trans_input ori_output trans_output: " + p1Element + " " + p2Element + " " + rt1Element + " " + rt2Element);
+					System.out.println("Mul divisor input output: " + getDivisor(p1Element, p2Element) + " " + getDivisor(rt1Element, rt2Element));*/
 					
 					if (getDivisor(p1Element, p2Element) != getDivisor(rt1Element, rt2Element))
 						return false;
@@ -56,6 +65,12 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 				List rt1List = this.returnList(returnValue1);
 				List rt2List = this.returnList(returnValue2);
 				
+				if (p1List.size() != p2List.size())
+					return false;
+				
+				if (rt1List.size() != rt2List.size())
+					return false;
+				
 				for (int i = 0; i < p1List.size(); i++) {
 					p1Element = ((Number)p1List.get(i)).doubleValue();
 					p2Element = ((Number)p2List.get(i)).doubleValue();
@@ -67,17 +82,20 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					System.out.println("rt1 element: " + rt1Element);
 					System.out.println("rt2 element: " + rt2Element);*/
 					
-					//System.out.println("Mul ori_input trans_input ori_output trans_output: " + p1Element + " " + p2Element + " " + rt1Element + " " + rt2Element);
+					/*System.out.println("Mul ori_input trans_input ori_output trans_output: " + p1Element + " " + p2Element + " " + rt1Element + " " + rt2Element);
+					System.out.println("Mul divisor input output: " + getDivisor(p1Element, p2Element) + " " + getDivisor(rt1Element, rt2Element));*/
 					
 					if (getDivisor(p1Element, p2Element) != getDivisor(rt1Element, rt2Element))
 						return false;
 				}
 				return true;
 			}
+			System.out.println("Warning: Shouldn't go here");
 			return getDivisor(p1, p2) == getDivisor(returnValue1, returnValue2);
 		}
 		catch(IllegalArgumentException ex)
 		{
+			ex.printStackTrace();
 			return false;
 		}
 	}
@@ -121,16 +139,18 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		if (i2.getParent() != i1) {			
 			return false;
 		}
-
+		
 		//If i2's checker is not this one, return false
 		if (!i2.getBackend().equals(this.getName())) {
 			return false;
+		} else {
+			return true;
 		}
 		
 		//System.out.println("Mul i1: " + i1.getFrontend() + " " + i1.getBackend());
 		//System.out.println("Mul i2: " + i2.getFrontend() + " " + i2.getBackend());
 				
-		double o1Val, o2Val;
+		/*double o1Val, o2Val;
 		if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			double o1Checker = ((Number)Array.get(o1, 0)).doubleValue();
 			double o2Checker = ((Number)Array.get(o2, 0)).doubleValue();
@@ -166,7 +186,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			return true;
 		}
 		
-		return true;
+		return true;*/
 	}
 
 	@Override

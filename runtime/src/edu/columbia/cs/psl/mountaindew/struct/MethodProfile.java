@@ -15,13 +15,13 @@ public class MethodProfile {
 	
 	private MethodInvocation trans;
 	
-	private double oriInOriOut;
+	/*private double oriInOriOut;
 	
 	private double transInTransOut;
 	
 	private double oriInTransIn;
 	
-	private double oriOutTransOut;
+	private double oriOutTransOut;*/
 	
 	private PropertyResult result;
 	
@@ -59,7 +59,7 @@ public class MethodProfile {
 		this.result = result;
 	}
 	
-	public void setOriInOriOut(double correlation) {
+	/*public void setOriInOriOut(double correlation) {
 		this.oriInOriOut = correlation;
 	}
 	
@@ -89,7 +89,7 @@ public class MethodProfile {
 	
 	public double getOriOutTransOut() {
 		return this.oriOutTransOut;
-	}
+	}*/
 	
 	public MethodInvocation getOri() {
 		return this.ori;
@@ -103,6 +103,22 @@ public class MethodProfile {
 		return this.result;
 	}
 	
+	/**
+	 * Only transformed invocation has frontend transformer
+	 * @return
+	 */
+	public String getFrontend() {
+		return trans.getFrontend();
+	}
+	
+	/**
+	 * Only transformed invocation has backend checker
+	 * @return
+	 */
+	public String getBackend() {
+		return trans.getBackend();
+	}
+	
 	public String toString() {
 		StringBuilder sBuilder = new StringBuilder();
 		sBuilder.append(this.ori.getMethod().getName() + delim);
@@ -111,11 +127,13 @@ public class MethodProfile {
 		sBuilder.append(interpretParams(ori.getReturnValue()) + delim);
 		sBuilder.append(interpretParams(trans.getParams()[0]) + delim);
 		sBuilder.append(interpretParams(trans.getReturnValue()) + delim);
-		sBuilder.append(this.oriInOriOut + delim);
+		/*sBuilder.append(this.oriInOriOut + delim);
 		sBuilder.append(this.transInTransOut + delim);
 		sBuilder.append(this.oriInTransIn + delim);
 		sBuilder.append(this.oriOutTransOut + delim);
-		sBuilder.append(this.result.property.toString() + delim);
+		sBuilder.append(this.result.property.toString() + delim);*/
+		sBuilder.append(trans.getFrontend() + delim);
+		sBuilder.append(trans.getBackend() + delim);
 		sBuilder.append(this.result.holds + newLine);
 		return sBuilder.toString();
 	}

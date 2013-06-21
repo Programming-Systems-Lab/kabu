@@ -36,7 +36,7 @@ import edu.columbia.cs.psl.mountaindew.struct.MethodProfile;
  */
 public class Interceptor extends AbstractInterceptor {
 	private static String header = 
-			"Method name,ori_input,ori_output,trans_input,trans_output,ori_input_vs_ori_output,trans_input_vs_trans_output,ori_input_vs_trans_input,ori_output_vs_trans_output,MetamorphicProperty,Holds\n";
+			"Method name,ori_input,ori_output,trans_input,trans_output,frontend_transformer,backend_checker,Holds\n";
 	private static String profileRoot = "/Users/mike/Documents/metamorphic-projects/mountaindew/tester/profiles/";
 	private HashMap<Method, HashSet<MetamorphicProperty>> properties = new HashMap<Method, HashSet<MetamorphicProperty>>();
 	private HashSet<Class<? extends MetamorphicProperty>> propertyPrototypes;
@@ -109,6 +109,8 @@ public class Interceptor extends AbstractInterceptor {
 		
 		System.out.println("Method name " + inv.getMethod().getName());
 		System.out.println("Children size: " + inv.children.length);
+		
+		this.reportTransformerChecker();
 		return retId;
 	}
 	
@@ -156,7 +158,7 @@ public class Interceptor extends AbstractInterceptor {
 			{
 				PropertyResult r = p.propertyHolds();
 				System.out.println(r);
-				//profilerList.add(p.getMethodProfiler());
+				profilerList.add(p.getMethodProfiler());
 			}
 		}
 	}
@@ -171,6 +173,7 @@ public class Interceptor extends AbstractInterceptor {
 				for (PropertyResult result: resultList) {
 					System.out.println(result + "\n");
 				}
+				profilerList.add(p.getMethodProfiler());
 			}
 		}
 	}
@@ -186,7 +189,7 @@ public class Interceptor extends AbstractInterceptor {
 				sBuilder.append(mProfile.toString());
 			}
 		}
-		System.out.println("Test export string: " + sBuilder.toString());
+		//System.out.println("Test export string: " + sBuilder.toString());
 		
 		try {
 			FileWriter fWriter = new FileWriter(profileRoot + (new Date()).toString().replaceAll(" ", "") + ".csv");
@@ -196,6 +199,22 @@ public class Interceptor extends AbstractInterceptor {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
+	}
+	
+	private void reportTransformerChecker() {
+		System.out.println("Registered Transformers: ");
+		
+		for (Class<? extends MetamorphicInputProcessor> processorPrototype: this.processorPrototypes) {
+			System.out.println(processorPrototype.getName());
+		}
+		
+		System.out.println("");
+		
+		System.out.println("Registered Checkers: ");
+		
+		for (Class<? extends MetamorphicProperty> checkerPrototype: this.propertyPrototypes) {
+			System.out.println(checkerPrototype.getName());
+		}
 	}
 } 
 

@@ -17,10 +17,10 @@ public class MethodProfiler {
 		MethodProfile mProfile = new MethodProfile(ori, trans, result);
 		
 		//Target on single input and single output first
-		mProfile.setOriInOriOut(Correlationer.calCorrelation(ori.getParams(), ori.getReturnValue())[0]);
+		/*mProfile.setOriInOriOut(Correlationer.calCorrelation(ori.getParams(), ori.getReturnValue())[0]);
 		mProfile.setTransInTransOut(Correlationer.calCorrelation(trans.getParams(), trans.getReturnValue())[0]);
 		mProfile.setOriInTransIn(Correlationer.calCorrelation(ori.getParams(), trans.getParams())[0]);
-		mProfile.setOriOutTransOut(Correlationer.calCorrelation(ori.getReturnValue(), trans.getReturnValue())[0]);
+		mProfile.setOriOutTransOut(Correlationer.calCorrelation(ori.getReturnValue(), trans.getReturnValue())[0]);*/
 		
 		this.profiles.add(mProfile);
 	}

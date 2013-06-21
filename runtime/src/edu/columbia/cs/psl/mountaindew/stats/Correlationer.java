@@ -16,6 +16,10 @@ public class Correlationer {
 	
 	public static double UNDEFINED = -2;
 	
+	public static double calSingleCorrelation(double[] input, double[] output) {
+		return pCorrelation.correlation(input, output);
+	}
+	
 	//A better way to control calCorrelation?
 	public static double[] calCorrelation(Object[] input, Object output) {
 		double[] inputArray, outputArray;

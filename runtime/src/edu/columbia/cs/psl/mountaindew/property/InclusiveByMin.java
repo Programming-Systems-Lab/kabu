@@ -16,6 +16,9 @@ public class InclusiveByMin extends ClusiveAbstract {
 		// TODO Auto-generated method stub
 		double rt1Min, rt1Sum, rt1Max, rt2Min, rt2Sum, rt2Max;
 		if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
+			if (Array.getLength(returnValue1) + 1 != Array.getLength(returnValue2))
+				return false;
+			
 			rt1Min = this.findMin(returnValue1);
 			rt1Sum = this.calSum(returnValue1);
 			rt1Max = this.findMax(returnValue1);
@@ -37,6 +40,9 @@ public class InclusiveByMin extends ClusiveAbstract {
 //		System.out.println("Returvalue1 class: " + returnValue1.getClass().getName() + " " + Collection.class.isAssignableFrom(returnValue2.getClass()));
 		
 		if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
+			if (((Collection)returnValue1).size() + 1 != ((Collection)returnValue2).size())
+				return false;
+
 			rt1Min = this.findMin(returnValue1);
 			rt1Sum = this.calSum(returnValue1);
 			rt1Max = this.findMax(returnValue1);
@@ -90,9 +96,11 @@ public class InclusiveByMin extends ClusiveAbstract {
 		
 		if (!i2.getBackend().equals(this.getName()))
 			return false;
+		else
+			return true;
 				
 		//If parameter is array or collection, check length if i2 = i1 +1, check sum
-		if (o1.getClass().isArray() && o2.getClass().isArray()) {
+		/*if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			int o1Length = Array.getLength(o1);
 			int o2Length = Array.getLength(o2);
 			if (o1Length + 1 != o2Length)
@@ -103,11 +111,6 @@ public class InclusiveByMin extends ClusiveAbstract {
 					
 			double o2Min = this.findMin(o2);
 			double o2Sum = this.calSum(o2);
-					
-			/*System.out.println("DEBUG inclusiveByMin array: o1Min" + o1Min);
-			System.out.println("DEBUG inclusiveByMin array: o2Min" + o2Min);
-			System.out.println("DEBUG inclusiveByMin array: o1Sum" + o1Sum);
-			System.out.println("DEBUG inclusiveByMin array: o2Sum" + o2Sum);*/
 					
 			if (o1Min - 1 == o2Min && o2Sum - o1Sum == o2Min) {
 				return true;
@@ -125,16 +128,11 @@ public class InclusiveByMin extends ClusiveAbstract {
 			double o2Min = this.findMin(o2);
 			double o2Sum = this.calSum(o2);
 					
-			/*System.out.println("DEBUG inclusiveByMin list: o1Min" + o1Min);
-			System.out.println("DEBUG inclusiveByMin list: o2Min" + o2Min);
-			System.out.println("DEBUG inclusiveByMin list: o1Sum" + o1Sum);
-			System.out.println("DEBUG inclusiveByMin list: o2Sum" + o2Sum);*/
-					
 			if (o1Min - 1 == o2Min && o2Sum - o1Sum == o2Min)
 				return true;
 		}
 		
-		return false;
+		return false;*/
 	}
 	
 

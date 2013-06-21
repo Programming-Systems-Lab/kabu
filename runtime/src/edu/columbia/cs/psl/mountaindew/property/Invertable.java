@@ -20,14 +20,26 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			Object p2, Object returnValue2) {
 		// TODO Auto-generated method stub
 		
-		if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
+		if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {			
 			int rt1Length = Array.getLength(returnValue1);
 			int rt2Length = Array.getLength(returnValue2);
 			
 			if (rt1Length != rt2Length)
 				return false;
 			
-			double tmp1, tmp2;
+			double[] rt1 = new double[rt1Length];
+			double[] rt2 = new double[rt2Length];
+			
+			for (int i = 0; i < rt1Length; i++) {
+				rt1[i] = ((Number)Array.get(returnValue1, i)).doubleValue();
+				rt2[i] = ((Number)Array.get(returnValue2, i)).doubleValue();
+			}
+			
+			Arrays.sort(rt1);
+			Arrays.sort(rt2);
+			return Arrays.equals(rt1, rt2);
+			
+			/*double tmp1, tmp2;
 			for (int i = 0; i < rt1Length; i++) {
 				tmp1 = ((Number)Array.get(returnValue1, i)).doubleValue();
 				tmp2 = ((Number)Array.get(returnValue2, rt1Length - i - 1)).doubleValue();
@@ -35,22 +47,17 @@ public class Invertable extends PairwiseMetamorphicProperty{
 				if (tmp1 != tmp2)
 					return false;
 			}
-			return true;
+			return true;*/
 			
 		} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
 			List o1List = new ArrayList((Collection)returnValue1);
 			List o2List = new ArrayList((Collection)returnValue2);
+			
+			if (o1List.size() != o2List.size())
+				return false;
 						
 			Collections.sort(o1List);
 			Collections.sort(o2List);
-			
-			/*for (Object obj: o1List) {
-				System.out.println("Check return value o1 of invertable: " + ((Number)obj).doubleValue());
-			}
-			
-			for (Object obj: o2List) {
-				System.out.println("Check return value o2 of invertable: " + ((Number)obj).doubleValue());
-			}*/
 			
 			for (int i = 0; i < o1List.size(); i++) {
 				if (((Number)o1List.get(i)).doubleValue() != ((Number)o2List.get(i)).doubleValue())
@@ -87,8 +94,10 @@ public class Invertable extends PairwiseMetamorphicProperty{
 		
 		if (!i2.getBackend().equals(this.getName()))
 			return false;
+		else
+			return true;
 		
-		if (o1.getClass().isArray() && o2.getClass().isArray()) {
+		/*if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			int o1Length = Array.getLength(o1);
 			int o2Length = Array.getLength(o2);
 			
@@ -132,7 +141,7 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			return true;
 		} 
 		
-		return false;
+		return false;*/
 	}
 
 	@Override

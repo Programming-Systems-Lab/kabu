@@ -27,7 +27,20 @@ public class Negatable extends PairwiseMetamorphicProperty{
 			if (rt1Length != rt2Length)
 				return false;
 			
-			double tmp1, tmp2;
+			double[] rt1 = new double[rt1Length];
+			double[] rt2 = new double[rt2Length];
+			
+			for (int i = 0 ; i < rt1Length; i++) {
+				rt1[i] = -1 * ((Number)Array.get(returnValue1, i)).doubleValue();
+				rt2[i] = ((Number)Array.get(returnValue2, i)).doubleValue();
+			}
+			
+			Arrays.sort(rt1);
+			Arrays.sort(rt2);
+			
+			return Arrays.equals(rt1, rt2);
+			
+			/*double tmp1, tmp2;
 			for (int i = 0; i < rt1Length; i++) {
 				tmp1 = ((Number)Array.get(returnValue1, i)).doubleValue();
 				tmp2 = ((Number)Array.get(returnValue2, rt1Length - i - 1)).doubleValue();
@@ -35,7 +48,7 @@ public class Negatable extends PairwiseMetamorphicProperty{
 				if (tmp1 != tmp2 * -1)
 					return false;
 			}
-			return true;
+			return true;*/
 			
 		} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
 			List o1List = new ArrayList();
@@ -45,6 +58,9 @@ public class Negatable extends PairwiseMetamorphicProperty{
 			while(rt1IT.hasNext()) {
 				o1List.add(((Number)rt1IT.next()).doubleValue() * -1);
 			}
+			
+			if (o1List.size() != o2List.size())
+				return false;
 						
 			Collections.sort(o1List);
 			Collections.sort(o2List);
@@ -92,8 +108,10 @@ public class Negatable extends PairwiseMetamorphicProperty{
 		
 		if (!i2.getBackend().equals(this.getName()))
 			return false;
+		else
+			return true;
 		
-		if (o1.getClass().isArray() && o2.getClass().isArray()) {
+		/*if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			int o1Length = Array.getLength(o1);
 			int o2Length = Array.getLength(o2);
 			
@@ -145,7 +163,7 @@ public class Negatable extends PairwiseMetamorphicProperty{
 				return true;
 		}
 		
-		return false;
+		return false;*/
 	}
 
 	@Override

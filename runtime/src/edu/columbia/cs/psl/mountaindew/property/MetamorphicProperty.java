@@ -71,7 +71,7 @@ public abstract class MetamorphicProperty {
 					(supportingInvocationsString.length() > 2 ? supportingInvocationsString.length() - 2 : 1))
 					+ "]";
 			for (MethodInvocation[] ar : antiSupportingInvocations) {
-				antiSupportingInvocationsString += "{" + ar[0] + "," + ar[1] + "}, ";
+				antiSupportingInvocationsString += "{ORI: " + ar[0] + ", TRANS: " + ar[1] + "}, ";
 			}
 			antiSupportingInvocationsString = antiSupportingInvocationsString.substring(0,
 					(antiSupportingInvocationsString.length() > 2 ? antiSupportingInvocationsString.length() - 2 : 1))

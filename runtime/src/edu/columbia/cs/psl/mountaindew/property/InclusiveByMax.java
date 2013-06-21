@@ -119,9 +119,11 @@ public class InclusiveByMax extends ClusiveAbstract{
 		
 		if (!i2.getBackend().equals(this.getName()))
 			return false;
+		else
+			return true;
 		
 		//If parameter is array or collection, check length if i2 = i1 +1, check sum
-		if (o1.getClass().isArray() && o2.getClass().isArray()) {
+		/*if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			int o1Length = Array.getLength(o1);
 			int o2Length = Array.getLength(o2);
 			if (o1Length + 1 != o2Length)
@@ -132,17 +134,7 @@ public class InclusiveByMax extends ClusiveAbstract{
 			
 			double o2Max = this.findMax(o2);
 			double o2Sum = this.calSum(o2);
-			
-			/*System.out.println("i1 is i2's parent");
-			
-			for (int i = 0; i < Array.getLength(o1); i++) {
-				System.out.println("o1 params in InclusiveByMax: " + (Number)Array.get(o1, i));
-			}
-			
-			for (int i = 0; i < Array.getLength(o2); i++) {
-				System.out.println("o2 params in InclusiveByMax: " + (Number)Array.get(o2, i));
-			}*/
-			
+
 			if (o1Max + 1 == o2Max && o2Sum - o1Sum == o2Max) {
 				return true;
 			}
@@ -159,16 +151,11 @@ public class InclusiveByMax extends ClusiveAbstract{
 			double o2Max = this.findMax(o2);
 			double o2Sum = this.calSum(o2);
 			
-			/*System.out.println("DEBUG inclusiveByMax list: o1Max" + o1Max);
-			System.out.println("DEBUG inclusiveByMax list: o2Max" + o2Max);
-			System.out.println("DEBUG inclusiveByMax list: o1Sum" + o1Sum);
-			System.out.println("DEBUG inclusiveByMax list: o2Sum" + o2Sum);*/
-			
 			if (o1Max + 1 == o2Max && o2Sum - o1Sum == o2Max)
 				return true;
 		}
 		
-		return false;
+		return false;*/
 	}
 
 	@Override

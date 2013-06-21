@@ -109,9 +109,11 @@ public class InclusiveByMid extends ClusiveAbstract{
 		
 		if (!i2.getBackend().equals(this.getName()))
 			return false;
+		else
+			return true;
 		
 		//If parameter is array or collection, check length if i2 = i1 +1, check sum
-		if (o1.getClass().isArray() && o2.getClass().isArray()) {
+		/*if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			int o1Length = Array.getLength(o1);
 			int o2Length = Array.getLength(o2);
 			if (o1Length + 1 != o2Length)
@@ -155,13 +157,13 @@ public class InclusiveByMid extends ClusiveAbstract{
 				return true;
 		}
 		
-		return false;
+		return false;*/
 	}
 
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "C:InclusiveByMax";
+		return "C:InclusiveByMid";
 	}
 
 	@Override

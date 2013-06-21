@@ -16,6 +16,15 @@ public class ExclusiveByMid extends ClusiveAbstract{
 		double rt1Max, rt1Min, rt1Sum, rt2Max, rt2Min, rt2Sum;
 		if ((returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) ||
 				(Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass()))) {
+			
+			if (p1.getClass().isArray()) {
+				if (Array.getLength(p1)-1 != Array.getLength(p2))
+					return false;
+			} else if (Collection.class.isAssignableFrom(returnValue1.getClass())) {
+				if (((Collection)returnValue1).size()-1 != ((Collection)returnValue2).size())
+					return false;
+			}
+			
 			rt1Max = this.findMax(returnValue1);
 			rt1Min = this.findMin(returnValue1);
 			rt2Max = this.findMax(returnValue2);
@@ -59,9 +68,11 @@ public class ExclusiveByMid extends ClusiveAbstract{
 		
 		if (!i2.getBackend().equals(this.getName()))
 			return false;
+		else
+			return true;
 		
 		//If parameter is array or collection, check length if i2 = i1-1, find out dif/uf, check sum
-		if (o1.getClass().isArray() && o2.getClass().isArray()) {
+		/*if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			int o1Length = Array.getLength(o1);
 			int o2Length = Array.getLength(o2);
 			if (o1Length - 1 != o2Length)
@@ -87,7 +98,7 @@ public class ExclusiveByMid extends ClusiveAbstract{
 			return true;
 		}
 
-		return false;
+		return false;*/
 	}
 	
 	@Override

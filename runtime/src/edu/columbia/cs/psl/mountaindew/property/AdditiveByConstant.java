@@ -26,16 +26,24 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 			Object p2, Object returnValue2) {
 		try
 		{
-			if(returnValue1.equals(returnValue2))
-				return true;
-			else if (Number.class.isAssignableFrom(p1.getClass()) && Number.class.isAssignableFrom(p2.getClass()) 
+			/*if(returnValue1.equals(returnValue2))
+				return true;*/
+			if (Number.class.isAssignableFrom(p1.getClass()) && Number.class.isAssignableFrom(p2.getClass()) 
 					&& Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass()))
 				return getDifference(p1, p2) == getDifference(returnValue1, returnValue2);
 			else if (p1.getClass().isArray() && p2.getClass().isArray()) {
+				
+				//Because propertiesApply now not check length, check them here
+				if (Array.getLength(p1) != Array.getLength(p2))
+					return false;
+				
 				double p1Element, p2Element, rt1Element, rt2Element;
 				
 				List rt1List = this.returnList(returnValue1);
 				List rt2List = this.returnList(returnValue2);
+				
+				if (rt1List.size() != rt2List.size())
+					return false;
 				
 				for (int i = 0; i < Array.getLength(p1); i++) {
 					p1Element = ((Number)Array.get(p1, i)).doubleValue();
@@ -62,6 +70,12 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 				List rt1List = this.returnList(returnValue1);
 				List rt2List = this.returnList(returnValue2);
 				
+				if (p1List.size() != p2List.size())
+					return false;
+				
+				if (rt1List.size() != rt2List.size())
+					return false;
+				
 				for (int i = 0; i < p1List.size(); i++) {
 					p1Element = ((Number)p1List.get(i)).doubleValue();
 					p2Element = ((Number)p2List.get(i)).doubleValue();
@@ -79,6 +93,7 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 		}
 		catch(IllegalArgumentException ex)
 		{
+			ex.printStackTrace();
 			return false;
 		}
 	}
@@ -114,12 +129,14 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 		//If i2's checker is not this one, return false
 		if (!i2.getBackend().equals(this.getName())) {
 			return false;
+		} else {
+			return true;
 		}
 		
 		/*System.out.println("Add i1: " + i1.getFrontend() + " " + i1.getBackend());
 		System.out.println("Add i2: " + i2.getFrontend() + " " + i2.getBackend());*/
 				
-		double o1Val, o2Val;
+		/*double o1Val, o2Val;
 		if (o1.getClass().isArray() && o2.getClass().isArray()) {
 			
 			double o1Checker = ((Number)Array.get(o1, 0)).doubleValue();
@@ -156,7 +173,7 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 			return true;
 		}
 		
-		return true;
+		return true;*/
 	}
 
 	@Override
