@@ -184,7 +184,7 @@ public class Negatable extends PairwiseMetamorphicProperty{
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "Negatable";
+		return "C:Negatable";
 	}
 
 	@Override

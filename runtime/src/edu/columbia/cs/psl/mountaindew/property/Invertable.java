@@ -27,17 +27,26 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			if (rt1Length != rt2Length)
 				return false;
 			
-			double[] rt1 = new double[rt1Length];
-			double[] rt2 = new double[rt2Length];
+			/*double[] rt1 = new double[rt1Length];
+			double[] rt2 = new double[rt2Length];*/
+			
+			double tmp1, tmp2;
 			
 			for (int i = 0; i < rt1Length; i++) {
-				rt1[i] = ((Number)Array.get(returnValue1, i)).doubleValue();
-				rt2[i] = ((Number)Array.get(returnValue2, i)).doubleValue();
+				/*rt1[i] = ((Number)Array.get(returnValue1, i)).doubleValue();
+				rt2[i] = ((Number)Array.get(returnValue2, i)).doubleValue();*/
+				tmp1 = ((Number)Array.get(returnValue1, i)).doubleValue();
+				tmp2 = ((Number)Array.get(returnValue2, rt1Length - i - 1)).doubleValue();
+				
+				if (tmp1 != tmp2)
+					return false;
 			}
 			
-			Arrays.sort(rt1);
+			return true;
+			
+			/*Arrays.sort(rt1);
 			Arrays.sort(rt2);
-			return Arrays.equals(rt1, rt2);
+			return Arrays.equals(rt1, rt2);*/
 			
 			/*double tmp1, tmp2;
 			for (int i = 0; i < rt1Length; i++) {
@@ -56,11 +65,11 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			if (o1List.size() != o2List.size())
 				return false;
 						
-			Collections.sort(o1List);
-			Collections.sort(o2List);
+			/*Collections.sort(o1List);
+			Collections.sort(o2List);*/
 			
 			for (int i = 0; i < o1List.size(); i++) {
-				if (((Number)o1List.get(i)).doubleValue() != ((Number)o2List.get(i)).doubleValue())
+				if (((Number)o1List.get(i)).doubleValue() != ((Number)o2List.get(o1List.size() - i - 1)).doubleValue())
 					return false;
 			}
 			

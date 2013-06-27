@@ -39,7 +39,7 @@ public class InvRelChecker extends RelationAbstract{
 
 	@Override
 	public String getName() {
-		return "InversiveRelationChecker";
+		return "C:InversiveRelationChecker";
 	}
 
 	@Override

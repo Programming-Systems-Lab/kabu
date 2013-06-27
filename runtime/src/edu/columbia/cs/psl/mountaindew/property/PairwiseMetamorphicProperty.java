@@ -161,6 +161,10 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 		}
 		else if (Collection.class.isAssignableFrom(val.getClass()))
 			retList = new ArrayList((Collection)val);
+		else if (Number.class.isAssignableFrom(val.getClass())) {
+			retList = new ArrayList();
+			retList.add(val);
+		}
 		
 		return retList;
 		

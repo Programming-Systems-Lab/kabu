@@ -45,6 +45,10 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 				if (rt1List.size() != rt2List.size())
 					return false;
 				
+				// If the length of return value is not the same with input, how to compare them?
+				if (Array.getLength(p1) != rt1List.size())
+					return false;
+				
 				for (int i = 0; i < Array.getLength(p1); i++) {
 					p1Element = ((Number)Array.get(p1, i)).doubleValue();
 					p2Element = ((Number)Array.get(p2, i)).doubleValue();
@@ -75,6 +79,10 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 				
 				if (rt1List.size() != rt2List.size())
 					return false;
+				
+				if (p1List.size() != rt1List.size())
+					return false;
+				
 				
 				for (int i = 0; i < p1List.size(); i++) {
 					p1Element = ((Number)p1List.get(i)).doubleValue();

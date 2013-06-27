@@ -44,7 +44,7 @@ public class DirRelChecker extends RelationAbstract{
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "DirectRelationChecker";
+		return "C:DirectRelationChecker";
 	}
 
 	@Override

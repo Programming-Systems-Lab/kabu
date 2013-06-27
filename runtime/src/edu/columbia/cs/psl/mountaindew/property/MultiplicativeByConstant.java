@@ -38,6 +38,9 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 				
 				if (rt1List.size() != rt2List.size())
 					return false;
+				
+				if (Array.getLength(p1) != rt1List.size())
+					return false;
 
 				for (int i = 0; i < Array.getLength(p1); i++) {
 					p1Element = ((Number)Array.get(p1, i)).doubleValue();
@@ -69,6 +72,9 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					return false;
 				
 				if (rt1List.size() != rt2List.size())
+					return false;
+				
+				if (p1List.size() != rt1List.size())
 					return false;
 				
 				for (int i = 0; i < p1List.size(); i++) {

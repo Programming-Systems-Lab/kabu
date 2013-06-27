@@ -16,5 +16,6 @@
 	<classpathentry kind="lib" path="weka/lib/packageManager.jar"/>
 	<classpathentry kind="lib" path="lib/invivo.jar"/>
 	<classpathentry kind="lib" path="lib/commons-math3-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/mujava.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

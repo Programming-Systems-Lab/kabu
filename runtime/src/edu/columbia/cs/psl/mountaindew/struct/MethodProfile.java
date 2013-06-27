@@ -44,7 +44,11 @@ public class MethodProfile {
 				sBuilder.append(" ");
 			}
 			sBuilder.append("]");
-		}
+		} else if (Number.class.isAssignableFrom(params.getClass())) {
+			sBuilder.append("[");
+			sBuilder.append(String.valueOf((Number)params));
+			sBuilder.append("]");
+		};
 		
 		return sBuilder.toString();
 	}

@@ -13,7 +13,7 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 
 	@Override
 	public String getName() {
-		return "Shuffleable";
+		return "C:Shuffleable";
 	}
 
 

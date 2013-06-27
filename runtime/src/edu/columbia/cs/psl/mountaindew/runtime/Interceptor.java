@@ -37,7 +37,8 @@ import edu.columbia.cs.psl.mountaindew.struct.MethodProfile;
 public class Interceptor extends AbstractInterceptor {
 	private static String header = 
 			"Method name,ori_input,ori_output,trans_input,trans_output,frontend_transformer,backend_checker,Holds\n";
-	private static String profileRoot = "/Users/mike/Documents/metamorphic-projects/mountaindew/tester/profiles/";
+	//private static String profileRoot = "/Users/mike/Documents/metamorphic-projects/mountaindew/tester/profiles/";
+	private static String profileRoot = "profiles/";
 	private HashMap<Method, HashSet<MetamorphicProperty>> properties = new HashMap<Method, HashSet<MetamorphicProperty>>();
 	private HashSet<Class<? extends MetamorphicProperty>> propertyPrototypes;
 	private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes;
@@ -184,15 +185,47 @@ public class Interceptor extends AbstractInterceptor {
 		
 		sBuilder.append(header);
 		
-		for (MethodProfiler mProfiler: this.profilerList) {
+		MethodProfiler tmpProfiler;
+		while (!this.profilerList.isEmpty()) {
+			tmpProfiler = this.profilerList.remove(0);
+			for (MethodProfile mProfile: tmpProfiler.getMethodProfiles()) {
+				sBuilder.append(mProfile.toString());
+			}
+			System.gc();
+		}
+		
+		/*for (MethodProfiler mProfiler: this.profilerList) {
 			for (MethodProfile mProfile: mProfiler.getMethodProfiles()) {
 				sBuilder.append(mProfile.toString());
 			}
-		}
+		}*/
 		//System.out.println("Test export string: " + sBuilder.toString());
 		
+		File rootDir = new File(profileRoot);
+		
+		String absPath = "";
+		if (rootDir.exists() && rootDir.isDirectory()) {
+			absPath = rootDir.getAbsolutePath() + "/";
+			System.out.println("Confirm root directory for exporting: " + absPath);
+		} else if (!rootDir.exists()) {
+			System.out.println("Profile directory does not exists. Create one...");
+			boolean success = rootDir.mkdir();
+			
+			if (success) {
+				System.out.println("Profile directory creation succeeds.");
+				absPath = rootDir.getAbsolutePath() + "/";
+				System.out.println("Confirm root direcotry for exporting: " + absPath);
+			} else {
+				System.out.println("Profile directory creation fails");
+				return ;
+			}
+		} else {
+			System.out.println("For some reason, profile directory creation fails.");
+			return ;
+		}
+		
 		try {
-			FileWriter fWriter = new FileWriter(profileRoot + (new Date()).toString().replaceAll(" ", "") + ".csv");
+			FileWriter fWriter = new FileWriter(absPath + (new Date()).toString().replaceAll(" ", "") + ".csv");
 			BufferedWriter bWriter = new BufferedWriter(fWriter);
 			bWriter.write(sBuilder.toString());
 			bWriter.close();

@@ -54,7 +54,7 @@ public class SizeChecker extends PairwiseMetamorphicProperty{
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "SizeChecker";
+		return "C:SizeChecker";
 	}
 
 	@Override
