@@ -8,11 +8,17 @@ import java.util.Scanner;
 
 public class MutantCompiler {
 	
-	private static String mutantRoot = "mutants/double_arrayDiv(int)/";
+	//private static String mutantRoot = "mutants/double_arrayDiv(int)/";
+	
+	private static String mutantRoot = "";
+	
+	private static String oriRoot = "";
 	
 	//private static String copyFileDir = mutantRoot + "integrate/";
 	
-	private static String copyFileDir = "src/edu/columbia/cs/psl/mountaindew/example/mutantsource/";
+	//private static String copyFileDir = "src/edu/columbia/cs/psl/mountaindew/example/mutantsource/";
+	
+	private static String copyFileDir = "src/";
 	
 	private static String fileExtension = "java";
 	
@@ -22,7 +28,9 @@ public class MutantCompiler {
 	
 	private static String targetClassInFile = ClassSig + targetClass;
 	
-	private static String targetMethod = "public  double[] arrayDiv( int[] in )";
+	//private static String targetMethod = "public double[] arrayDiv(int[] in)";
+	
+	private static String targetMethod = "";
 	
 	private static String metamorphicTag = "@Metamorphic";
 	
@@ -30,11 +38,28 @@ public class MutantCompiler {
 	
 	private static String packageName = "package edu.columbia.cs.psl.mountaindew.example";
 	
-	private static String addPack = ".mutantsource;";
+	//private static String addPack = ".mutantsource;";
 	
 	private static int copyID = 0;
 	
 	public static void main (String args[]) {
+		Scanner scanner = new Scanner(System.in);
+		
+		System.out.println("Please input the mutant source directory");
+		MutantCompiler.mutantRoot = scanner.nextLine();
+		
+		System.out.println("Please input the original source directory");
+		MutantCompiler.oriRoot = scanner.nextLine();
+		
+		/*System.out.println("Please input the target source direoctry");
+		MutantCompiler.copyFileDir = scanner.nextLine();*/
+		
+		System.out.println("Please input the target method for tagging");
+		MutantCompiler.targetMethod = scanner.nextLine();
+		
+		copyOriFile();
+		System.out.println("Original file duplication completes");
+		
 		File mutantRootDir = new File(mutantRoot);
 		
 		if (!mutantRootDir.exists()) {
@@ -56,11 +81,50 @@ public class MutantCompiler {
 				System.out.println("Confirm integration directory: " + integrateFile.getAbsolutePath());
 			}
 		} else {
-			System.out.println("Confrim integration directory: " + integrateFile.getAbsolutePath());
-			deleteFiles(integrateFile);
+			System.out.println("Confirm integration directory: " + integrateFile.getAbsolutePath());
+			//deleteFiles(integrateFile);
 		}
 		
+		System.out.println("Confirm target method: " + MutantCompiler.targetMethod);
+
 		traverseFile(mutantRootDir);
+		System.out.println("Mutant modification completes");
+	}
+	
+	private static void copyOriFile() {
+		String oriFileName = MutantCompiler.oriRoot + targetClass + ".java";
+		String copyFileName = MutantCompiler.copyFileDir + targetClass + ".java";
+		File oriFile = new File(oriFileName);
+		
+		if (!oriFile.exists()) {
+			System.err.println("Original file does not exists");
+			return ;
+		}
+		
+		File copyFile = new File(copyFileName);
+		
+		BufferedWriter bw = null;
+		Scanner oriScanner = null;
+		
+		try {
+			bw = new BufferedWriter(new FileWriter(copyFile));
+			oriScanner = new Scanner(new FileReader(oriFile));
+			String content;
+			
+			while(oriScanner.hasNextLine()) {
+				content = oriScanner.nextLine();
+				bw.append(content + "\n");
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			try {
+				bw.close();
+				oriScanner.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 	
 	private static void deleteFiles(File file) {
@@ -108,20 +172,32 @@ public class MutantCompiler {
 			newBufferWriter = new BufferedWriter(new FileWriter(newFile));
 			int methodIndex = Integer.MIN_VALUE;
 			int classIndex = Integer.MIN_VALUE;
-			int packIndex = Integer.MIN_VALUE;
+			//int packIndex = Integer.MIN_VALUE;
+			int objIndex = Integer.MIN_VALUE;
+			String modifiedClass = MutantCompiler.targetClass + parentDir;
+			
+			System.out.println("Original class: " + MutantCompiler.targetClass); 
+			System.out.println("Modified class: " + modifiedClass);
 			String content;
+			String methodCheck;
 			
 			while(readin.hasNextLine()) {
 				content = readin.nextLine();
-				methodIndex = content.indexOf(targetMethod);
+				//methodIndex = content.indexOf(targetMethod);
+				methodCheck = content.replaceAll(" ", "");
+				methodIndex = methodCheck.indexOf(targetMethod.replaceAll(" ", ""));
 				classIndex = content.indexOf(targetClassInFile);
-				packIndex = content.indexOf(packageName);
+				objIndex = content.indexOf(targetClass);
+				//packIndex = content.indexOf(packageName);
 				
-				if (packIndex >= 0 ) {
-					newBufferWriter.append(MutantCompiler.packageName + MutantCompiler.addPack);
-				} else if (classIndex >= 0) {
+				
+				if (classIndex >= 0) {
 					newBufferWriter.append(MutantCompiler.metamorphicTag + MutantCompiler.newLine);
 					newBufferWriter.append(targetClassInFile + parentDir);
+				} else if (objIndex >= 0) {
+					content = content.replaceAll(targetClass, modifiedClass);
+					System.out.println("Content: " + content);
+					newBufferWriter.append(content + MutantCompiler.newLine);
 				} else if (methodIndex >= 0) {
 					newBufferWriter.append(MutantCompiler.metamorphicTag + MutantCompiler.newLine);
 					newBufferWriter.append(content + MutantCompiler.newLine);

@@ -6,12 +6,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
-import weka.classifiers.functions.supportVector.PukTest;
+//import weka.classifiers.functions.supportVector.PukTest;
 
-import edu.columbia.cs.psl.metamorphic.runtime.ConfigLoader;
+//import edu.columbia.cs.psl.metamorphic.runtime.ConfigLoader;
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
-import edu.columbia.cs.psl.mountaindew.runtime.Interceptor;
-import edu.columbia.cs.psl.mountaindew.example.mutantsource.*;
+//import edu.columbia.cs.psl.mountaindew.runtime.Interceptor;
 
 @Metamorphic
 public class SimpleExample extends AbstractExample {
@@ -251,9 +250,9 @@ public class SimpleExample extends AbstractExample {
 		
 		return in;
 	}
-	
+		
 	public static void main(String[] args) {
-		String[] barzzz = {"aa","bb"};
+//		String[] barzzz = {"aa","bb"};
 //		System.out.println("Max memory: " + Runtime.getRuntime().maxMemory());
 //		Interceptor.catchParam(args, args);
 //		SimpleExample ex = new SimpleExample();
@@ -299,9 +298,9 @@ public class SimpleExample extends AbstractExample {
 		/*SimpleExampleAORB_30 m1 = new SimpleExampleAORB_30();
 		System.out.println(m1.arrayDiv(new int[] {8, 3, 2, 9}));*/
 		
-		SimpleExampleAORB_31 m2 = new SimpleExampleAORB_31();
-		System.out.println(m2.arrayDiv(new int[] {8, 3, 2, 9}));
-		
-
+		/*SimpleExampleAORB_31 m2 = new SimpleExampleAORB_31();
+		System.out.println(m2.arrayDiv(new int[] {8, 3, 2, 9}));*/
+		SimpleExample ex = new SimpleExample();
+		System.out.println(ex.arrayDiv(new int[] {8, 3, 2, 9}));
 	}
 }

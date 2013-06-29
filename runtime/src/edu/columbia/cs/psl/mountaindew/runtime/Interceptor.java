@@ -46,12 +46,22 @@ public class Interceptor extends AbstractInterceptor {
 	private Integer invocationId = 0;
 	private List<MethodProfiler> profilerList = new ArrayList<MethodProfiler>();
 //	private Cloner cloner = new Cloner();
+	private String calleeName;
+	
+	private static int fileCount = 0;
 	
 	public Interceptor(Object intercepted) {
 		super(intercepted);
 		System.out.println("Interceptor created");
 		propertyPrototypes = MetamorphicObserver.getInstance().registerInterceptor(this);
 		processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
+	}
+	
+	public static synchronized int getFileCount() {
+		int curFileCount = fileCount;
+		fileCount++;
+		System.out.println("File count: " + fileCount);
+		return curFileCount;
 	}
 	
 	public int onEnter(Object callee, Method method, Object[] params)
@@ -107,9 +117,14 @@ public class Interceptor extends AbstractInterceptor {
 		}
 		inv.children = new MethodInvocation[children.size()];
 		inv.children = children.toArray(inv.children);
+
+		this.calleeName = callee.getClass().getName();
+		int namePos = this.calleeName.lastIndexOf(".");
+		this.calleeName = this.calleeName.substring(namePos+1, calleeName.length());
 		
 		System.out.println("Method name " + inv.getMethod().getName());
 		System.out.println("Children size: " + inv.children.length);
+		System.out.println("Callee: " + callee.getClass().getName());
 		
 		this.reportTransformerChecker();
 		return retId;
@@ -225,7 +240,7 @@ public class Interceptor extends AbstractInterceptor {
 		}
 		
 		try {
-			FileWriter fWriter = new FileWriter(absPath + (new Date()).toString().replaceAll(" ", "") + ".csv");
+			FileWriter fWriter = new FileWriter(absPath + this.calleeName + "_" + getFileCount() + (new Date()).toString().replaceAll(" ", "") + ".csv");
 			BufferedWriter bWriter = new BufferedWriter(fWriter);
 			bWriter.write(sBuilder.toString());
 			bWriter.close();
