@@ -2,9 +2,24 @@ package edu.columbia.cs.psl.mountaindew.example.mutant;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 import java.util.Scanner;
+
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaCompiler.CompilationTask;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
 
 public class MutantCompiler {
 	
@@ -20,13 +35,15 @@ public class MutantCompiler {
 	
 	private static String copyFileDir = "src/";
 	
+	private static String copyFileBinDir = "bin/";
+	
 	private static String fileExtension = "java";
 	
-	private static String targetClass = "SimpleExample";
+	private static String targetClass = "";
 	
 	private static String ClassSig = "public class ";
 	
-	private static String targetClassInFile = ClassSig + targetClass;
+	private static String targetClassInFile = "";
 	
 	//private static String targetMethod = "public double[] arrayDiv(int[] in)";
 	
@@ -36,28 +53,50 @@ public class MutantCompiler {
 	
 	private static String newLine = "\n";
 	
-	private static String packageName = "package edu.columbia.cs.psl.mountaindew.example";
+	//private static String packageName = "package edu.columbia.cs.psl.mountaindew.example";
 	
-	//private static String addPack = ".mutantsource;";
+	private static String propertyFile = "config/mutant.property";
 	
-	private static int copyID = 0;
+	private static List<File> mutantFileList = new ArrayList<File>();
 	
-	public static void main (String args[]) {
-		Scanner scanner = new Scanner(System.in);
+	public static void main (String args[]) throws IOException {
 		
-		System.out.println("Please input the mutant source directory");
-		MutantCompiler.mutantRoot = scanner.nextLine();
+		File propertyFile = new File(MutantCompiler.propertyFile);
 		
-		System.out.println("Please input the original source directory");
-		MutantCompiler.oriRoot = scanner.nextLine();
+		if (!propertyFile.exists()) {
+			System.err.println("Mutant property file does not exist");
+			return ;
+		}
 		
-		/*System.out.println("Please input the target source direoctry");
-		MutantCompiler.copyFileDir = scanner.nextLine();*/
+		Properties mutantProperty = new Properties();
+		FileInputStream fs;
+		try {
+			fs = new FileInputStream(propertyFile);
+			mutantProperty.load(fs);
+			
+			MutantCompiler.mutantRoot = mutantProperty.getProperty("mutantsource");
+			MutantCompiler.oriRoot = mutantProperty.getProperty("orisource");
+			MutantCompiler.targetClass = mutantProperty.getProperty("targetclass");
+			MutantCompiler.targetMethod = mutantProperty.getProperty("targetmethod").replaceAll("\"", "");
+			
+			MutantCompiler.targetClassInFile = ClassSig + targetClass;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		
-		System.out.println("Please input the target method for tagging");
-		MutantCompiler.targetMethod = scanner.nextLine();
+		System.out.println("Confirm target class: " + MutantCompiler.targetClass);
+		System.out.println("Confirm target method: " + MutantCompiler.targetMethod);
 		
-		copyOriFile();
+		
+		//copyOriFile();
+		File oriRootDir = new File(oriRoot);
+		
+		if (!oriRootDir.exists()) {
+			System.err.println("Original file directory does not exists");
+			return ;
+		}
+		
+		traverseFile(oriRootDir);
 		System.out.println("Original file duplication completes");
 		
 		File mutantRootDir = new File(mutantRoot);
@@ -67,7 +106,7 @@ public class MutantCompiler {
 			return ;
 		}
 		
-		System.out.println("Confirm mutant root directory: " + mutantRootDir.getAbsolutePath());
+		System.out.println("Confirm mutant root directory: " + mutantRootDir.getCanonicalPath());
 		
 		//Construct a integration directory for all mutant java files after inserting @Metamorphic
 		File integrateFile = new File(copyFileDir);
@@ -78,20 +117,20 @@ public class MutantCompiler {
 				System.err.println("Integration directory creation fails");
 				return ;
 			} else {
-				System.out.println("Confirm integration directory: " + integrateFile.getAbsolutePath());
+				System.out.println("Confirm integration directory: " + integrateFile.getCanonicalPath());
 			}
 		} else {
-			System.out.println("Confirm integration directory: " + integrateFile.getAbsolutePath());
+			System.out.println("Confirm integration directory: " + integrateFile.getCanonicalPath());
 			//deleteFiles(integrateFile);
 		}
-		
-		System.out.println("Confirm target method: " + MutantCompiler.targetMethod);
 
 		traverseFile(mutantRootDir);
 		System.out.println("Mutant modification completes");
+		
+		compileFiles();
 	}
 	
-	private static void copyOriFile() {
+	private static void copyOriFile() throws IOException {
 		String oriFileName = MutantCompiler.oriRoot + targetClass + ".java";
 		String copyFileName = MutantCompiler.copyFileDir + targetClass + ".java";
 		File oriFile = new File(oriFileName);
@@ -100,6 +139,8 @@ public class MutantCompiler {
 			System.err.println("Original file does not exists");
 			return ;
 		}
+		
+		System.out.println("Confirm original file directory: " + oriFile.getCanonicalPath());
 		
 		File copyFile = new File(copyFileName);
 		
@@ -125,6 +166,7 @@ public class MutantCompiler {
 				ex.printStackTrace();
 			}
 		}
+		mutantFileList.add(oriFile);
 	}
 	
 	private static void deleteFiles(File file) {
@@ -216,6 +258,34 @@ public class MutantCompiler {
 				e.printStackTrace();
 			}
 		}
+		mutantFileList.add(newFile);
 	}
-
+	
+	private static void compileFiles() {
+		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, Locale.getDefault(), null);
+		DiagnosticCollector<JavaFileObject> collector = new DiagnosticCollector<JavaFileObject>();
+		String[] options = new String[]{"-d", "bin", "-sourcepath", "src", "-cp", "./bin:lib/columbus2.jar"};
+		List<String> optionList = Arrays.asList(options);
+		
+		Iterable<? extends JavaFileObject> javaFiles = fileManager.getJavaFileObjectsFromFiles(MutantCompiler.mutantFileList);
+		
+		CompilationTask compileTasks = compiler.getTask(null, fileManager, collector, optionList, null, javaFiles);
+		
+		boolean status = compileTasks.call();
+		
+		if (!status) {
+			for (Diagnostic<? extends JavaFileObject> diagnostic: collector.getDiagnostics()) {
+				System.out.format("Line number: %d error msg: %s\n", diagnostic.getLineNumber(), diagnostic);
+			}
+		} else {
+			System.out.println("Compilation succeeds.");
+		}
+		
+		try {
+			fileManager.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 }

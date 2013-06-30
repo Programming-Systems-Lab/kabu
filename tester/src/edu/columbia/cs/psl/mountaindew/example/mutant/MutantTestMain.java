@@ -1,8 +1,10 @@
 package edu.columbia.cs.psl.mountaindew.example.mutant;
 
+import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 public class MutantTestMain {
 
@@ -11,7 +13,7 @@ public class MutantTestMain {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String rootDir = "profiles";
+		/*String rootDir = "profiles";
 		
 		MutantAnalyzer analyzer = new MutantAnalyzer(rootDir);
 		analyzer.loadFiles();
@@ -30,7 +32,19 @@ public class MutantTestMain {
 			}
 			System.out.println("");
 		}
-		analyzer.summarizeFiles();
+		analyzer.exportSummary();*/
+		
+		try {
+			Properties mutantProperty = new Properties();
+			mutantProperty.load(new FileInputStream("config/mutant.property"));
+			
+			System.out.println("List properties");
+			System.out.println(mutantProperty.getProperty("mutantsource"));
+			System.out.println(mutantProperty.getProperty("orisource"));
+			System.out.println(mutantProperty.getProperty("targetmethod"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

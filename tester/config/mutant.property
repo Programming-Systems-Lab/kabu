@@ -1,0 +1,4 @@
+mutantsource=../result/edu.columbia.cs.psl.mountaindew.example.SimpleExample/traditional_mutants/double_arrayDiv(int)/
+orisource=../result/edu.columbia.cs.psl.mountaindew.example.SimpleExample/original/
+targetclass=SimpleExample
+targetmethod="public double[] arrayDiv(int[] in)"
