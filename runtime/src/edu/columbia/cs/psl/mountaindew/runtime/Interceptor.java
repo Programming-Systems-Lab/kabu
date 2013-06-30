@@ -48,7 +48,7 @@ public class Interceptor extends AbstractInterceptor {
 //	private Cloner cloner = new Cloner();
 	private String calleeName;
 	
-	private static int fileCount = 0;
+//	private static int fileCount = 0;
 	
 	public Interceptor(Object intercepted) {
 		super(intercepted);
@@ -57,12 +57,12 @@ public class Interceptor extends AbstractInterceptor {
 		processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
 	}
 	
-	public static synchronized int getFileCount() {
+	/*public static synchronized int getFileCount() {
 		int curFileCount = fileCount;
 		fileCount++;
 		System.out.println("File count: " + fileCount);
 		return curFileCount;
-	}
+	}*/
 	
 	public int onEnter(Object callee, Method method, Object[] params)
 	{
@@ -240,7 +240,7 @@ public class Interceptor extends AbstractInterceptor {
 		}
 		
 		try {
-			FileWriter fWriter = new FileWriter(absPath + this.calleeName + "_" + getFileCount() + (new Date()).toString().replaceAll(" ", "") + ".csv");
+			FileWriter fWriter = new FileWriter(absPath + this.calleeName + "_" + (new Date()).toString().replaceAll(" ", "") + ".csv");
 			BufferedWriter bWriter = new BufferedWriter(fWriter);
 			bWriter.write(sBuilder.toString());
 			bWriter.close();
