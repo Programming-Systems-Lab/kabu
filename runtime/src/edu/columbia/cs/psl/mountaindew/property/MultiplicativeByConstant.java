@@ -112,26 +112,42 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			throw new IllegalArgumentException("Both parameters must be of the same type");
 		if(o1.getClass().equals(Integer.class) || o1.getClass().equals(Integer.TYPE))
 		{
-			if((Integer) o2 != 0)
-				return ((Integer) o1) / ((Integer) o2);
+			if((Integer) o2 != 0) {
+				double rawResult = ((Integer) o1) / ((Integer) o2);
+				return this.roundDouble(rawResult);
+			}
 		}
 		else if(o1.getClass().equals(Short.class) || o1.getClass().equals(Short.TYPE))
 		{
-			if((Short) o2 != 0)
-				return ((Short) o1) / ((Short) o2);
+			if((Short) o2 != 0) {
+				double rawResult = ((Short) o1) / ((Short) o2);
+				return this.roundDouble(rawResult);
+			}
 		}
 		else if(o1.getClass().equals(Long.class) || o1.getClass().equals(Long.TYPE))
 		{
-			if((Long) o2 != 0)
-				return ((Long) o1) / ((Long) o2);
+			if((Long) o2 != 0) {
+				double rawResult = ((Long) o1) / ((Long) o2);
+				return this.roundDouble(rawResult);
+			}
 		}
 		else if(o1.getClass().equals(Double.class) || o1.getClass().equals(Double.TYPE))
 		{
-			if((Double) o2 != 0)
-				return ((Double) o1) / ((Double) o2);
+			if((Double) o2 != 0) {
+				double rawResult = ((Double)o1) / ((Double) o2);
+				return this.roundDouble(rawResult);
+			}
 		}
 		throw new IllegalArgumentException("Non numeric types");
 	}
+	
+	private double roundDouble(double numberToRound) {
+		numberToRound = numberToRound * 10000;
+		numberToRound = Math.round(numberToRound);
+		numberToRound = numberToRound / 10000;
+		return numberToRound;
+	}
+	
 	@Override
 	protected boolean propertyApplies(MethodInvocation i1, MethodInvocation i2,
 			int interestedVariable) {

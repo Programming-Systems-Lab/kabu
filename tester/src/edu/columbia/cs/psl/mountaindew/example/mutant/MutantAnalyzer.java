@@ -18,8 +18,12 @@ import java.util.StringTokenizer;
 
 public class MutantAnalyzer {
 	
+	private static String profileRoot = "profiles/";
+	private static String srcRoot = "src/";
+	
 	private Map<String, List<MutantStruct>> fileMap = new HashMap<String, List<MutantStruct>>();
 	private Map<String, List<String>> holdMap = new HashMap<String, List<String>>();
+	//private Map<String, Map<String, List<String>>> holdMap = new HashMap<String, Map<String, List<String>>>();
 	private String fileDir;
 	private String srcDir;
 	private String summaryDir = "summary";
@@ -34,10 +38,13 @@ public class MutantAnalyzer {
 	private String configFile = "config/mutant.property";
 	private int originalFileRank = -1;
 	private List<PropertyRank> rankList = new ArrayList<PropertyRank>();
+	private String timeTag = "default";
 	
-	public MutantAnalyzer(String fileDir, String srcDir) {
-		this.fileDir = fileDir;
-		this.srcDir = srcDir;
+	public MutantAnalyzer() {
+		this.loadMutantProperties();
+		
+		this.fileDir = MutantAnalyzer.profileRoot + this.timeTag;
+		this.srcDir = MutantAnalyzer.srcRoot + this.timeTag;
 	}
 	
 	public void loadFiles() {
@@ -80,7 +87,7 @@ public class MutantAnalyzer {
 		System.out.println("Check total mutant number: " + this.totalMutantNumber);
 	}
 	
-	public void composeOriginalFileName() {
+	public void loadMutantProperties() {
 		File propertyFile = new File(this.configFile);
 		
 		if (!propertyFile.exists()) {
@@ -94,15 +101,19 @@ public class MutantAnalyzer {
 			fs = new FileInputStream(propertyFile);
 			Properties mutantProperty = new Properties();
 			mutantProperty.load(fs);
+			
 			String targetClass = mutantProperty.getProperty("targetclass");
 			//Temporarily hardcode original
 			this.originalFileName = targetClass + "original";
 			System.out.println("Original file name: " + this.originalFileName);
+			
+			this.timeTag = mutantProperty.getProperty("timetag");
+			fs.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-		}		
+		}
 	}
-	
+		
 	private void selectFiles(File rootDir) {
 		File[] childFiles = rootDir.listFiles();
 		String fileName;
@@ -156,7 +167,7 @@ public class MutantAnalyzer {
 					StringTokenizer st = new StringTokenizer(content, ",");
 					String token;
 					int count = 0;
-					//MutantStruct mutant = new MutantStruct();
+					MutantStruct mutant = new MutantStruct(fileName);
 					String key = "";
 					String value = "";
 					while (st.hasMoreTokens()) {
@@ -164,7 +175,7 @@ public class MutantAnalyzer {
 						
 						//count 0 for method name, 5 for frontend, 6 for backend and 7 for hold;
 						if (count == 0 ) {
-							//mutant.setMethodName(token);
+							mutant.setMethodName(token);
 							key = key + token + ",";
 							
 							if (!isFileNameSet) {
@@ -172,29 +183,32 @@ public class MutantAnalyzer {
 								isFileNameSet = true;
 							}
 						} else if (count == 5) {
-							//mutant.setFrontend(token);
+							mutant.setFrontend(token);
 							key = key + token + ",";
 						} else if (count == 6) {
-							//mutant.setBackend(token);
+							mutant.setBackend(token);
 							key = key + token + ",";
 						} else if (count == 7) {
-							//mutant.setHold(Boolean.valueOf(token));
+							mutant.setHold(Boolean.valueOf(token));
 							value = token;
 						}
 						
 						count++;
 					}
 					//this.fileMap.get(fileName).add(mutant);
+					this.updateRawList(this.fileMap.get(fileName), mutant);
 					
 					key = key.substring(0, key.length() - 1);
 					
-					if (!this.holdMap.containsKey(key)) {
+					//To prevent the false positives, some transformer will process input twice of more. Summarize their results here.
+										
+					/*if (!this.holdMap.containsKey(key)) {
 						ArrayList<String> holdList = new ArrayList<String>();
-						holdList.add(value);
+						holdList.add(String.valueOf(value));
 						this.holdMap.put(key, holdList);
 					} else {
 						this.holdMap.get(key).add(value);
-					}
+					}*/
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -206,12 +220,46 @@ public class MutantAnalyzer {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		this.generateHoldMap();
+	}
+	
+	private void updateRawList(List<MutantStruct> rawList, MutantStruct curStruct) {
+		//Consider rb tree for rawList? More efficient
+		//If there is a struct having the same filename+methodname+frontend+backend, update its hold
+		for (MutantStruct tmpStruct: rawList) {
+			if (tmpStruct.equals(curStruct)) {
+				tmpStruct.setHold(tmpStruct.isHold() && curStruct.isHold());
+				return ;
+			}
+		}
+		//No such struct, add the current one;
+		rawList.add(curStruct);
+	}
+	
+	private void generateHoldMap() {
+		for (String key: this.fileOrder) {
+			List<MutantStruct> dataList = this.fileMap.get(key);
+			Collections.sort(dataList);
+			
+			String holdKey = "";
+			for(MutantStruct data: dataList) {
+				holdKey = data.getMethodName() + "," + data.getFrontend() + "," + data.getBackend();
+				
+				if (!this.holdMap.containsKey(holdKey)) {
+					ArrayList<String> holdList = new ArrayList<String>();
+					holdList.add(String.valueOf(data.isHold()));
+					this.holdMap.put(holdKey, holdList);
+				} else {
+					this.holdMap.get(holdKey).add(String.valueOf(data.isHold()));
+				}
+			}
+		}
 	}
 	
 	public void exportSummary() {
 		//this.header = this.header.substring(0, this.header.length() - 1);
 		this.header = this.header + "Mutant killed\n";
-		File summaryFile = new File(this.summaryFileName + (new Date()).toString().replaceAll(" ", "") + ".csv");
+		File summaryFile = new File(this.summaryFileName + this.timeTag + ".csv");
 		
 		System.out.println("Confirm summary file name: " + summaryFile.getAbsolutePath());
 		
@@ -229,6 +277,7 @@ public class MutantAnalyzer {
 			String oriVal;
 			List<String> holdList;
 			PropertyRank pr;
+						
 			for (String key: this.holdMap.keySet()) {
 				sb.append(key + ",");
 				
@@ -243,7 +292,6 @@ public class MutantAnalyzer {
 						killCount++;
 				}
 				
-				//holdString = holdString.substring(0, holdString.length());
 				sb.append(holdString);
 				sb.append(String.valueOf(killCount) + "\n");
 				
@@ -327,8 +375,7 @@ public class MutantAnalyzer {
 	}
 	
 	public static void main(String args[]) {
-		MutantAnalyzer mAnalyzer = new MutantAnalyzer("profiles", "src");
-		mAnalyzer.composeOriginalFileName();
+		MutantAnalyzer mAnalyzer = new MutantAnalyzer();
 		mAnalyzer.countMutants();
 		mAnalyzer.loadFiles();
 		mAnalyzer.analyzeFiles();

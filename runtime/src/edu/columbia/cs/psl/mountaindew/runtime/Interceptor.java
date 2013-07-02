@@ -2,14 +2,17 @@ package edu.columbia.cs.psl.mountaindew.runtime;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.TreeSet;
 
 import com.rits.cloning.Cloner;
@@ -39,6 +42,8 @@ public class Interceptor extends AbstractInterceptor {
 			"Method name,ori_input,ori_output,trans_input,trans_output,frontend_transformer,backend_checker,Holds\n";
 	//private static String profileRoot = "/Users/mike/Documents/metamorphic-projects/mountaindew/tester/profiles/";
 	private static String profileRoot = "profiles/";
+	private static String configString = "config/mutant.property";
+	private static SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
 	private HashMap<Method, HashSet<MetamorphicProperty>> properties = new HashMap<Method, HashSet<MetamorphicProperty>>();
 	private HashSet<Class<? extends MetamorphicProperty>> propertyPrototypes;
 	private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes;
@@ -47,6 +52,7 @@ public class Interceptor extends AbstractInterceptor {
 	private List<MethodProfiler> profilerList = new ArrayList<MethodProfiler>();
 //	private Cloner cloner = new Cloner();
 	private String calleeName;
+	private String timeTag = "default";
 	
 //	private static int fileCount = 0;
 	
@@ -55,14 +61,36 @@ public class Interceptor extends AbstractInterceptor {
 		System.out.println("Interceptor created");
 		propertyPrototypes = MetamorphicObserver.getInstance().registerInterceptor(this);
 		processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
+		this.getTimeTag();
 	}
 	
-	/*public static synchronized int getFileCount() {
-		int curFileCount = fileCount;
-		fileCount++;
-		System.out.println("File count: " + fileCount);
-		return curFileCount;
-	}*/
+	private void getTimeTag() {
+		File mutantConfig = new File(configString);
+		
+		if (!mutantConfig.exists()) {
+			System.err.println("Mutant configuration file does not exist");
+		}
+		
+		FileInputStream fs;
+		try {
+			fs = new FileInputStream(mutantConfig);
+			
+			Properties mutantProperty = new Properties();
+			mutantProperty.load(fs);
+			
+			String tmpTag = mutantProperty.getProperty("timetag");
+			
+			if (tmpTag == null || tmpTag.isEmpty()) {
+				System.err.println("Time tag in mutant configuration file is empty");
+			} else {
+				this.timeTag = tmpTag;
+			}
+			
+			fs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public int onEnter(Object callee, Method method, Object[] params)
 	{
@@ -216,7 +244,7 @@ public class Interceptor extends AbstractInterceptor {
 		}*/
 		//System.out.println("Test export string: " + sBuilder.toString());
 		
-		File rootDir = new File(profileRoot);
+		File rootDir = new File(profileRoot + this.timeTag);
 		
 		String absPath = "";
 		if (rootDir.exists() && rootDir.isDirectory()) {

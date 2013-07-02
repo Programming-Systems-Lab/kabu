@@ -1,16 +1,26 @@
 package edu.columbia.cs.psl.mountaindew.example.mutant;
 
 public class MutantStruct implements Comparable<MutantStruct>{
+	private String fileName;
+	
 	private String methodName;
 	
 	private String backend;
 	
 	private String frontend;
 	
-	private boolean hold;
+	private boolean hold = true;
 	
-	public MutantStruct () {
-		
+	public MutantStruct (String fileName) {
+		this.fileName = fileName;
+	}
+	
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	
+	public String getFileName() {
+		return fileName;
 	}
 
 	public String getMethodName() {
@@ -45,6 +55,7 @@ public class MutantStruct implements Comparable<MutantStruct>{
 		this.hold = hold;
 	}
 	
+	@Override
 	public boolean equals(Object mutant) {
 		if (!(mutant instanceof MutantStruct))
 			return false;
@@ -54,29 +65,29 @@ public class MutantStruct implements Comparable<MutantStruct>{
 		
 		MutantStruct tmpStruct = (MutantStruct) mutant;
 		
-		if (tmpStruct.getMethodName() != this.getMethodName())
+		if (!tmpStruct.getFileName().equals(this.getFileName()))
 			return false;
 		
-		if (tmpStruct.getBackend() != this.getBackend())
+		if (!tmpStruct.getMethodName().equals(this.getMethodName()))
 			return false;
 		
-		if (tmpStruct.getFrontend() != this.getFrontend())
+		if (!tmpStruct.getBackend().equals(this.getBackend()))
 			return false;
 		
-		if (!String.valueOf(tmpStruct.isHold()).equals(String.valueOf(this.isHold())))
+		if (!tmpStruct.getFrontend().equals(this.getFrontend()))
 			return false;
 		
 		return true;
 	}
 	
 	public String toString() {
-		return this.methodName + "," + this.frontend + "," + this.backend + "," + String.valueOf(this.hold);
+		return this.fileName + "," + this.methodName + "," + this.frontend + "," + this.backend + "," + String.valueOf(this.hold);
 	}
 	
 	@Override
 	public int compareTo(MutantStruct comp) {
-		String myString = this.backend + this.frontend;
-		String compString = comp.getBackend() + comp.getFrontend();
+		String myString = this.methodName + this.frontend + this.backend;
+		String compString = comp.getMethodName() + comp.getFrontend() + comp.getBackend();
 		
 		return myString.compareTo(compString);
 	}

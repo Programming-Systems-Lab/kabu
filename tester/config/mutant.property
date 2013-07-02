@@ -2,3 +2,4 @@ mutantsource=../result/edu.columbia.cs.psl.mountaindew.example.SimpleExample/tra
 orisource=../result/edu.columbia.cs.psl.mountaindew.example.SimpleExample/original/
 targetclass=SimpleExample
 targetmethod="public double[] arrayDiv(int[] in)"
+timetag=

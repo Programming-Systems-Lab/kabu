@@ -1,0 +1,25 @@
+Method name,ori_input,ori_output,trans_input,trans_output,frontend_transformer,backend_checker,Holds
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[2 3 9 8 ],[0.4 0.6 1.8 1.6 ],T:ShuffleArrayCollection,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[11 6 5 12 ],[2.2 1.2 1.0 2.4 ],T:AddConstant,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[83 18 11 102 ],[16.6 3.6 2.2 20.4 ],T:PolynomialTransformer,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[18 13 12 19 ],[3.6 2.6 2.4 3.8 ],T:AddConstant,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[16 6 4 18 ],[3.2 1.2 0.8 3.6 ],T:MultiplyConstant,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[3 8 2 9 ],[0.6 1.6 0.4 1.8 ],T:ShuffleArrayCollection,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[800 300 200 900 ],[160.0 60.0 40.0 180.0 ],T:MultiplyConstant,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[302 57 32 375 ],[60.4 11.4 6.4 75.0 ],T:PolynomialTransformer,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[16 6 4 18 ],[3.2 1.2 0.8 3.6 ],T:MultiplyConstant,C:Shuffleable,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[302 57 32 375 ],[60.4 11.4 6.4 75.0 ],T:PolynomialTransformer,C:Shuffleable,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[83 18 11 102 ],[16.6 3.6 2.2 20.4 ],T:PolynomialTransformer,C:Shuffleable,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],T:ShuffleArrayCollection,C:Shuffleable,true
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[800 300 200 900 ],[160.0 60.0 40.0 180.0 ],T:MultiplyConstant,C:Shuffleable,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[2 9 8 3 ],[0.4 1.8 1.6 0.6 ],T:ShuffleArrayCollection,C:Shuffleable,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[18 13 12 19 ],[3.6 2.6 2.4 3.8 ],T:AddConstant,C:Shuffleable,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[11 6 5 12 ],[2.2 1.2 1.0 2.4 ],T:AddConstant,C:Shuffleable,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[800 300 200 900 ],[160.0 60.0 40.0 180.0 ],T:MultiplyConstant,C:Multiplicative,true
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[11 6 5 12 ],[2.2 1.2 1.0 2.4 ],T:AddConstant,C:Multiplicative,true
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[302 57 32 375 ],[60.4 11.4 6.4 75.0 ],T:PolynomialTransformer,C:Multiplicative,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[3 2 9 8 ],[0.6 0.4 1.8 1.6 ],T:ShuffleArrayCollection,C:Multiplicative,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[16 6 4 18 ],[3.2 1.2 0.8 3.6 ],T:MultiplyConstant,C:Multiplicative,true
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[18 13 12 19 ],[3.6 2.6 2.4 3.8 ],T:AddConstant,C:Multiplicative,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[83 18 11 102 ],[16.6 3.6 2.2 20.4 ],T:PolynomialTransformer,C:Multiplicative,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[9 3 2 8 ],[1.8 0.6 0.4 1.6 ],T:ShuffleArrayCollection,C:Multiplicative,false

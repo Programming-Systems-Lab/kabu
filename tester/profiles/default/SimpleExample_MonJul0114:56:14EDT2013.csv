@@ -1,0 +1,2 @@
+Method name,ori_input,ori_output,trans_input,trans_output,frontend_transformer,backend_checker,Holds
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[2 3 9 8 ],[0.4 0.6 1.8 1.6 ],T:ShuffleArrayCollection,C:Shuffleable,false

@@ -1,0 +1,9 @@
+Method name,ori_input,ori_output,trans_input,trans_output,frontend_transformer,backend_checker,Holds
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[16 6 4 18 ],[3.2 1.2 0.8 3.6 ],T:MultiplyConstant,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[18 13 12 19 ],[3.6 2.6 2.4 3.8 ],T:AddConstant,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[11 6 5 12 ],[2.2 1.2 1.0 2.4 ],T:AddConstant,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[800 300 200 900 ],[160.0 60.0 40.0 180.0 ],T:MultiplyConstant,C:Additive,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[11 6 5 12 ],[2.2 1.2 1.0 2.4 ],T:AddConstant,C:Multiplicative,true
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[18 13 12 19 ],[3.6 2.6 2.4 3.8 ],T:AddConstant,C:Multiplicative,false
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[800 300 200 900 ],[160.0 60.0 40.0 180.0 ],T:MultiplyConstant,C:Multiplicative,true
+arrayDiv,[8 3 2 9 ],[1.6 0.6 0.4 1.8 ],[16 6 4 18 ],[3.2 1.2 0.8 3.6 ],T:MultiplyConstant,C:Multiplicative,true

@@ -26,40 +26,32 @@ public class MutantExecutor {
 	
 	private static String commandCp = "-cp";
 	
-	//private static String cparg = "./bin:\"lib/*\"";
-	//private static String cparg = "bin:/Users/mike/Documents/metamorphic-projects/mountaindew/tester/lib/*";
-	
 	private static String cparg = "";
 	
 	private static String commandInject = "edu.columbia.cs.psl.mountaindew.runtime.MetamorphicInjector";
 	
-	private static ArrayList<File> filterFiles = new ArrayList<File>();
-	
-	private static ExecutorThread[] eArray;
-	
 	private static int inExecution = 0;
-	
-	private static int completedMutants = 0;
 	
 	//Execution limit for each thread: 3 sec
 	private static int executionLimit = 3 * 1000;
 	
-	private static Semaphore processLock = new Semaphore(3, true);
-		
-	public static void main (String args[]) {
-		/*System.out.println("Please input the bin directory for executing");
-		Scanner scanner = new Scanner(System.in);
-		
-		binString = scanner.nextLine();
-		
-		File binDir = new File(binString);
-		
-		if (!binDir.isDirectory()) {
-			System.err.println("Invalid bin directory");
-			return ;
-		}*/
-		
-		File binDir = new File("bin");
+	private ArrayList<File> filterFiles = new ArrayList<File>();
+	
+	private ExecutorThread[] eArray;
+
+	private int completedMutants = 0;
+	
+	private Semaphore processLock = new Semaphore(3, true);
+	
+	private String binFileDir;
+	
+	public MutantExecutor(String binFileDir) {
+		this.binFileDir = binFileDir;
+		this.setUpClassFiles();
+	}
+	
+	private void setUpClassFiles() {
+		File binDir = new File(this.binFileDir);
 		
 		if (!binDir.exists()) {
 			System.err.println("Cannot find bin folder for executing");
@@ -69,24 +61,25 @@ public class MutantExecutor {
 		System.out.println("Confirm bin direcotry: " + binDir.getAbsolutePath());
 		
 		filterClassFiles(binDir);
-		
+	}
+	
+	public void executeMutantThreads() {
 		//Find out the issue for multithread
-		eArray = new ExecutorThread[filterFiles.size()];
-		//eArray = new ExecutorThread[9];
+		this.eArray = new ExecutorThread[filterFiles.size()];
 		
 		for (int i = 0; i < eArray.length; i++) {
 			String targetClass = parsePathToPackage(filterFiles.get(i).getAbsolutePath());
-			eArray[i] = new ExecutorThread(targetClass);
-			eArray[i].start();
+			this.eArray[i] = new ExecutorThread(targetClass);
+			this.eArray[i].start();
 		}
 		
 		for (int i = 0; i < eArray.length; i++) {
 			try {
-				eArray[i].join(executionLimit);
+				this.eArray[i].join(executionLimit);
 				
-				if (eArray[i].isAlive()) {
+				if (this.eArray[i].isAlive()) {
 					System.out.println(eArray[i].getClassName() + "has not yet died. Interruption starts");
-					eArray[i].interrupt();
+					this.eArray[i].interrupt();
 				} else {
 					System.out.println(eArray[i].getClassName() + " has died.");
 				}
@@ -96,30 +89,19 @@ public class MutantExecutor {
 			}
 		}
 		
-		/*for (File file: filterFiles) {
-			String targetClass = parsePathToPackage(file.getAbsolutePath());
-			
-			while (inExecution == 0) {
-				if (executeCommand(targetClass)) {
-					inExecution = 1;
-				}	
-				System.out.println(targetClass + " is still working");
-			}
-			inExecution = 0;
-		}*/
-		
 		System.out.println("Mutant execution completes");
 	}
-	
+
 	private static String parsePathToPackage(String absolutePath) {
-		int pos = absolutePath.lastIndexOf("bin/") + 4;
+		//4 for bin/ and 15 for time tag
+		int pos = absolutePath.lastIndexOf("bin/") + 4 + 15;
 		String classPath = absolutePath.substring(pos, absolutePath.length()).replace(".class", "");
 		String ret = classPath.replace("/", ".");
 		
 		return ret;
 	}
 	
-	private static void filterClassFiles(File binDir) {
+	private void filterClassFiles(File binDir) {
 		String fileName;
 		String tmpExtension;
 		for (File childFile: binDir.listFiles()) {
@@ -142,112 +124,54 @@ public class MutantExecutor {
 		}
 	}
 	
-	private static boolean executeCommand(String targetClass) {
-		Process process = null;
-		try {
-			File binDir = new File("bin");
-			File libDir = new File("lib");
-			//cparg = cparg+ binDir.getAbsolutePath() + ":" + libDir.getAbsolutePath() + "/*";
-			String cparg = binDir.getAbsolutePath() + ":" + libDir.getAbsolutePath() + "/*";
-			//System.out.println("CPARG dir: " + cparg);
-			System.out.println("Execution process for class " + targetClass);
-			
-			ProcessBuilder builder = new ProcessBuilder(commandHead, memory, agent, commandCp, cparg, commandInject, targetClass);
-			builder.redirectErrorStream(true);
-			
-			process = builder.start();
-
-			/*for (String command: builder.command()) {
-				System.out.println("Command: " + command);
-			}*/
-			
-			printProcessMsg(process);
-			printProcessErrMsg(process);
-			
-			int retValue = process.waitFor();
-			System.out.println("Process returned value for " + targetClass + ": " + retValue);
-			process.destroy();
-			System.gc();
-			return true;
-		} catch (Throwable t) {
-			t.printStackTrace();
-			process.destroy();
-			System.gc();
-			return true;
-		}
-	}
-	
-	public static void printProcessMsg(final Process process) {
-		
-		//Scanner scanner = new Scanner(System.in);
-		
-		new Thread() {
-			public void run() {
-				String line;
-				OutputStream stdin = process.getOutputStream();
-				InputStream stdout = process.getInputStream();
-				
-				BufferedReader reader = new BufferedReader(new InputStreamReader(stdout));
-				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stdin));
-				
-				try {
-					while ((line = reader.readLine()) != null) {
-						if (!line.isEmpty()) {
-							System.out.println("Process msg: " + line);
-						}
-					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				} finally {
-					try {
-						stdin.close();
-						stdout.close();
-						reader.close();
-						writer.close();
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-				}
-			}
-		}.start();
-	}
-	
-	public static void printProcessErrMsg(final Process process) {
-		new Thread() {
-			public void run() {
-				InputStream stderr = process.getErrorStream();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(stderr));
-				
-				String line;
-				try {
-					while ((line = reader.readLine()) != null) {
-						if (!line.isEmpty()) {
-							System.out.println("Process err msg: " + line);
-						}
-					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					return ;
-				} finally {
-					try {
-						stderr.close();
-						reader.close();
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-				}
-			}
-		}.start();
-	}
-	
-	public synchronized static void increAndReportMutantInfo() {
-		completedMutants++;
-		System.out.println("Completed mutatant: " + completedMutants);
+	public synchronized void increAndReportMutantInfo() {
+		this.completedMutants++;
+		System.out.println("Completed mutatant: " + this.completedMutants);
 		//System.out.println("Total mutants: " + filterFiles.size());
-		System.out.println("Total mutants: " + eArray.length);
+		System.out.println("Total mutants: " + this.eArray.length);
 	}
 	
-	public static class ExecutorThread extends Thread {
+	/*public static void main (String args[]) {
+	
+		File binDir = new File("bin");
+	
+		if (!binDir.exists()) {
+			System.err.println("Cannot find bin folder for executing");
+			return ;
+		}
+	
+		System.out.println("Confirm bin direcotry: " + binDir.getAbsolutePath());
+	
+		filterClassFiles(binDir);
+
+		eArray = new ExecutorThread[filterFiles.size()];
+	
+		for (int i = 0; i < eArray.length; i++) {
+			String targetClass = parsePathToPackage(filterFiles.get(i).getAbsolutePath());
+			eArray[i] = new ExecutorThread(targetClass);
+			eArray[i].start();
+		}
+	
+		for (int i = 0; i < eArray.length; i++) {
+			try {
+				eArray[i].join(executionLimit);
+			
+				if (eArray[i].isAlive()) {
+					System.out.println(eArray[i].getClassName() + "has not yet died. Interruption starts");
+					eArray[i].interrupt();
+				} else {
+					System.out.println(eArray[i].getClassName() + " has died.");
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				System.out.println(eArray[i].getClassName() + " is interrupted: " + eArray[i].isInterrupted());
+			}
+		}
+	
+		System.out.println("Mutant execution completes");
+	}*/
+	
+	public class ExecutorThread extends Thread {
 		
 		private String targetClass;
 		
@@ -267,7 +191,8 @@ public class MutantExecutor {
 			try {
 				processLock.acquireUninterruptibly();
 				System.out.println(this.targetClass + " acquire lock " + processLock.availablePermits());
-				File binDir = new File("bin");
+				//File binDir = new File("bin");
+				File binDir = new File(binFileDir);
 				File libDir = new File("lib");
 				//cparg = cparg+ binDir.getAbsolutePath() + ":" + libDir.getAbsolutePath() + "/*";
 				String cparg = binDir.getAbsolutePath() + ":" + libDir.getAbsolutePath() + "/*";
