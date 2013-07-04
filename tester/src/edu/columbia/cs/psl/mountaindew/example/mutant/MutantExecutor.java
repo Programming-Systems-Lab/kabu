@@ -33,7 +33,7 @@ public class MutantExecutor {
 	private static int inExecution = 0;
 	
 	//Execution limit for each thread: 3 sec
-	private static int executionLimit = 3 * 1000;
+	private static int executionLimit = 60 * 1000;
 	
 	private ArrayList<File> filterFiles = new ArrayList<File>();
 	
@@ -179,7 +179,7 @@ public class MutantExecutor {
 		
 		private ProcessBuilder builder;
 		
-		private int eLimit = 30 * 1000;
+		private int eLimit = 60 * 1000;
 		
 		public ExecutorThread(String targetClass) {
 			this.targetClass = targetClass;
