@@ -22,5 +22,6 @@
 	<classpathentry kind="lib" path="lib/mahout-core-0.7-job.jar"/>
 	<classpathentry kind="lib" path="lib/mahout-integration-0.7.jar"/>
 	<classpathentry kind="lib" path="lib/mahout-core-modified.jar"/>
+	<classpathentry kind="lib" path="/MahoutModified/lib/hadoop-core-0.20.204.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

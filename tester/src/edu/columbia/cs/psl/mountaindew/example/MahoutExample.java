@@ -36,9 +36,11 @@ public class MahoutExample {
 		
 		DataModel model = new FileDataModel(new File("data/knntest.csv"));
 		UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
+		System.out.println("User similarity 1 2: " + similarity.userSimilarity(1, 2));
+		System.out.println("User similarity 2 1: " + similarity.userSimilarity(2, 1));
 		
 		System.out.println("Similarity: " + similarity.userSimilarity(1, 4));
-		UserNeighborhood neightborhood = new NearestNUserNeighborhood(5, similarity, model);
+		UserNeighborhood neightborhood = new NearestNUserNeighborhood(2, similarity, model);
 		
 		for (long tmp: neightborhood.getUserNeighborhood(1)) {
 			System.out.println("Traverse neighborhood for user 1: " + tmp);
@@ -56,7 +58,6 @@ public class MahoutExample {
 			System.out.println("In the loop");
 			System.out.println(recommendation);
 		}
-
 	}
 
 }
