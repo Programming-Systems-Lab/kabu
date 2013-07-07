@@ -7,6 +7,7 @@ import java.util.Iterator;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.InclusiveMin;
+import edu.columbia.cs.psl.mountaindew.absprop.ClusiveAbstract;
 
 public class InclusiveByMin extends ClusiveAbstract {
 

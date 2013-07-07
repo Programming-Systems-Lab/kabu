@@ -1,4 +1,4 @@
-package edu.columbia.cs.psl.mountaindew.property;
+package edu.columbia.cs.psl.mountaindew.absprop;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -10,6 +10,7 @@ import java.util.Collections;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.InclusiveMax;
+import edu.columbia.cs.psl.mountaindew.absprop.ClusiveAbstract;
 
 public class InclusiveByMax extends ClusiveAbstract{
 

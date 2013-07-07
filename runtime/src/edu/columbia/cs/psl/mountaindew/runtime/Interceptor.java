@@ -21,8 +21,8 @@ import edu.columbia.cs.psl.invivo.runtime.AbstractInterceptor;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.runtime.MetamorphicInputProcessorGroup;
-import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
-import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult;
+import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty;
+import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty.PropertyResult;
 import edu.columbia.cs.psl.mountaindew.stats.Correlationer;
 import edu.columbia.cs.psl.mountaindew.struct.MethodProfile;
 

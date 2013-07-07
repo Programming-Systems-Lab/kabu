@@ -1,4 +1,4 @@
-package edu.columbia.cs.psl.mountaindew.property;
+package edu.columbia.cs.psl.mountaindew.absprop;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;

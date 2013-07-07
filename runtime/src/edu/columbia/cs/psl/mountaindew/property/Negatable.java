@@ -12,6 +12,7 @@ import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.Negate;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.Reverse;
+import edu.columbia.cs.psl.mountaindew.absprop.PairwiseMetamorphicProperty;
 
 public class Negatable extends PairwiseMetamorphicProperty{
 	

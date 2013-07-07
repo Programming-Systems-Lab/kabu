@@ -6,10 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Vector;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.InclusiveMid;
+import edu.columbia.cs.psl.mountaindew.absprop.ClusiveAbstract;
+import edu.columbia.cs.psl.mountaindew.util.VectorSorter;
 
 public class InclusiveByMid extends ClusiveAbstract{
 
@@ -53,16 +56,37 @@ public class InclusiveByMid extends ClusiveAbstract{
 			if (((Collection)returnValue1).size() + 1 != ((Collection)returnValue2).size())
 				return false;
 			
-			rt1Max = this.findMax(returnValue1);
-			rt1Min = this.findMin(returnValue2);
-			rt1Avg = this.findAvg(returnValue1);
+			Object tmp1 = ((Collection)returnValue1).iterator().next();
+			Object tmp2 = ((Collection)returnValue2).iterator().next();
 			
-			rt2Max = this.findMax(returnValue2);
-			rt2Min = this.findMin(returnValue2);
-			rt2Avg = this.findAvg(returnValue2);
-			
-			if (rt1Max  == rt2Max && rt1Min == rt2Min && rt2Avg > rt1Avg)
+			if (Number.class.isAssignableFrom(tmp1.getClass()) 
+					&& Number.class.isAssignableFrom(tmp2.getClass())) {
+				rt1Max = this.findMax(returnValue1);
+				rt1Min = this.findMin(returnValue2);
+				rt1Avg = this.findAvg(returnValue1);
+				
+				rt2Max = this.findMax(returnValue2);
+				rt2Min = this.findMin(returnValue2);
+				rt2Avg = this.findAvg(returnValue2);
+				
+				if (rt1Max  == rt2Max && rt1Min == rt2Min && rt2Avg > rt1Avg)
+					return true;
+			} else if (Vector.class.isAssignableFrom(tmp1.getClass()) && Vector.class.isAssignableFrom(tmp2.getClass())) {
+				VectorSorter vs = new VectorSorter();
+				ArrayList<Vector> rt1List = new ArrayList<Vector>((Collection)returnValue1);
+				ArrayList<Vector> rt2List = new ArrayList<Vector>((Collection)returnValue2);
+				
+				Collections.sort(rt1List, vs);
+				Collections.sort(rt2List, vs);
+				
+				for (int i = 0; i < rt1List.size(); i++) {
+					if (!rt1List.get(i).toString().equals(rt2List.get(i).toString())) {
+						return false;
+					}
+				}
+				
 				return true;
+			}
 		}
 		
 		if (Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {

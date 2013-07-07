@@ -11,6 +11,7 @@ import java.util.List;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.AddNumericConstant;
+import edu.columbia.cs.psl.mountaindew.absprop.PairwiseMetamorphicProperty;
 
 public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 

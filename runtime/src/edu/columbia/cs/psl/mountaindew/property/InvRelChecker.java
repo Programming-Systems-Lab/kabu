@@ -1,6 +1,7 @@
 package edu.columbia.cs.psl.mountaindew.property;
 
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
+import edu.columbia.cs.psl.mountaindew.absprop.RelationAbstract;
 import edu.columbia.cs.psl.mountaindew.stats.Correlationer;
 
 public class InvRelChecker extends RelationAbstract{

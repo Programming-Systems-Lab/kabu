@@ -2,13 +2,13 @@ package edu.columbia.cs.psl.mountaindew.runtime;
 
 import java.util.HashSet;
 
+import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.property.AdditiveByConstant;
 import edu.columbia.cs.psl.mountaindew.property.ConstructRelChecker;
 import edu.columbia.cs.psl.mountaindew.property.DirRelChecker;
 import edu.columbia.cs.psl.mountaindew.property.InclusiveByMid;
 import edu.columbia.cs.psl.mountaindew.property.InclusiveByMin;
 import edu.columbia.cs.psl.mountaindew.property.Invertable;
-import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.property.MultiplicativeByConstant;
 import edu.columbia.cs.psl.mountaindew.property.Shufflable;
 import edu.columbia.cs.psl.mountaindew.property.InclusiveByMax;

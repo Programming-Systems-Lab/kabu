@@ -8,6 +8,7 @@ import java.util.HashSet;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.Shuffle;
+import edu.columbia.cs.psl.mountaindew.absprop.PairwiseMetamorphicProperty;
 
 public class Shufflable extends PairwiseMetamorphicProperty {
 

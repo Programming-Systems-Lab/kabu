@@ -8,6 +8,7 @@ import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
+import edu.columbia.cs.psl.mountaindew.absprop.PairwiseMetamorphicProperty;
 
 public class SizeChecker extends PairwiseMetamorphicProperty{
 

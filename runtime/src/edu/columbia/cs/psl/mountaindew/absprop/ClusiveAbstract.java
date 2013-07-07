@@ -1,4 +1,4 @@
-package edu.columbia.cs.psl.mountaindew.property;
+package edu.columbia.cs.psl.mountaindew.absprop;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 
 public abstract class ClusiveAbstract extends PairwiseMetamorphicProperty{
 	protected double calSum(Object arrayList) {

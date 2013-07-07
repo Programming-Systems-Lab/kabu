@@ -6,6 +6,7 @@ import java.util.Collection;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.ExclusiveMid;
+import edu.columbia.cs.psl.mountaindew.absprop.ClusiveAbstract;
 
 public class ExclusiveByMid extends ClusiveAbstract{
 	

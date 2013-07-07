@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
-import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty;
-import edu.columbia.cs.psl.mountaindew.property.MetamorphicProperty.PropertyResult;
+import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty;
+import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty.PropertyResult;
 
 public class MethodProfile {
 	
