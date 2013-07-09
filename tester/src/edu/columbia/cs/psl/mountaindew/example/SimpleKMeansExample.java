@@ -2,22 +2,18 @@ package edu.columbia.cs.psl.mountaindew.example;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-import java.util.regex.Pattern;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -26,31 +22,33 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.serializer.Serialization;
+import org.apache.hadoop.io.serializer.WritableSerialization;
 import org.apache.mahout.clustering.Cluster;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
 import org.apache.mahout.clustering.iterator.ClusterWritable;
 import org.apache.mahout.clustering.kmeans.KMeansDriver;
 import org.apache.mahout.clustering.kmeans.Kluster;
-import org.apache.mahout.common.distance.DistanceMeasure;
 import org.apache.mahout.common.distance.EuclideanDistanceMeasure;
-import org.apache.mahout.common.distance.SquaredEuclideanDistanceMeasure;
-import org.apache.mahout.common.distance.WeightedDistanceMeasure;
-import org.apache.mahout.math.NamedVector;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
-import org.apache.mahout.utils.vectors.csv.CSVVectorIterator;
 import org.reflections.Reflections;
 
+import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
+
+@Metamorphic
 public class SimpleKMeansExample {
 	
-	public static final double[][] points = {{1, 1}, {2, 1}, {1, 2}, {2, 2}, {3, 3}, {8, 8}, {9, 8}, {8, 9}, {9, 9}};
+	public final double[][] points = {{1, 1}, {2, 1}, {1, 2}, {2, 2}, {3, 3}, {8, 8}, {9, 8}, {8, 9}, {9, 9}};
 	
-	private static SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+	private SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSS");
 	
-	private static String oriString = "ori";
+	private String oriString = "ori";
 	
-	private static String transString = "trans";
+	private String transString = "trans";
+	
+	private String testdataRoot = "testdata";
 	
 	private FileSystem fs;
 	
@@ -64,12 +62,25 @@ public class SimpleKMeansExample {
 		this.kNum = kNum;
 	} 
 		
-	public static String getTimemark() {
+	public String getTimemark() {
 		Date date = new Date();
 		return formatter.format(date);
 	}
 	
-	public static List<Vector> readCSV(String inputPath) {
+	public static String toPath(String className) {
+		StringBuffer sb = new StringBuffer(className);
+		
+		for (int i = 0;i < sb.length(); i++) {
+			if (sb.charAt(i) == '.') {
+				sb.setCharAt(i, '/');
+			}
+		}
+		
+		sb.append(".class");
+		return sb.toString();
+	}
+	
+	public List<Vector> readCSV(String inputPath) {
 		File csvPath = new File(inputPath);
 		
 		if (!csvPath.exists()) {
@@ -94,6 +105,32 @@ public class SimpleKMeansExample {
 				for (int i = 0 ; i < sp.length; i++) {
 					doubleVal[i] = Double.valueOf(sp[i]);
 				}
+				
+				/*try {
+					Class.forName("org.apache.mahout.math.Vector");
+					System.out.println("Got the Vector class");
+				} catch (ClassNotFoundException ex) {
+					System.out.println("Find no Vector class");
+				}
+				
+				String targetPath = toPath("org.apache.mahout.math.Vector");
+				System.out.println("Target path: " + targetPath);
+				URL u = ClassLoader.getSystemResource(targetPath);
+				System.out.println("URL: " + u);
+				
+				targetPath = toPath("org.apache.mahout.math.AbstractVector");
+				System.out.println("Target path: " + targetPath);
+				u = ClassLoader.getSystemResource(targetPath);
+				System.out.println("URL: " + u);
+				
+				targetPath = toPath("org.apache.mahout.math.RandomAccessSparseVector");
+				System.out.println("Target path: " + targetPath);
+				u = ClassLoader.getSystemResource(targetPath);
+				System.out.println("URL: " + u);
+				
+				String classPath = System.getProperty("java.class.path");
+				System.out.println("Class path: " + classPath);*/
+				
 				Vector vec = new RandomAccessSparseVector(doubleVal.length);
 				vec.assign(doubleVal);
 				
@@ -106,7 +143,7 @@ public class SimpleKMeansExample {
 		return null;
 	}
 	
-	public static void writePointsToFile(List<Vector> points, String fileName, FileSystem fs, Configuration conf) throws IOException {
+	public void writePointsToFile(List<Vector> points, String fileName) throws IOException {
 		Path path = new Path(fileName);
 		SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, path, LongWritable.class, VectorWritable.class);
 		long recNum = 0;
@@ -120,7 +157,7 @@ public class SimpleKMeansExample {
 		writer.close();
 	}
 	
-	public static List<Vector> getPoints(double[][] raw) {
+	public List<Vector> getPoints(double[][] raw) {
 		List<Vector> points = new ArrayList<Vector>();
 		
 		for (int i = 0; i < raw.length; i++) {
@@ -133,7 +170,7 @@ public class SimpleKMeansExample {
 		return points;
 	}
 	
-	public static void deleteFiles(File dir) {
+	public void deleteFiles(File dir) {
 		if (dir.isDirectory()) {
 			File[] childs = dir.listFiles();
 			for (File tmpFile: childs) {
@@ -143,7 +180,7 @@ public class SimpleKMeansExample {
 		dir.delete();
 	}
 	
-	public static Set<Class<? extends org.apache.mahout.common.distance.DistanceMeasure>> getAllMeasureClass() {
+	public Set<Class<? extends org.apache.mahout.common.distance.DistanceMeasure>> getAllMeasureClass() {
 		String pacakgeName = "org.apache.mahout.common.distance";
 		String jarName = "lib/mahout-core-0.7.jar";
 		
@@ -153,7 +190,7 @@ public class SimpleKMeansExample {
 		return measureClass;
 	}
 	
-	public static void getAllMeasures() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public void getAllMeasures() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String packageName = "org.apache.mahout.common.distance";
 		String jarName = "lib/mahout-core-0.7.jar";
 		
@@ -200,7 +237,7 @@ public class SimpleKMeansExample {
 		}
 	}
 	
-	public static void retrieveAllMeasures() {
+	public void retrieveAllMeasures() {
 		/*for (Class<? extends DistanceMeasure> tmpClass: getAllMeasureClass()) {
 		
 		if (Modifier.isAbstract(tmpClass.getModifiers()))
@@ -248,8 +285,25 @@ public class SimpleKMeansExample {
 	}*/
 	}
 	
-	public void driveKMeans(List<Vector> vectors) {
+	@Metamorphic
+	public ArrayList<Vector> driveKMeans(List<Vector> vectors) throws IOException, InterruptedException, ClassNotFoundException {		
+		String dateString = formatter.format(new Date());
+		String vecDir = testdataRoot + "/points/" + dateString + "/";
+		String vecFile = vecDir + "file1";
+		String clusterDir = testdataRoot + "/clusters/" + dateString + "/";
+		String outputDir = testdataRoot + "/output/" + dateString + "/";
 		
+		System.out.println("Vectors: " + vectors);
+		System.out.println("VecFile: " + vecFile);
+		WritableSerialization s = new WritableSerialization();
+		Serialization tmps = (Serialization)s;
+		
+		//Write in-memory data to vector file
+		this.writePointsToFile(vectors, vecFile);
+		//Initiate cluster centroid
+		this.writeKluster(vectors, clusterDir);
+		//Do KMeans
+		return this.execKMeans(vecDir, clusterDir, outputDir);
 	}
 	
 	public void writeKluster(List<Vector> vectors, String targetDir) throws IOException {
@@ -265,19 +319,51 @@ public class SimpleKMeansExample {
 		writer.close();
 	}
 	
-	public void execKMeans(Path vecDir, Path clusterDir, Path outputDir) throws IOException, InterruptedException, ClassNotFoundException {
-		KMeansDriver.run(conf, vecDir, clusterDir, outputDir, new EuclideanDistanceMeasure(), 0.001, 10, true, 0, false); 
+	public ArrayList<Vector> execKMeans(String vecDir, String clusterDir, String outputDir) throws IOException, InterruptedException, ClassNotFoundException {
+		Path vecPath = new Path(vecDir);
+		Path clusterPath = new Path(clusterDir);
+		Path outputPath = new Path(outputDir);
+		
+		KMeansDriver.run(conf, vecPath, clusterPath, outputPath, new EuclideanDistanceMeasure(), 0.001, 10, true, 0, false); 
 		
 		SequenceFile.Reader reader = 
-				new SequenceFile.Reader(fs, new Path(outputDir.toString() + "/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-00000"), conf);
+				new SequenceFile.Reader(fs, new Path(outputPath.toString() + "/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-00000"), conf);
 		
 		IntWritable key = new IntWritable();
 		WeightedVectorWritable value = new WeightedVectorWritable();
-		
+
 		while(reader.next(key, value)) {
 			System.out.println(value.toString() + " belongs to cluster " + key.toString());
 		}
 		reader.close();
+		
+		//Get centroid vectors
+		File outputDirFile = new File(outputPath.toString());
+		File[] outputChild = outputDirFile.listFiles();
+		
+		String filePattern = "clusters-[0-9]*-final";
+		
+		String targetPath = null;
+		
+		for (int i = 0 ; i < outputChild.length; i++) {
+			if (outputChild[i].getName().matches(filePattern)) {
+				System.out.println("Get one file: " + outputChild[i].getName());
+				targetPath = outputChild[i].getAbsolutePath();
+				break;
+			}
+		}
+		
+		reader = new SequenceFile.Reader(fs, new Path(targetPath + "/" + "part-r-00000"), conf);
+		IntWritable cKey = new IntWritable();
+		ClusterWritable cw = new ClusterWritable();
+		ArrayList<Vector> centroidVectors = new ArrayList<Vector>();
+		
+		while(reader.next(key, cw)) {
+			System.out.println(cKey.toString() + ": " + cw.getValue().getCenter());
+			centroidVectors.add(cw.getValue().getCenter());
+		}
+		
+		return centroidVectors;
 	}
 
 	/**
@@ -293,6 +379,9 @@ public class SimpleKMeansExample {
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// TODO Auto-generated method stub
 		int k = 2;
+		Configuration conf = new Configuration();
+		FileSystem fs = FileSystem.get(conf);
+		SimpleKMeansExample ex = new SimpleKMeansExample(fs, conf, k);
 
 		File testData = new File("testdata");
 		
@@ -318,56 +407,36 @@ public class SimpleKMeansExample {
 		
 		if (testDataOutput.exists()) {
 			System.out.println("Start to clean output files");
-			deleteFiles(testDataOutput);
+			ex.deleteFiles(testDataOutput);
 		}
 		testDataOutput.mkdir();
 		
 		//List<Vector> vectors = getPoints(points);
-		List<Vector> vectors = readCSV("testdata/input/points.csv");
+		List<Vector> vectors = ex.readCSV("testdata/input/points.csv");
 		
 		if (vectors == null)
 			return ;
 		
-		Configuration conf = new Configuration();
-		FileSystem fs = FileSystem.get(conf);
+
 		
-		String vectorFile = "testdata/points/" + oriString + "/file1";
-		writePointsToFile(vectors, vectorFile, fs, conf);
+		/*String vectorFile = "testdata/points/" + oriString + "/file1";
+		writePointsToFile(vectors, vectorFile, fs, conf);*/
 		
-		SimpleKMeansExample ex = new SimpleKMeansExample(fs, conf, 2);
-				
-		//Path path = new Path("testdata/clusters/part-00000");
-		String targetDir = "testdata/clusters/" + oriString;
-		//Path path = new Path("testdata/clusters/" + oriString + "/part-00000");
-		ex.writeKluster(vectors, targetDir);
-		/*SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, path, Text.class, Kluster.class);
+
+		ArrayList<Vector> centroids = ex.driveKMeans(vectors);
 		
-		for (int i = 0; i < k; i++) {
-			Vector vec = vectors.get(i);
-			Kluster kluster = new Kluster(vec, i, new EuclideanDistanceMeasure());
-			writer.append(new Text(kluster.getIdentifier()), kluster);
+		for(Vector centroid: centroids) {
+			System.out.println("Centroid: " + centroid);
 		}
-		writer.close();*/
+				
+
+		/*String targetDir = "testdata/clusters/" + oriString;
+		ex.writeKluster(vectors, targetDir);
 		
 		ex.execKMeans(new Path("testdata/points/" + oriString), 
 				new Path("testdata/clusters/" + oriString), 
 				new Path("testdata/output/" + oriString));
 		
-		/*KMeansDriver.run(conf, new Path("testdata/points/" + oriString), 
-				new Path("testdata/clusters/" + oriString), 
-				new Path("testdata/output/" + oriString), 
-				new EuclideanDistanceMeasure(), 0.001, 10, true, 0, false);
-		
-		SequenceFile.Reader reader = 
-				new SequenceFile.Reader(fs, new Path("testdata/output/" + oriString + "/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-00000"), conf);
-		
-		IntWritable key = new IntWritable();
-		WeightedVectorWritable value = new WeightedVectorWritable();
-		
-		while(reader.next(key, value)) {
-			System.out.println(value.toString() + " belongs to cluster " + key.toString());
-		}
-		reader.close();*/
 		
 		File outputDir = new File("testdata/output/" + oriString);
 		File[] outputChild = outputDir.listFiles();
@@ -395,13 +464,12 @@ public class SimpleKMeansExample {
 		
 		writePointsToFile(vectors, "testdata/points/" + transString + "/file1" , fs, conf);
 		
-		//Path transPath = new Path("testdata/clusters/" + transString + "/part-00000");
 		targetDir = "testdata/clusters/" + transString;
 		ex.writeKluster(vectors, targetDir);
 		
 		ex.execKMeans(new Path("testdata/points/" + transString), 
 				new Path("testdata/clusters/" + transString), 
-				new Path("testdata/output/" + transString));
+				new Path("testdata/output/" + transString));*/
 		
 	}
 

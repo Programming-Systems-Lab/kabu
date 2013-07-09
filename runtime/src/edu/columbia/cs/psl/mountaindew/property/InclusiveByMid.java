@@ -59,6 +59,8 @@ public class InclusiveByMid extends ClusiveAbstract{
 			Object tmp1 = ((Collection)returnValue1).iterator().next();
 			Object tmp2 = ((Collection)returnValue2).iterator().next();
 			
+			System.out.println("In the InclusiveByMid Checker");
+			
 			if (Number.class.isAssignableFrom(tmp1.getClass()) 
 					&& Number.class.isAssignableFrom(tmp2.getClass())) {
 				rt1Max = this.findMax(returnValue1);

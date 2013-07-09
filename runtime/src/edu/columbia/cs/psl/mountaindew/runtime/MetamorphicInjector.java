@@ -10,7 +10,8 @@ public class MetamorphicInjector {
 //		InterceptorClassLoader l = new InterceptorClassLoader();
 //		Thread.currentThread().setContextClassLoader(l);
 		try {
-			Class c = Class.forName(args[0]);
+//			System.out.println("Check args: " + args[0]);
+			Class<?> c = Class.forName(args[0]);
 			String[] args2 = new String[args.length-1];
 			for(int i = 1; i<args.length;i++)
 				args2[i-1] = args[i];

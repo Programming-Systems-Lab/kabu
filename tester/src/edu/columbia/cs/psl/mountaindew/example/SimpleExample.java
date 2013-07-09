@@ -1,10 +1,19 @@
 package edu.columbia.cs.psl.mountaindew.example;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.mahout.math.Vector;
 
 //import weka.classifiers.functions.supportVector.PukTest;
 
@@ -14,6 +23,11 @@ import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 
 @Metamorphic
 public class SimpleExample extends AbstractExample {
+	
+	@Metamorphic
+	public void dummyMethod() {
+		
+	}
 
 	@Metamorphic
 	public String go(String in,String in2, String[] in3)
@@ -300,7 +314,34 @@ public class SimpleExample extends AbstractExample {
 		
 		/*SimpleExampleAORB_31 m2 = new SimpleExampleAORB_31();
 		System.out.println(m2.arrayDiv(new int[] {8, 3, 2, 9}));*/
-		SimpleExample ex = new SimpleExample();
-		System.out.println(ex.arrayDiv(new int[] {8, 3, 2, 9}));
+		try {
+			Class<?> c = Class.forName("edu.columbia.cs.psl.mountaindew.example.SimpleKMeansExample");
+			Configuration conf = new Configuration();
+			FileSystem fs = FileSystem.get(conf);
+			SimpleKMeansExample ex = new SimpleKMeansExample(fs, conf, 2);
+			List<Vector> points = ex.readCSV("testdata/input/points.csv");
+			
+			Constructor<?> constructor = c.getConstructor(FileSystem.class, Configuration.class, int.class);
+			Object obj = constructor.newInstance(fs, conf, 2);
+			Method m = c.getMethod("driveKMeans", List.class);
+			List<Vector> centroids = (ArrayList<Vector>)m.invoke(obj, points);
+			
+			for (Vector centroid: centroids) {
+				System.out.println("Centroids by reflection: " + centroid);
+			}
+			
+			
+			//Class<?> c = Class.forName("java.util.ArrayList");
+			//Class<?> c= Class.forName("edu.columbia.cs.psl.mountaindew.example.DummyInterface");
+			System.out.println("Check class of vector: " + c.getCanonicalName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		/*SimpleExample ex = new SimpleExample();
+		System.out.println("Ran simple example");
+		System.out.println(ex.arrayDiv(new int[] {8, 3, 2, 9}));*/
 	}
 }

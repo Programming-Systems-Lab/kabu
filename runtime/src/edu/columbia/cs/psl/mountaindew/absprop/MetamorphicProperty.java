@@ -103,7 +103,9 @@ public abstract class MetamorphicProperty {
 			try {
 				MetamorphicInputProcessor inputProcessor = processorClass.newInstance();
 				this.processors.add(inputProcessor);
-			} catch (InstantiationException | IllegalAccessException e) {
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
 		}
