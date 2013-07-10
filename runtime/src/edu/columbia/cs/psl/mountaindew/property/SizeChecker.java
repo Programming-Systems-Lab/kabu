@@ -3,6 +3,7 @@ package edu.columbia.cs.psl.mountaindew.property;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 //import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.Collections;
 
@@ -72,6 +73,8 @@ public class SizeChecker extends PairwiseMetamorphicProperty{
 			ret = Array.getLength(target);
 		else if (Collection.class.isAssignableFrom(target.getClass()))
 			ret = ((Collection)target).size();
+		else if (Map.class.isAssignableFrom(target.getClass()))
+			ret = ((Map)target).size();
 		
 		return ret;
 	}

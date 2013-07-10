@@ -141,6 +141,12 @@ public class Interceptor extends AbstractInterceptor {
 				children.add(child);
 				child.thread = createChildThread(child);
 				child.thread.start();
+				try {
+					child.thread.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		inv.children = new MethodInvocation[children.size()];

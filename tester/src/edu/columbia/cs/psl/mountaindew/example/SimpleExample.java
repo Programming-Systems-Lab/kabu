@@ -141,6 +141,19 @@ public class SimpleExample extends AbstractExample {
 	}
 	
 	@Metamorphic
+	public double[] arrayDiv(List<Integer> in) {
+		double result[] = new double[in.size()];
+		int k = 5;
+		
+		for (int i = 0; i < in.size(); i++) {
+			Integer tmp = in.get(i);
+			result[i] = ((double)tmp)/k;
+		}
+		
+		return result;
+	}
+	
+	@Metamorphic
 	public double[] arrayDec(int[] in) {
 		double result[] = new double[in.length];
 		int k = 4;
@@ -314,14 +327,24 @@ public class SimpleExample extends AbstractExample {
 		
 		/*SimpleExampleAORB_31 m2 = new SimpleExampleAORB_31();
 		System.out.println(m2.arrayDiv(new int[] {8, 3, 2, 9}));*/
-		try {
+		/*try {
 			Class<?> c = Class.forName("edu.columbia.cs.psl.mountaindew.example.SimpleKMeansExample");
 			Configuration conf = new Configuration();
 			FileSystem fs = FileSystem.get(conf);
 			SimpleKMeansExample ex = new SimpleKMeansExample(fs, conf, 2);
 			List<Vector> points = ex.readCSV("testdata/input/points.csv");
 			
-			Constructor<?> constructor = c.getConstructor(FileSystem.class, Configuration.class, int.class);
+			Class[] params = new Class[]{FileSystem.class, Configuration.class, int.class};
+			Constructor<?> constructor = c.getConstructor(params);
+			
+			Class<?>[] retrieveParams = constructor.getParameterTypes();
+			
+			for (Class clazz: retrieveParams) {
+				System.out.println("Check params: " + clazz.getName());
+			}
+			
+			Class<?> c2 = Class.forName("edu.columbia.cs.psl.mountaindew.example.SimpleExample");
+			
 			Object obj = constructor.newInstance(fs, conf, 2);
 			Method m = c.getMethod("driveKMeans", List.class);
 			List<Vector> centroids = (ArrayList<Vector>)m.invoke(obj, points);
@@ -329,19 +352,19 @@ public class SimpleExample extends AbstractExample {
 			for (Vector centroid: centroids) {
 				System.out.println("Centroids by reflection: " + centroid);
 			}
-			
-			
-			//Class<?> c = Class.forName("java.util.ArrayList");
-			//Class<?> c= Class.forName("edu.columbia.cs.psl.mountaindew.example.DummyInterface");
-			System.out.println("Check class of vector: " + c.getCanonicalName());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-		}
-		/*SimpleExample ex = new SimpleExample();
+		}*/
+		SimpleExample ex = new SimpleExample();
 		System.out.println("Ran simple example");
-		System.out.println(ex.arrayDiv(new int[] {8, 3, 2, 9}));*/
+		//System.out.println(ex.arrayDiv(new int[] {8, 3, 2, 9}));
+		List<Integer> input = new ArrayList<Integer>();
+		input.add(3);
+		input.add(4);
+		input.add(5);
+		System.out.println(ex.arrayDiv(input));
 	}
 }

@@ -2,11 +2,17 @@ package edu.columbia.cs.psl.mountaindew.property;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Vector;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+
+import org.apache.mahout.math.Vector;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
@@ -53,42 +59,52 @@ public class InclusiveByMid extends ClusiveAbstract{
 		System.out.println("Returvalue1 class: " + returnValue1.getClass().getName() + " " + Collection.class.isAssignableFrom(returnValue2.getClass()));*/
 		
 		if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
-			if (((Collection)returnValue1).size() + 1 != ((Collection)returnValue2).size())
+			//if (((Collection)returnValue1).size() + 1 != ((Collection)returnValue2).size())
+				//return false;
+			
+			//Object tmp1 = ((Collection)returnValue1).iterator().next();
+			//Object tmp2 = ((Collection)returnValue2).iterator().next();
+			
+			rt1Max = this.findMax(returnValue1);
+			rt1Min = this.findMin(returnValue2);
+			rt1Avg = this.findAvg(returnValue1);
+			
+			rt2Max = this.findMax(returnValue2);
+			rt2Min = this.findMin(returnValue2);
+			rt2Avg = this.findAvg(returnValue2);
+			
+			if (rt1Max  == rt2Max && rt1Min == rt2Min && rt2Avg > rt1Avg)
+				return true;
+
+		}
+		
+		if (Map.class.isAssignableFrom(returnValue1.getClass()) && Map.class.isAssignableFrom(returnValue2.getClass())) {
+			Set<Entry> tmpSet = ((Map)returnValue1).entrySet();
+			
+			if (tmpSet.size() == 0)
 				return false;
 			
-			Object tmp1 = ((Collection)returnValue1).iterator().next();
-			Object tmp2 = ((Collection)returnValue2).iterator().next();
+			Entry tmpEntry = tmpSet.iterator().next();
 			
-			System.out.println("In the InclusiveByMid Checker");
-			
-			if (Number.class.isAssignableFrom(tmp1.getClass()) 
-					&& Number.class.isAssignableFrom(tmp2.getClass())) {
-				rt1Max = this.findMax(returnValue1);
-				rt1Min = this.findMin(returnValue2);
-				rt1Avg = this.findAvg(returnValue1);
+			if (Collection.class.isAssignableFrom(tmpEntry.getValue().getClass())) {
+				Map<Object, Collection> rt1Map = (Map<Object, Collection>)returnValue1;
+				Map<Object, Collection> rt2Map = (Map<Object, Collection>)returnValue2;
 				
-				rt2Max = this.findMax(returnValue2);
-				rt2Min = this.findMin(returnValue2);
-				rt2Avg = this.findAvg(returnValue2);
+				if (rt1Map.size() != rt2Map.size())
+					return false;
 				
-				if (rt1Max  == rt2Max && rt1Min == rt2Min && rt2Avg > rt1Avg)
-					return true;
-			} else if (Vector.class.isAssignableFrom(tmp1.getClass()) && Vector.class.isAssignableFrom(tmp2.getClass())) {
-				VectorSorter vs = new VectorSorter();
-				ArrayList<Vector> rt1List = new ArrayList<Vector>((Collection)returnValue1);
-				ArrayList<Vector> rt2List = new ArrayList<Vector>((Collection)returnValue2);
-				
-				Collections.sort(rt1List, vs);
-				Collections.sort(rt2List, vs);
-				
-				for (int i = 0; i < rt1List.size(); i++) {
-					if (!rt1List.get(i).toString().equals(rt2List.get(i).toString())) {
+				Set rt1Set, rt2Set;
+				for (Object key: rt1Map.keySet()) {
+					if (this.checkCollectionEquivalence((Collection)rt1Map.get(key), (Collection)rt2Map.get(key)) == false)
 						return false;
-					}
 				}
 				
 				return true;
 			}
+		}
+		
+		if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
+			return this.checkCollectionEquivalence((Collection)returnValue1, (Collection)returnValue2);
 		}
 		
 		if (Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
@@ -113,6 +129,18 @@ public class InclusiveByMid extends ClusiveAbstract{
 		}
 
 		return false;
+	}
+	
+	private boolean checkCollectionEquivalence(Collection l1, Collection l2) {
+		Set s1 = new HashSet(l1);
+		Set s2 = new HashSet(l2);
+		
+		if (!s1.containsAll(s2))
+			return false;
+		if (!s2.containsAll(s1))
+			return false;
+		
+		return true;
 	}
 
 	@Override

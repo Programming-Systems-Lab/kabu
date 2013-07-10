@@ -1,5 +1,7 @@
 package edu.columbia.cs.psl.mountaindew.runtime;
 
+import edu.columbia.cs.psl.invivo.runtime.InvivoPreMain;
+
 
 
 
@@ -7,6 +9,7 @@ public class MetamorphicInjector {
 
 	public void go(String[] args)
 	{
+//		InvivoPreMain.config = new Configuration();
 //		InterceptorClassLoader l = new InterceptorClassLoader();
 //		Thread.currentThread().setContextClassLoader(l);
 		try {

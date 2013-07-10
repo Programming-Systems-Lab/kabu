@@ -18,6 +18,7 @@ import edu.columbia.cs.psl.mountaindew.property.ExclusiveByMid;
 import edu.columbia.cs.psl.mountaindew.property.ExclusiveByMin;
 import edu.columbia.cs.psl.mountaindew.property.Negatable;
 import edu.columbia.cs.psl.mountaindew.property.SizeChecker;
+import edu.columbia.cs.psl.mountaindew.property.ProjectionEqualer;
 
 public class MetamorphicObserver {
 	HashSet<Interceptor> interceptors = new HashSet<Interceptor>();
@@ -40,6 +41,7 @@ public class MetamorphicObserver {
 //		properties.add(InvRelChecker.class);
 //		properties.add(ConstructRelChecker.class);
 //		properties.add(SizeChecker.class);
+//		properties.add(ProjectionEqualer.class);
 	}
 	public static MetamorphicObserver getInstance() {
 //		System.out.println("Get metamorphic observer instance");
@@ -58,7 +60,7 @@ public class MetamorphicObserver {
 			//i.reportPropertyResults();
 			i.reportPropertyResultList();
 			System.out.println("");
-			i.exportMethodProfile();
+			//i.exportMethodProfile();
 		}
 	}
 }
