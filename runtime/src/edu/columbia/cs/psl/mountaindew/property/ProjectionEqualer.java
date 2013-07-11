@@ -1,6 +1,7 @@
 package edu.columbia.cs.psl.mountaindew.property;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -73,6 +74,26 @@ public class ProjectionEqualer extends EqualerAbstract{
 		return false;
 	}
 	
+	protected boolean checkEquivalence(Object obj1, Object obj2) {
+		Class c1 = obj1.getClass();
+		Class c2 = obj2.getClass();
+		
+		if (c1.getName().equals(c2.getName()))
+			return false;
+		
+		if (Collection.class.isAssignableFrom(c1) && Collection.class.isAssignableFrom(c2)) {
+			return checkEquivalence((Collection)obj1, (Collection)obj2);
+		} else if (c1.isArray() && c2.isArray()) {
+			Collection col1 = Arrays.asList((Object[]) obj1);
+			Collection col2 = Arrays.asList((Object[]) obj2);
+			
+			return checkEquivalence(col1, col2);
+		} else {
+			return (obj1.equals(obj2));
+		}
+		
+	}
+	
 	protected boolean checkEquivalence(Collection v1Collection, Collection v2Collection) {
 		List v1List = new ArrayList(v1Collection);
 		List v2List = new ArrayList(v2Collection);
@@ -118,7 +139,7 @@ public class ProjectionEqualer extends EqualerAbstract{
 		
 		return false;
 	}
-	
+		
 	private Vector getPartialVector(Vector vector, int start, int length) {
 		return vector.viewPart(start, length);
 	}

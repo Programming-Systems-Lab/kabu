@@ -1,24 +1,13 @@
 package edu.columbia.cs.psl.mountaindew.property;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
 
-import org.apache.mahout.math.Vector;
+import java.util.Collection;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.InclusiveMid;
 import edu.columbia.cs.psl.mountaindew.absprop.ClusiveAbstract;
-import edu.columbia.cs.psl.mountaindew.util.VectorSorter;
 
 public class InclusiveByMid extends ClusiveAbstract{
 
@@ -77,36 +66,7 @@ public class InclusiveByMid extends ClusiveAbstract{
 				return true;
 
 		}
-		
-		if (Map.class.isAssignableFrom(returnValue1.getClass()) && Map.class.isAssignableFrom(returnValue2.getClass())) {
-			Set<Entry> tmpSet = ((Map)returnValue1).entrySet();
-			
-			if (tmpSet.size() == 0)
-				return false;
-			
-			Entry tmpEntry = tmpSet.iterator().next();
-			
-			if (Collection.class.isAssignableFrom(tmpEntry.getValue().getClass())) {
-				Map<Object, Collection> rt1Map = (Map<Object, Collection>)returnValue1;
-				Map<Object, Collection> rt2Map = (Map<Object, Collection>)returnValue2;
 				
-				if (rt1Map.size() != rt2Map.size())
-					return false;
-				
-				Set rt1Set, rt2Set;
-				for (Object key: rt1Map.keySet()) {
-					if (this.checkCollectionEquivalence((Collection)rt1Map.get(key), (Collection)rt2Map.get(key)) == false)
-						return false;
-				}
-				
-				return true;
-			}
-		}
-		
-		if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
-			return this.checkCollectionEquivalence((Collection)returnValue1, (Collection)returnValue2);
-		}
-		
 		if (Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
 			//Check if this method try to find out max, min
 			double rt1 = ((Number)returnValue1).doubleValue();
@@ -129,18 +89,6 @@ public class InclusiveByMid extends ClusiveAbstract{
 		}
 
 		return false;
-	}
-	
-	private boolean checkCollectionEquivalence(Collection l1, Collection l2) {
-		Set s1 = new HashSet(l1);
-		Set s2 = new HashSet(l2);
-		
-		if (!s1.containsAll(s2))
-			return false;
-		if (!s2.containsAll(s1))
-			return false;
-		
-		return true;
 	}
 
 	@Override
