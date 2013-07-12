@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry combineaccessrules="false" kind="src" path="/invivo-runtime"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/asm-all-4.0.jar" sourcepath="lib/asm-src.zip"/>
@@ -18,5 +17,6 @@
 	<classpathentry kind="lib" path="/mtndew-tester/lib/mahout-core-0.7.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/mahout-integration-0.7.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/mahout-math-0.7.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/invivo-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
