@@ -3,9 +3,11 @@ package edu.columbia.cs.psl.mountaindew.property;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.mountaindew.absprop.EqualerAbstract;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,8 +51,8 @@ public class ContentEqualer extends EqualerAbstract{
 			c1Set = new HashSet((Collection)c1);
 			c2Set = new HashSet((Collection)c2);
 			
-			//System.out.println("Check c1Set: " + c1Set);
-			//System.out.println("Check c2Set: " + c2Set);
+			System.out.println("Check c1Set: " + c1Set);
+			System.out.println("Check c2Set: " + c2Set);
 			
 			return c1Set.equals(c2Set);
 		} else if (c1.getClass().isArray() && c2.getClass().isArray()) {
@@ -65,12 +67,26 @@ public class ContentEqualer extends EqualerAbstract{
 			if (c1Map.size() != c2Map.size())
 				return false;
 			
-			for (Object key: c1Map.keySet()) {
-				if (!checkEquivalence(c1Map.get(key), c2Map.get(key))) {
-					return false;
+			int shouldCorrect  = c1Map.size();
+			int count = 0;
+			
+			List c1List = new ArrayList(c1Map.values());
+			List c2List = new ArrayList(c2Map.values());
+			
+			for (int i = 0; i < c1List.size(); i++) {
+				for (int j =0; j < c2List.size(); j++) {
+					if (this.checkEquivalence(c1List.get(i), c2List.get(j)))
+						count++;
 				}
 			}
-			return true;
+			
+			System.out.println("Check shouldCorrect: " + shouldCorrect);
+			System.out.println("Check count: " + count);
+			
+			if (count == shouldCorrect)
+				return true;
+			else
+				return false;
 		}
 		return false;
 	}

@@ -122,15 +122,21 @@ public class InorderEqualer extends EqualerAbstract {
 			if (c1Map.size() != c2Map.size())
 				return false;
 			
-			Object val1, val2;
-			for (Object key: c1Map.keySet()) {
-				val1 = c1Map.get(key);
-				val2 = c2Map.get(key);
-				
-				if (checkEquivalence(val1, val2) == false)
-					return false;
+			List c1List = new ArrayList(c1Map.values());
+			List c2List = new ArrayList(c2Map.values());
+			
+			int shouldCorrect = c1Map.size();
+			int count = 0;
+			
+			for (int i = 0; i < c1List.size(); i++) {
+				for (int j = 0; j < c2List.size(); j++) {
+					if (this.checkEquivalence(c1List.get(i), c2List.get(j)))
+						count++;
+				}
 			}
-			return true;
+			
+			if (count == shouldCorrect)
+				return true;
 		}
 		
 		return false;

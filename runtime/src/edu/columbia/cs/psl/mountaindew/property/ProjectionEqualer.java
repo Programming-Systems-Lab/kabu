@@ -50,20 +50,20 @@ public class ProjectionEqualer extends EqualerAbstract{
 				if (!tmpRt2Map.keySet().containsAll(tmpRt1Map.keySet()))
 					return false;
 				
-				List tmp1Val, tmp2Val;
-				Vector tmp2Vec;
-				for (Object key: tmpRt1Map.keySet()) {
-					tmp1Val = new ArrayList(tmpRt1Map.get(key));
-					tmp2Val = new ArrayList(tmpRt2Map.get(key));
-					
-					if (tmp1Val.size() != tmp2Val.size())
-						return false;
-					
-					if (this.checkEquivalence(tmp1Val, tmp2Val) == false)
-						return false;
+				List tmp1ValList = new ArrayList(tmpRt1Map.values());
+				List tmp2ValList = new ArrayList(tmpRt2Map.values());
+				
+				int shouldCorrect = tmpRt1Map.size();
+				int count = 0;
+				for (int i = 0; i < tmp1ValList.size(); i++) {
+					for (int j = 0; j < tmp2ValList.size(); j++) {
+						if (this.checkEquivalence(tmp1ValList.get(i), tmp2ValList.get(j)))
+							count++;
+					}
 				}
 				
-				return true;
+				if (count == shouldCorrect)
+					return true;
 			}
 		} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
 			List v1List = new ArrayList((Collection)returnValue1);
@@ -78,7 +78,7 @@ public class ProjectionEqualer extends EqualerAbstract{
 		Class c1 = obj1.getClass();
 		Class c2 = obj2.getClass();
 		
-		if (c1.getName().equals(c2.getName()))
+		if (!c1.getName().equals(c2.getName()))
 			return false;
 		
 		if (Collection.class.isAssignableFrom(c1) && Collection.class.isAssignableFrom(c2)) {

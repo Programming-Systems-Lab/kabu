@@ -149,8 +149,6 @@ public class Negatable extends PairwiseMetamorphicProperty{
 				
 				if (shouldCorrect == count)
 					return true;
-				else
-					 return true;
 			}
 		}
 		

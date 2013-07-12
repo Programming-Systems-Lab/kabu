@@ -66,7 +66,7 @@ public class MetamorphicObserver {
 			//i.reportPropertyResults();
 			i.reportPropertyResultList();
 			System.out.println("");
-			//i.exportMethodProfile();
+			i.exportMethodProfile();
 		}
 	}
 }

@@ -4,6 +4,9 @@ import java.lang.reflect.Array;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.mahout.math.Vector;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty;
@@ -38,15 +41,36 @@ public class MethodProfile {
 		} else if (Collection.class.isAssignableFrom(params.getClass())) {
 			Iterator paramIT = ((Collection)params).iterator();
 			sBuilder.append("[");
+			Object tmp;
 			while(paramIT.hasNext()) {
 				//sBuilder.append(((Double)paramIT.next()).toString());
-				sBuilder.append(String.valueOf((Number)paramIT.next()));
+				tmp = paramIT.next();
+				
+				if (Number.class.isAssignableFrom(tmp.getClass())) {
+					sBuilder.append(String.valueOf((Number)tmp));
+				} else if (Vector.class.isAssignableFrom(tmp.getClass())) {
+					sBuilder.append(((Vector)tmp).asFormatString().replaceAll(",", " "));
+				} else {
+					sBuilder.append(tmp.toString());
+				}
 				sBuilder.append(" ");
 			}
 			sBuilder.append("]");
 		} else if (Number.class.isAssignableFrom(params.getClass())) {
 			sBuilder.append("[");
 			sBuilder.append(String.valueOf((Number)params));
+			sBuilder.append("]");
+		} else if (Map.class.isAssignableFrom(params.getClass())) {
+			Map tmpMap = (Map)params;
+			sBuilder.append("[");
+			for (Object key: tmpMap.keySet()) {
+				sBuilder.append("Key: " + interpretParams(key));
+				sBuilder.append("Value: " + interpretParams(tmpMap.get(key)));
+			}
+			sBuilder.append("]");
+		} else {
+			sBuilder.append("[");
+			sBuilder.append(params.toString());
 			sBuilder.append("]");
 		};
 		
