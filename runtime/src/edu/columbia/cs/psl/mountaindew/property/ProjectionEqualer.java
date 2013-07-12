@@ -162,30 +162,17 @@ public class ProjectionEqualer extends EqualerAbstract{
 			return false;
 		
 		//Temporarily only for collection and vector. Other data type may not need to check the projection property
-		if (Collection.class.isAssignableFrom(o1.getClass()) || Collection.class.isAssignableFrom(o2.getClass()))
+		if (Collection.class.isAssignableFrom(o1.getClass()) && Collection.class.isAssignableFrom(o2.getClass()))
 			return true;
-		else if (Vector.class.isAssignableFrom(o1.getClass()) || Vector.class.isAssignableFrom(o2.getClass()))
+		else if (Vector.class.isAssignableFrom(o1.getClass()) && Vector.class.isAssignableFrom(o2.getClass()))
 			return true;
-		else if (Map.class.isAssignableFrom(o1.getClass()) || Map.class.isAssignableFrom(o2.getClass()))
+		else if (Map.class.isAssignableFrom(o1.getClass()) && Map.class.isAssignableFrom(o2.getClass()))
+			return true;
+		else if (o1.getClass().isArray() && o2.getClass().isArray())
 			return true;
 		else
 			return false;
 		
-	}
-
-	@Override
-	protected int[] getInterestedVariableIndices() {
-		// TODO Auto-generated method stub
-		ArrayList<Integer> rets = new ArrayList<Integer>();
-		for(int i = 0;i<getMethod().getParameterTypes().length; i++)
-		{
-			if(getMethod().getParameterTypes()[i].isArray() || Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
-				rets.add(i);
-		}
-		int[] ret = new int[rets.size()];
-		for(int i = 0;i<rets.size();i++)
-			ret[i]=rets.get(i);
-		return ret;
 	}
 
 	@Override

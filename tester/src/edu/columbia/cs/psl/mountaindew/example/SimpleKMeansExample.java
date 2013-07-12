@@ -4,12 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +37,8 @@ import org.apache.mahout.clustering.iterator.ClusterWritable;
 import org.apache.mahout.clustering.kmeans.KMeansDriver;
 import org.apache.mahout.clustering.kmeans.Kluster;
 import org.apache.mahout.common.distance.EuclideanDistanceMeasure;
+import org.apache.mahout.common.distance.ManhattanDistanceMeasure;
+import org.apache.mahout.common.distance.SquaredEuclideanDistanceMeasure;
 import org.apache.mahout.math.DenseVector;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
@@ -332,7 +336,9 @@ public class SimpleKMeansExample {
 		Path outputPath = new Path(outputDir);
 		
 		try {
-			KMeansDriver.run(conf, vecPath, clusterPath, outputPath, new EuclideanDistanceMeasure(), 0.001, 10, true, 0, false); 
+			KMeansDriver.run(conf, vecPath, clusterPath, outputPath, new EuclideanDistanceMeasure(), 0.001, 10, true, 0, false);
+			//KMeansDriver.run(conf, vecPath, clusterPath, outputPath, new ManhattanDistanceMeasure(), 0.001, 10, true, 0, false);
+			//KMeansDriver.run(conf, vecPath, clusterPath, outputPath, new SquaredEuclideanDistanceMeasure(), 0.001, 10, true, 0, false);
 			
 			SequenceFile.Reader reader = 
 					new SequenceFile.Reader(fs, new Path(outputPath.toString() + "/" + Cluster.CLUSTERED_POINTS_DIR + "/part-m-00000"), conf);
@@ -352,6 +358,32 @@ public class SimpleKMeansExample {
 				}
 			}
 			reader.close();
+			
+			//Get centroid vectors
+			/*File outputDirFile = new File(outputPath.toString());
+			File[] outputChild = outputDirFile.listFiles();
+			
+			String filePattern = "clusters-[0-9]*-final";
+			
+			String targetPath = null;
+			
+			for (int i = 0 ; i < outputChild.length; i++) {
+				if (outputChild[i].getName().matches(filePattern)) {
+					System.out.println("Get one file: " + outputChild[i].getAbsolutePath());
+					targetPath = outputChild[i].getAbsolutePath();
+					break;
+				}
+			}
+			
+			reader = new SequenceFile.Reader(fs, new Path(targetPath + "/" + "part-r-00000"), conf);
+			IntWritable cKey = new IntWritable();
+			ClusterWritable cw = new ClusterWritable();
+			ArrayList<Vector> centroidVectors = new ArrayList<Vector>();
+			
+			while(reader.next(key, cw)) {
+				System.out.println(cKey.toString() + ": " + cw.getValue().getCenter());
+				centroidVectors.add(cw.getValue().getCenter());
+			}*/
 			
 			return clusterMap;
 		} catch (Exception e) {
@@ -451,7 +483,6 @@ public class SimpleKMeansExample {
 				System.out.println("Cluster " + tmpEntry.getKey() + " " + vec.asFormatString());
 			}
 		}
-		
 		/*String vectorFile = "testdata/points/" + oriString + "/file1";
 		writePointsToFile(vectors, vectorFile, fs, conf);*/
 		

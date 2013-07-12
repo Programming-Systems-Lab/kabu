@@ -21,6 +21,7 @@ import edu.columbia.cs.psl.mountaindew.property.SizeChecker;
 import edu.columbia.cs.psl.mountaindew.property.ProjectionEqualer;
 import edu.columbia.cs.psl.mountaindew.property.ContentEqualer;
 import edu.columbia.cs.psl.mountaindew.property.InorderEqualer;
+import edu.columbia.cs.psl.mountaindew.property.CentroidEqualer;
 
 public class MetamorphicObserver {
 	HashSet<Interceptor> interceptors = new HashSet<Interceptor>();
@@ -44,8 +45,9 @@ public class MetamorphicObserver {
 //		properties.add(ConstructRelChecker.class);
 //		properties.add(SizeChecker.class);
 //		properties.add(ProjectionEqualer.class);
-		properties.add(ContentEqualer.class);
+//		properties.add(ContentEqualer.class);
 //		properties.add(InorderEqualer.class);
+		properties.add(CentroidEqualer.class);
 	}
 	public static MetamorphicObserver getInstance() {
 //		System.out.println("Get metamorphic observer instance");

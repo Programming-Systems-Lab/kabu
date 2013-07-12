@@ -47,7 +47,7 @@ public class ContentEqualer extends EqualerAbstract{
 		Set c1Set, c2Set;
 		if (Collection.class.isAssignableFrom(c1.getClass()) && Collection.class.isAssignableFrom(c2.getClass())) {
 			c1Set = new HashSet((Collection)c1);
-			c2Set = new HashSet((Collection)c1);
+			c2Set = new HashSet((Collection)c2);
 			
 			//System.out.println("Check c1Set: " + c1Set);
 			//System.out.println("Check c2Set: " + c2Set);

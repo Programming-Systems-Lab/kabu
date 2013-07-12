@@ -12,7 +12,7 @@ public class ClassChecker {
 			return String.class; 
 		} else if (Collection.class.isAssignableFrom(objClass)) {
 			return Collection.class;
-		}else {
+		} else {
 			return objClass;
 		}
 	}

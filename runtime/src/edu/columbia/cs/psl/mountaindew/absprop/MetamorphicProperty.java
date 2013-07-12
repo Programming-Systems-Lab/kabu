@@ -9,6 +9,7 @@ import java.util.List;
 import com.rits.cloning.Cloner;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.DependentProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.runtime.MetamorphicInputProcessorGroup;
 import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
@@ -28,7 +29,7 @@ public abstract class MetamorphicProperty {
 	private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
 	
 	private List<MetamorphicInputProcessor> processors = new ArrayList<MetamorphicInputProcessor>();
-
+	
 	private ArrayList<MethodInvocation> invocations = new ArrayList<MethodInvocation>();
 
 	protected ArrayList<MethodInvocation> getInvocations() {
@@ -134,6 +135,11 @@ public abstract class MetamorphicProperty {
 						atLeastOneTrue = atLeastOneTrue || pset[i];
 						if (pset[i]) {
 							child.inputFlippedParams[i] = true;
+							
+							if (DependentProcessor.class.isAssignableFrom(processor.getClass())) {
+								((DependentProcessor)processor).setParentResult(inv.returnValue);
+							}
+							
 							try {
 								child.propertyParams[i] = propertyParams;
 								child.params[i] = processor.apply((Object) cloner.deepClone(inv.params[i]), propertyParams);
