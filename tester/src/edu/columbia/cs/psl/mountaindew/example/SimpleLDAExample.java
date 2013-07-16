@@ -4,32 +4,36 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.mahout.clustering.lda.cvb.CVB0Driver;
 import org.apache.mahout.text.SequenceFilesFromDirectory;
 import org.apache.mahout.utils.SplitInput;
+import org.apache.mahout.utils.clustering.ClusterDumper;
 import org.apache.mahout.utils.vectors.RowIdJob;
 import org.apache.mahout.utils.vectors.VectorDumper;
 import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
 
 public class SimpleLDAExample {
 	
-	private static String baseDir = "/Users/mike/Desktop/reuters_ws";
+	private static String baseDir = "/Users/mikefhsu/Desktop/reuters_ws";
 	private static int numTopics = 20;
 	private static double doc_topic_smooth = 0.0001;
 	private static double term_topic_smooth = 0.0001;
-	private static int maxIter = 20;
+	private static int maxIter = 1;
 	private static int iterationBlockSize = 10;
 	private static double convergenceDelta = 0.0f;
-	private static long seed = System.nanoTime() % 10000;
-	private static float testFraction = 0;
+	private static float testFraction = 0.1f;
 	private static int numTrainThreads = 4;
 	private static int numUpdateThreads = 1;
 	private static int maxIterPerDoc = 10;;
 	private static int numReduceTasks = 10;
-	private static boolean backfillPerplexity = false;
+	private static boolean backfillPerplexity = true;
 	
 	private void writeDataByToolRunner(Configuration conf, FileSystem fs) throws IOException {
 		String[] arg = null;
@@ -68,10 +72,25 @@ public class SimpleLDAExample {
 		System.out.println("Row ID conversion completes");
 	}
 	
+	private static int getNumTerms(Configuration conf, Path dictionaryPath) throws IOException {
+        FileSystem fs = dictionaryPath.getFileSystem(conf);
+        Text key = new Text();
+        IntWritable value = new IntWritable();
+        int maxTermId = -1;
+        for (FileStatus stat : fs.globStatus(dictionaryPath)) {
+            SequenceFile.Reader reader = new SequenceFile.Reader(fs, stat.getPath(), conf);
+            while (reader.next(key, value)) {
+                maxTermId = Math.max(maxTermId, value.get());
+            }
+        }
+        return maxTermId + 1;
+    }
+	
 	private void executeDirichlet(Configuration conf, FileSystem fs) {
 		String[] arg = null;
 		
-		String tfidfDir = baseDir + "/vec/tfidf-vectors";
+		//String tfidfDir = baseDir + "/vec/tfidf-vectors";
+		String rowIdDir = baseDir + "/rowid_vec/matrix";
 		String topicOutputDir = baseDir + "/topic_output";
 		String docOutputDir = baseDir + "/doc_output";
 		String dicFilePath = baseDir + "/vec/dictionary.file-0";
@@ -87,24 +106,26 @@ public class SimpleLDAExample {
 		
 		File testFile;
 		
-		testFile = new File(tfidfDir);
+		testFile = new File(rowIdDir);
 		if (!testFile.exists()) {
-			testFile.mkdir();
+			System.err.println("No matrix file: " + rowIdDir);
+			return ;
 		}
 		
-		testFile = new File(topicOutputDir);
+		/*testFile = new File(topicOutputDir);
 		if (!testFile.exists()) {
 			testFile.mkdir();
-		}
+		}*/
 		
-		testFile = new File(docOutputDir);
+		/*testFile = new File(docOutputDir);
 		if (!testFile.exists()) {
 			testFile.mkdir();
-		}
+		}*/
 		
 		testFile = new File(dicFilePath);
 		if (!testFile.exists()) {
-			testFile.mkdir();
+			System.err.println("No dictionary file: " + dicFilePath);
+			return ;
 		}
 		
 		testFile = new File(tmpDir);
@@ -113,11 +134,13 @@ public class SimpleLDAExample {
 		}
 		
 		try {
+			int numTerm = this.getNumTerms(conf, new Path(dicFilePath));
+			long seed = System.nanoTime() % 10000;
 			CVB0Driver.run(conf, 
-					new Path(tfidfDir), 
+					new Path(rowIdDir), 
 					new Path(topicOutputDir), 
 					numTopics, 
-					0, 
+					numTerm, 
 					doc_topic_smooth, 
 					term_topic_smooth, 
 					maxIter, 
@@ -137,6 +160,7 @@ public class SimpleLDAExample {
 	private void ldaVectorDump() {
 		String topicOutputDir = baseDir + "/topic_output";
 		String dicFilePath = baseDir + "/vec/dictionary.file-0";
+		String topicTermVectorDumpPath = baseDir + "/topicdump/dumpfile";
 		
 		for(int k=0;k<numTopics;k++){
 	        System.out.println("Dumping topic \t"+k);
@@ -146,8 +170,8 @@ public class SimpleLDAExample {
 
 	        String output="topic"+k;
 	        String[] topicTermDumperArg = {"-s", topicOutputDir +"/"+partFile, "-dt", "sequencefile", "-d", 
-	            dicFilePath, "-o",output,  "-c", };  
-
+	            dicFilePath, "-o",output,  "-c", };
+	        
 	        try {
 	        	VectorDumper.main(topicTermDumperArg);
 	        } catch (Exception ex) {
@@ -155,6 +179,23 @@ public class SimpleLDAExample {
 	        }
 
 	    }
+	}
+	
+	private void topicDump() {
+		String topicOutputDir = baseDir + "/topic_output";
+		String dicFilePath = baseDir + "/vec/dictionary.file-0";
+		String topicTermVectorDumpPath = baseDir + "/topicdump/dumpfile";
+		
+		//String[] topicTermDumperArg = {"--input", topicOutputDir, "--output", topicTermVectorDumpPath,  "--dictionary", 
+        //        dicFilePath, "-dt", "sequencefile" ,"--vectorSize", "25" ,"-sort", "testsortVectors" };
+		
+		String[] topicTermDumperArg = {"--input", topicOutputDir, "--output", topicTermVectorDumpPath,  "--dictionary", 
+                dicFilePath, "-dt", "sequencefile" ,"-b", "100" ,"-n", "20", "-sp", "0"};
+		try {
+			ToolRunner.run(new Configuration(), new ClusterDumper(), topicTermDumperArg);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	/**
@@ -171,9 +212,10 @@ public class SimpleLDAExample {
 			fs = FileSystem.get(conf);
 
 			SimpleLDAExample ex = new SimpleLDAExample();
-			ex.writeDataByToolRunner(conf, fs);
-			ex.executeDirichlet(conf, fs);
-			//ex.ldaVectorDump();
+			//ex.writeDataByToolRunner(conf, fs);
+			//ex.executeDirichlet(conf, fs);
+			ex.ldaVectorDump();
+			//ex.topicDump();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
