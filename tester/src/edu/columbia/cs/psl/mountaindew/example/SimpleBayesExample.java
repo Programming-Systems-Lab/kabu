@@ -20,6 +20,9 @@ import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.SequenceFile.Writer;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.util.ToolRunner;
+import org.apache.mahout.classifier.AbstractVectorClassifier;
+import org.apache.mahout.classifier.naivebayes.NaiveBayesModel;
+import org.apache.mahout.classifier.naivebayes.StandardNaiveBayesClassifier;
 import org.apache.mahout.classifier.naivebayes.test.TestNaiveBayesDriver;
 import org.apache.mahout.classifier.naivebayes.training.TrainNaiveBayesJob;
 import org.apache.mahout.math.DenseVector;
@@ -60,10 +63,16 @@ public class SimpleBayesExample {
 				for (int i = 0 ; i < sp.length - 1; i++) {
 					doubleVal[i] = Double.valueOf(sp[i]);
 				}
-				Vector vec = new DenseVector(doubleVal.length);
-				vec.assign(doubleVal);
+				DenseVector vec = new DenseVector(doubleVal.length);
+				//vec.assign(doubleVal);
+				vec.set(0, doubleVal[0]);
+				vec.set(1, doubleVal[1]);
+				
+				System.out.println("Check vec: " + vec);
 				
 				NamedVector nVec = new NamedVector(vec, sp[sp.length - 1]);
+				
+				System.out.println("Check namedVec: " + nVec);
 				
 				vectors.add(nVec);
 			}
@@ -135,17 +144,39 @@ public class SimpleBayesExample {
 		SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, new Path(vecFilePath), Text.class, VectorWritable.class);
 		//VectorWriter vw = new SequenceFileVectorWriter(writer);
 		//VectorWritable vec = new VectorWritable();
-		VectorWritable writable = new VectorWritable();
+		
+		Map<String, List<Vector>> classMap = new HashMap<String, List<Vector>>();
 		for (NamedVector v: vecList) {
-			writable.set(v.getDelegate());
-			writer.append(new Text(v.getName()), writable);
+			if (classMap.containsKey(v.getName())) {
+				classMap.get(v.getName()).add(v.getDelegate());
+			} else {
+				List<Vector> vectorList = new ArrayList<Vector>();
+				vectorList.add(v.getDelegate());
+				classMap.put(v.getName(), vectorList);
+			}
+		}
+		
+		Text keyText;
+		for (String key: classMap.keySet()) {
+			keyText = new Text("/" + key + "/");
+			
+			for (Vector v: classMap.get(key)) {
+				writer.append(keyText, new VectorWritable(v));
+			}
 		}
 		
 		writer.close();
+		
+		/*VectorWritable writable;
+		for (NamedVector v: vecList) {
+			writer.append(new Text("/" + v.getName() + "/"), new VectorWritable(v.getDelegate()));
+		}
+		
+		writer.close();*/
 	}
 	
 	private void trainBayes(Configuration conf, FileSystem fs, String vecFilePath, String trainDir, String modelDir, String labelIndexFile) throws IOException {
-		SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(vecFilePath), conf);
+		/*SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(vecFilePath), conf);
 		
 		Text key = new Text();
 		VectorWritable vw = new VectorWritable();
@@ -165,7 +196,6 @@ public class SimpleBayesExample {
 		}
 		
 		File tmpDir;
-		//BufferedWriter bw;
 		SequenceFile.Writer writer;
 		for (String keyString: vecMap.keySet()) {
 			tmpDir = new File(trainDir + "/" + keyString);
@@ -175,20 +205,21 @@ public class SimpleBayesExample {
 			writer = new SequenceFile.Writer(fs, conf, new Path(tmpFile.getAbsolutePath()), LongWritable.class, VectorWritable.class);
 			int recNum = 0;
 			for (VectorWritable tmpVW: vecMap.get(keyString)) {
-				//bw = new BufferedWriter(new FileWriter(tmpFile));
-				//bw.append(tmpVW.get().asFormatString() + "\n");
-				//bw.close();
 				writer.append(new LongWritable(recNum++), tmpVW);
 			}
 			writer.close();
-		}
+		}*/
 		
 		//String modelDir = baseDir + "/" + "model";
 		//String labelIndexFile = baseDir + "/" + "labelIndex/indexfile";
-		String[] arg = new String[] {"-i", trainDir, "-o", modelDir, "-li", labelIndexFile, "-ow"};
+		//String[] arg = new String[] {"-i", trainDir, "-o", modelDir, "-li", labelIndexFile, "-ow"};
+		String[] arg = new String[] {"--input", vecFilePath, "--output", modelDir, "-el", "--tempDir", "bayes/tmp"};
 		
 		try {
-			ToolRunner.run(conf, new TrainNaiveBayesJob(), arg);
+			//ToolRunner.run(conf, new TrainNaiveBayesJob(), arg);
+			TrainNaiveBayesJob trainNaiveBayes = new TrainNaiveBayesJob();
+			trainNaiveBayes.setConf(conf);
+			trainNaiveBayes.run(arg);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -264,6 +295,23 @@ public class SimpleBayesExample {
 		
 	}
 	
+	private void predictByModel(Configuration conf, String modelPath, DenseVector toPredict) {
+		VectorWritable vw = new VectorWritable(toPredict);
+		NaiveBayesModel nModel;
+		
+		try {
+			nModel = NaiveBayesModel.materialize(new Path(modelPath), conf);
+			
+			AbstractVectorClassifier classifier = new StandardNaiveBayesClassifier(nModel);
+			
+			Vector predictionResult = classifier.classifyFull(vw.get());
+			System.out.println("Prediction result: " + predictionResult);
+			System.out.println("Category: " + predictionResult.maxValueIndex());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
 	private void testModelByToolRunner(Configuration conf, FileSystem fs, String baseDir) {
 		String testVecDir = baseDir + "/test";
 		String modelDir = baseDir + "/model";
@@ -298,6 +346,14 @@ public class SimpleBayesExample {
 			List<NamedVector> vecList = ex.readCSV("bayes/input/points.csv");
 			ex.writeVec(conf, fs, vecList, "bayes/vec/file1");
 			ex.trainBayes(conf, fs, "bayes/vec/file1", "bayes/train", "bayes/model", "bayes/labelIndex/indexfile");
+			
+			double[] test = new double[]{9, 9};
+			DenseVector dv = new DenseVector(test.length);
+			//dv.assign(test);
+			dv.set(0, test[0]);
+			dv.set(1, test[1]);
+			System.out.println("Test vec: " + dv);
+			ex.predictByModel(conf, "bayes/model", dv);
 			//ex.writeSeqData(conf, fs, baseDir + dataSource, baseDir + outputDir);
 			//ex.writeDataByToolRunner(conf, fs, baseDir);
 			//ex.trainModelByToolRunner(conf, fs, baseDir);
