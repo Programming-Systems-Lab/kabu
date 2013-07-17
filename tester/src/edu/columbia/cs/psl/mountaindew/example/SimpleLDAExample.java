@@ -27,11 +27,11 @@ import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
 
 public class SimpleLDAExample {
 	
-	private static String baseDir = "/Users/mike/Desktop/reuters_ws";
+	private static String baseDir = "/Users/mikefhsu/Desktop/reuters_ws";
 	private static int numTopics = 20;
 	private static double doc_topic_smooth = 0.0001;
 	private static double term_topic_smooth = 0.0001;
-	private static int maxIter = 1;
+	private static int maxIter = 5;
 	private static int iterationBlockSize = 10;
 	private static double convergenceDelta = 0.0f;
 	private static float testFraction = 0.1f;
@@ -58,7 +58,12 @@ public class SimpleLDAExample {
 		
 		//Convert seq files to vectors
 		String vecDir = baseDir + "/" + "vec";
-		arg = new String[] {"-i", seqDir, "-o", vecDir, "--maxDFPercent", "85", "--namedVector", "--analyzerName", "org.apache.lucene.analysis.WhitespaceAnalyzer"};
+		arg = new String[] {"-i", seqDir, 
+				"-o", vecDir, 
+				"-wt", "tfidf", 
+				"--minSupport", "2", 
+				"--minDF", "1", 
+				"--analyzerName", "org.apache.lucene.analysis.WhitespaceAnalyzer"};
 		
 		try {
 			ToolRunner.run(conf, new SparseVectorsFromSequenceFiles(), arg);
@@ -142,8 +147,21 @@ public class SimpleLDAExample {
 		try {
 			int numTerm = this.getNumTerms(conf, new Path(dicFilePath));
 			//int numTerm = 2000;
+			System.out.println("Total terms: " + numTerm);
 			long seed = System.nanoTime() % 10000;
-			CVB0Driver.run(conf, 
+			
+			arg = new String[]{"--input", rowIdDir, 
+					"--output", topicOutputDir, 
+					"--num_topics", String.valueOf(numTopics),
+					"--num_terms", String.valueOf(numTerm),
+					"--doc_topic_smoothing", String.valueOf(doc_topic_smooth),
+					"--term_topic_smoothing", String.valueOf(term_topic_smooth),
+					"--maxIter", String.valueOf(maxIter),
+					"--dictionary", dicFilePath,
+					"--doc_topic_output", docOutputDir,
+					"--topic_model_temp_dir", tmpDir};
+			CVB0Driver.main(arg);
+			/*CVB0Driver.run(conf, 
 					new Path(rowIdDir), 
 					new Path(topicOutputDir), 
 					numTopics, 
@@ -155,7 +173,9 @@ public class SimpleLDAExample {
 					convergenceDelta, 
 					new Path(dicFilePath), 
 					new Path(docOutputDir), 
-					new Path(tmpDir), seed, testFraction, numTrainThreads, numUpdateThreads, maxIterPerDoc, numReduceTasks, backfillPerplexity);
+					new Path(tmpDir), seed, testFraction, 
+					numTrainThreads, numUpdateThreads, 
+					maxIterPerDoc, numReduceTasks, backfillPerplexity);*/
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -165,21 +185,23 @@ public class SimpleLDAExample {
 	}
 	
 	private void ldaVectorDump(Configuration conf) throws IOException {
-		String topicOutputDir = baseDir + "/doc_output";
+		String topicOutputDir = baseDir + "/topic_output";
 		String dicFilePath = baseDir + "/vec/dictionary.file-0";
 		String topicTermVectorDumpPath = baseDir + "/topicdump/dumpfile";
 		int vectorSize = this.getNumTerms(conf, new Path(dicFilePath));
-		/*String[] arg = new String[] {"--input", topicOutputDir, 
+		System.out.println("Vector size: " + vectorSize);
+		String[] arg = new String[] {"--input", topicOutputDir, 
 				"--dictionary", dicFilePath, 
 				"--output", topicTermVectorDumpPath, 
 				"--dictionaryType", "sequencefile", 
-				"--vectorSize", String.valueOf(vectorSize),};*/
+				"--vectorSize", String.valueOf(vectorSize),};
 		
-		String[] arg = new String[] {"--input", topicOutputDir, 
+		/*String[] arg = new String[] {"--input", topicOutputDir, 
 				"--dictionary", dicFilePath,
 				"--output", topicTermVectorDumpPath, 
 				"--dictionaryType", "sequencefile", 
-				"--printKey", "True",};
+				"--printKey", "True",
+				"--vectorSize", String.valueOf(vectorSize)};*/
 		
 		try {
 			VectorDumper.main(arg);
@@ -237,17 +259,18 @@ public class SimpleLDAExample {
 	
 	private void printResult(Configuration conf, FileSystem fs) {
 		try {
-			String topicFile = baseDir + "/doc_output/part-m-00000";
+			String topicFile = baseDir + "/topic_output/part-m-00000";
 			
 			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(topicFile), conf);
 			//Text key = new Text();
 			IntWritable key = new IntWritable();
 			//IntPairWritable key = new IntPairWritable();
 			//IntWritable val = new IntWritable();
-			WeightedVectorWritable val = new WeightedVectorWritable();
+			//WeightedVectorWritable val = new WeightedVectorWritable();
 			//VectorWritable val = new VectorWritable();
-			//WeightedPropertyVectorWritable val = new WeightedPropertyVectorWritable();
+			WeightedPropertyVectorWritable val = new WeightedPropertyVectorWritable();
 			
+			System.out.println("Before printing");
 			while(reader.next(key, val)) {
 				System.out.println(key.toString() + ": " + val.getVector());
 			}
