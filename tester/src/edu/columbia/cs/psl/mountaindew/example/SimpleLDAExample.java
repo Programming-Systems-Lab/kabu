@@ -365,8 +365,7 @@ public class SimpleLDAExample {
 			ex.printStackTrace();
 		}
 		
-		System.out.println("Dirichlet execution completes");
-		
+		System.out.println("Dirichlet execution completes");		
 	}
 	
 	private void ldaVectorDump(Configuration conf, String input, String output) throws IOException {
@@ -475,15 +474,8 @@ public class SimpleLDAExample {
 				Word tmpWord;
 				double tmpVal;
 				
-				for (int i = 0; i < valVector.size(); i++) {
-					
-					tmpVal = valVector.get(i);
-					
-					//If tfidf values is really small, set it to 0
-					if (tmpVal < threshold)
-						tmpVal = 0;
-					
-					tmpWord = new Word(dictionary[i], tmpVal);
+				for (int i = 0; i < valVector.size(); i++) {					
+					tmpWord = new Word(dictionary[i], valVector.get(i));
 					wordList.add(tmpWord);
 				}
 				
@@ -618,7 +610,7 @@ public class SimpleLDAExample {
 			ex.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * @param args
 	 */
