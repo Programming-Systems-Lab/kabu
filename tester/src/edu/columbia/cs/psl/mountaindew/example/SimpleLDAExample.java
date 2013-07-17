@@ -7,13 +7,19 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.ArrayWritable;
+import org.apache.hadoop.io.GenericWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.util.ToolRunner;
+import org.apache.mahout.clustering.classify.WeightedPropertyVectorWritable;
+import org.apache.mahout.clustering.classify.WeightedVectorWritable;
 import org.apache.mahout.clustering.lda.cvb.CVB0Driver;
+import org.apache.mahout.clustering.lda.LDAPrintTopics;
+import org.apache.mahout.common.IntPairWritable;
+import org.apache.mahout.math.VectorWritable;
 import org.apache.mahout.text.SequenceFilesFromDirectory;
-import org.apache.mahout.utils.SplitInput;
 import org.apache.mahout.utils.clustering.ClusterDumper;
 import org.apache.mahout.utils.vectors.RowIdJob;
 import org.apache.mahout.utils.vectors.VectorDumper;
@@ -21,7 +27,7 @@ import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
 
 public class SimpleLDAExample {
 	
-	private static String baseDir = "/Users/mikefhsu/Desktop/reuters_ws";
+	private static String baseDir = "/Users/mike/Desktop/reuters_ws";
 	private static int numTopics = 20;
 	private static double doc_topic_smooth = 0.0001;
 	private static double term_topic_smooth = 0.0001;
@@ -94,7 +100,7 @@ public class SimpleLDAExample {
 		String topicOutputDir = baseDir + "/topic_output";
 		String docOutputDir = baseDir + "/doc_output";
 		String dicFilePath = baseDir + "/vec/dictionary.file-0";
-		String tmpDir = baseDir + "/tmp";
+		String tmpDir = baseDir + "/temp";
 		/*arg = new String[] {"-i", tfidfDir, 
 				"-o", outputDir, 
 				"-k", "20", "-ow", 
@@ -135,6 +141,7 @@ public class SimpleLDAExample {
 		
 		try {
 			int numTerm = this.getNumTerms(conf, new Path(dicFilePath));
+			//int numTerm = 2000;
 			long seed = System.nanoTime() % 10000;
 			CVB0Driver.run(conf, 
 					new Path(rowIdDir), 
@@ -157,12 +164,31 @@ public class SimpleLDAExample {
 		
 	}
 	
-	private void ldaVectorDump() {
-		String topicOutputDir = baseDir + "/topic_output";
+	private void ldaVectorDump(Configuration conf) throws IOException {
+		String topicOutputDir = baseDir + "/doc_output";
 		String dicFilePath = baseDir + "/vec/dictionary.file-0";
 		String topicTermVectorDumpPath = baseDir + "/topicdump/dumpfile";
+		int vectorSize = this.getNumTerms(conf, new Path(dicFilePath));
+		/*String[] arg = new String[] {"--input", topicOutputDir, 
+				"--dictionary", dicFilePath, 
+				"--output", topicTermVectorDumpPath, 
+				"--dictionaryType", "sequencefile", 
+				"--vectorSize", String.valueOf(vectorSize),};*/
 		
-		for(int k=0;k<numTopics;k++){
+		String[] arg = new String[] {"--input", topicOutputDir, 
+				"--dictionary", dicFilePath,
+				"--output", topicTermVectorDumpPath, 
+				"--dictionaryType", "sequencefile", 
+				"--printKey", "True",};
+		
+		try {
+			VectorDumper.main(arg);
+			System.out.println("Vector dumping completes");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	
+		/*for(int k=0;k<numTopics;k++){
 	        System.out.println("Dumping topic \t"+k);
 	        String partFile="part-m-0000"+k;
 	        if(k>=10)
@@ -178,21 +204,53 @@ public class SimpleLDAExample {
 	        	ex.printStackTrace();
 	        }
 
-	    }
+	    }*/
 	}
 	
 	private void topicDump() {
 		String topicOutputDir = baseDir + "/topic_output";
 		String dicFilePath = baseDir + "/vec/dictionary.file-0";
-		String topicTermVectorDumpPath = baseDir + "/topicdump/dumpfile";
+		String topicTermVectorDumpPath = baseDir + "/topicdump/dumpfile_test";
 		
 		//String[] topicTermDumperArg = {"--input", topicOutputDir, "--output", topicTermVectorDumpPath,  "--dictionary", 
         //        dicFilePath, "-dt", "sequencefile" ,"--vectorSize", "25" ,"-sort", "testsortVectors" };
 		
+		//b for topics and n for words
 		String[] topicTermDumperArg = {"--input", topicOutputDir, "--output", topicTermVectorDumpPath,  "--dictionary", 
-                dicFilePath, "-dt", "sequencefile" ,"-b", "100" ,"-n", "20", "-sp", "0"};
+                dicFilePath, "-dt", "sequencefile" ,"-b", "20" ,"-n", "20"};
 		try {
 			ToolRunner.run(new Configuration(), new ClusterDumper(), topicTermDumperArg);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	private void printLDATopics() throws Exception {
+		String dicFilePath = baseDir + "/vec/dictionary.file-0";
+		String rowIdDir = baseDir + "/rowid_vec/matrix";
+		String topicOutputDir = baseDir + "/topic_output";
+		int numWords = 20;
+		String opDicType = "sequencefile";
+		String[] arg = new String[]{"--dict", dicFilePath, "-i", topicOutputDir, "-w", String.valueOf(numWords), "-dt", opDicType};
+		LDAPrintTopics.main(arg);
+	}
+	
+	private void printResult(Configuration conf, FileSystem fs) {
+		try {
+			String topicFile = baseDir + "/doc_output/part-m-00000";
+			
+			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(topicFile), conf);
+			//Text key = new Text();
+			IntWritable key = new IntWritable();
+			//IntPairWritable key = new IntPairWritable();
+			//IntWritable val = new IntWritable();
+			WeightedVectorWritable val = new WeightedVectorWritable();
+			//VectorWritable val = new VectorWritable();
+			//WeightedPropertyVectorWritable val = new WeightedPropertyVectorWritable();
+			
+			while(reader.next(key, val)) {
+				System.out.println(key.toString() + ": " + val.getVector());
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -214,8 +272,10 @@ public class SimpleLDAExample {
 			SimpleLDAExample ex = new SimpleLDAExample();
 			//ex.writeDataByToolRunner(conf, fs);
 			//ex.executeDirichlet(conf, fs);
-			ex.ldaVectorDump();
+			//ex.ldaVectorDump(conf);
+			ex.printResult(conf, fs);
 			//ex.topicDump();
+			//ex.printLDATopics();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
