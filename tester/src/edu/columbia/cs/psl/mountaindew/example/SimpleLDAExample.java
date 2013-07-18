@@ -283,11 +283,12 @@ public class SimpleLDAExample {
         return maxTermId + 1;
     }
 	
-	private void executeDirichlet(Configuration conf, FileSystem fs) {
+	private void executeDirichlet(Configuration conf, FileSystem fs, String rowIdDir) {
 		String[] arg = null;
 		
 		//String tfidfDir = baseDir + "/vec/tfidf-vectors";
-		String rowIdDir = baseDir + "/rowid_vec/matrix";
+		//String rowIdDir = baseDir + "/rowid_vec/matrix";
+		String targetInput = rowIdDir;
 		String topicOutputDir = baseDir + "/topic_output";
 		String docOutputDir = baseDir + "/doc_output";
 		String dicFilePath = baseDir + "/vec/dictionary.file-0";
@@ -303,7 +304,7 @@ public class SimpleLDAExample {
 		
 		File testFile;
 		
-		testFile = new File(rowIdDir);
+		testFile = new File(targetInput);
 		if (!testFile.exists()) {
 			System.err.println("No matrix file: " + rowIdDir);
 			return ;
@@ -335,7 +336,7 @@ public class SimpleLDAExample {
 			System.out.println("Total terms: " + numTerm);
 			long seed = System.nanoTime() % 10000;
 			
-			arg = new String[]{"--input", rowIdDir, 
+			arg = new String[]{"--input", targetInput, 
 					"--output", topicOutputDir, 
 					"--num_topics", String.valueOf(numTopics),
 					"--num_terms", String.valueOf(numTerm),
@@ -481,12 +482,13 @@ public class SimpleLDAExample {
 				
 				topicMap.put(keyWritable.toString(), wordList);
 				
-				//String jsonStyle = VectorHelper.vectorToJson(valVecWritable.get(), dictionary, maxEntries, sort);
+				String jsonStyle = VectorHelper.vectorToJson(valVecWritable.get(), dictionary, maxEntries, sort);
 				//System.out.println(keyWritable.toString());
 				//System.out.println(valWritable.toString());
-				//System.out.println(jsonStyle);
+				System.out.println(jsonStyle);
 			}
 			
+			reader.close();
 			return topicMap;
 			/*IntWritable key = new IntWritable();
 			VectorWritable val = new VectorWritable();
@@ -513,6 +515,7 @@ public class SimpleLDAExample {
 			while(reader.next(key, val)) {
 				System.out.println(key.toString() + ": " + val);
 			}
+			reader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -571,7 +574,10 @@ public class SimpleLDAExample {
 			IntWritable key = new IntWritable();
 			VectorWritable val = new VectorWritable();
 			while(reader.next(key, val)) {
-				System.out.println(key.toString() + ": " + val);
+				System.out.println("Key: " + key.toString());
+				Vector tmpVal = val.get();
+				System.out.println("Val: " + tmpVal.asFormatString());
+				System.out.println("Val change: " + tmpVal.times(2).asFormatString());
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -611,23 +617,41 @@ public class SimpleLDAExample {
 		}
 	}
 	
+	private Map<String, List<Word>> driveLDA(String rowIdDir) {
+		try {
+			Configuration conf = new Configuration();
+			FileSystem fs = FileSystem.get(conf);
+			this.convertFilesToSeq(conf, fs);
+			this.tokenizeSeq(conf, fs);
+			this.printTokenize(conf, fs);
+			this.createTFIDF(conf, fs);
+			this.createRowIdVec(conf, fs);
+			
+			this.executeDirichlet(conf, fs, rowIdDir);
+			Map<String, List<Word>> topicMap = this.getResult(conf, fs);
+			return topicMap;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Configuration conf = null;
-		FileSystem fs = null;
 
 		try {
-			conf = new Configuration();
-			fs = FileSystem.get(conf);
-
+			Configuration conf = new Configuration();
+			FileSystem fs = FileSystem.get(conf);
+			
 			SimpleLDAExample ex = new SimpleLDAExample();
-			ex.convertFilesToSeq(conf, fs);
+			String rowIdDir = "lda/rowid_vec/matrix";
+			//Map<String, List<Word>> topicMap = ex.driveLDA(rowIdDir);
+			/*ex.convertFilesToSeq(conf, fs);
 			ex.tokenizeSeq(conf, fs);
 			ex.printTokenize(conf, fs);
-			//ex.createTF(conf, fs);
 			ex.createTFIDF(conf, fs);
 			ex.printDFCount(conf, fs);
 			ex.printTF(conf, fs);
@@ -636,25 +660,28 @@ public class SimpleLDAExample {
 			
 			ex.createRowIdVec(conf, fs);
 			ex.printMatrix(conf, fs);
-			ex.executeDirichlet(conf, fs);
-			Map<String, List<Word>> topicMap = ex.getResult(conf, fs);
+			ex.executeDirichlet(conf, fs, rowIdDir);
+			Map<String, List<Word>> topicMap = ex.getResult(conf, fs);*/
 			
-			for (String key: topicMap.keySet()) {
+			/*for (String key: topicMap.keySet()) {
 				System.out.println("Topic: " + key);
 				
 				List<Word> wordList = topicMap.get(key);
 				for (Word w: wordList) {
 					System.out.println("Word: " + w);
 				}
-			}
+			}*/
+			
+			System.out.println("Execution ends");
 			
 			//ex.ldaVectorDump(conf, baseDir + "/topic_output", baseDir + "/topicdump/topicdumpfile");
 			//ex.ldaVectorDump(conf, baseDir + "/doc_output", baseDir + "/docdump/docdumpfile");
+			ex.printMatrix(conf, fs);
 			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
+		System.out.println("Execution ends final");
 	}
 
 }
