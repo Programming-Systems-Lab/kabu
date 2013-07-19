@@ -1,0 +1,5 @@
+In 2010, Mr. Caspar’s agency became the first to uncover Google’s collection of data from Wi-Fi routers in Germany, and the company acknowledged that it had also collected data in a similar fashion for Street View around the world, prompting an uproar from Washington to Hong Kong.
+
+Google characterized the collection as inadvertent and the result of a programmer’s error. Fragments of personal e-mails, photographs and other unencrypted digital data were collected by Google’s fleet of Street View automobiles as they compiled panoramic maps covering about five million miles, or eight million kilometers, of roadway in 49 countries.
+
+Peter Fleischer, Google’s global privacy counsel, reiterated the company’s regrets, and said it had taken internal steps to make sure the violations were not repeated.

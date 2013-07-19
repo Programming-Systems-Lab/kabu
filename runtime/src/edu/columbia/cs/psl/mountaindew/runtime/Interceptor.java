@@ -204,11 +204,12 @@ public class Interceptor extends AbstractInterceptor {
 				
 		for(MethodInvocation inv2 : inv.children)
 		{
-			/*try {
+			try {
 				inv2.thread.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}*/
+			}
+			System.out.println("Log children");
 			for(MetamorphicProperty p : properties.get(inv2.method))
 			{
 				p.logExecution(inv2);

@@ -13,7 +13,9 @@ public abstract class EqualerAbstract extends PairwiseMetamorphicProperty{
 		ArrayList<Integer> rets = new ArrayList<Integer>();
 		for(int i = 0;i<getMethod().getParameterTypes().length; i++)
 		{
-			if(getMethod().getParameterTypes()[i].isArray() || Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
+			if(getMethod().getParameterTypes()[i].isArray() || 
+					Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]) ||
+					String.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
 				rets.add(i);
 		}
 		int[] ret = new int[rets.size()];

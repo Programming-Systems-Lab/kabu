@@ -2,12 +2,15 @@ package edu.columbia.cs.psl.mountaindew.example;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -25,6 +28,9 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.mahout.clustering.classify.WeightedPropertyVectorWritable;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
 import org.apache.mahout.clustering.lda.cvb.CVB0Driver;
+import org.apache.mahout.clustering.lda.cvb.InMemoryCollapsedVariationalBayes0;
+import org.apache.mahout.clustering.lda.cvb.ModelTrainer;
+import org.apache.mahout.clustering.lda.cvb.TopicModel;
 import org.apache.mahout.clustering.lda.LDAPrintTopics;
 import org.apache.mahout.common.HadoopUtil;
 import org.apache.mahout.common.IntPairWritable;
@@ -43,6 +49,7 @@ import org.apache.mahout.vectorizer.DocumentProcessor;
 import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
 import org.apache.mahout.vectorizer.tfidf.TFIDFConverter;
 
+import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 import edu.columbia.cs.psl.metamorphic.struct.Word;
 
 public class SimpleLDAExample {
@@ -54,14 +61,28 @@ public class SimpleLDAExample {
 	private static double term_topic_smooth = 0.0001;
 	private static int maxIter = 5;
 	private static int iterationBlockSize = 10;
-	private static double convergenceDelta = 0.0f;
+	private static double convergenceDelta = 0.0001f;
 	private static float testFraction = 0.1f;
-	private static int numTrainThreads = 4;
+	private static int numTrainThreads = 1;
 	private static int numUpdateThreads = 1;
 	private static int maxIterPerDoc = 10;;
 	private static int numReduceTasks = 10;
 	private static boolean backfillPerplexity = true;
 	private static double threshold = 0.00001;
+	
+	private SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSS");
+	
+	private Configuration conf;
+	
+	private FileSystem fs;
+	
+	public void setConfiguration(Configuration conf) {
+		this.conf = conf;
+	}
+	
+	public void setFileSystem(FileSystem fs) {
+		this.fs = fs;
+	}
 	
 	private void writeDataByToolRunner(Configuration conf, FileSystem fs) throws IOException {
 		String[] arg = null;
@@ -105,11 +126,13 @@ public class SimpleLDAExample {
 		System.out.println("Row ID conversion completes");
 	}
 	
-	private void convertFilesToSeq(Configuration conf, FileSystem fs) {
-		String inputString = baseDir + "/input";
+	private void convertFilesToSeq(String baseDir) {
+		//String inputString = baseDir + "/input";
+		//String seqDirString = baseDir + "/seq";
+		String baseInputDir = baseDir + "/input";
 		String seqDirString = baseDir + "/seq";
 		
-		File inputDir = new File(inputString);
+		File inputDir = new File(baseInputDir);
 		File seqDir = new File(seqDirString);
 		
 		if (!inputDir.exists()) {
@@ -136,7 +159,7 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void tokenizeSeq(Configuration conf, FileSystem fs) {		
+	private void tokenizeSeq(String baseDir) {		
 		String seqDirString = baseDir + "/seq";
 		String vecRootString = baseDir + "/vec";
 		
@@ -173,7 +196,7 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void createTF(Configuration conf, FileSystem fs) {
+	private void createTF(String baseDir) {
 		int minSupport = 1;
 	    int maxNGramSize = 1;
 	    int minLLRValue = 50;
@@ -198,16 +221,13 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void createTFIDF(Configuration conf, FileSystem fs) {
+	private void createTFIDF(String baseDir) {
 		int chunkSize = 200;
 	    int minDf = 1;
 	    int maxDFPercent = 99;
 	    int norm = 2;
 	    int reduceTasks = 1;
 	    boolean sequentialAccessOutput = true;
-		
-		String vecRootString = baseDir + "/vec";
-		File vecRoot = new File(vecRootString);
 		
 		try {
 			/*Pair<Long[], List<Path>> dfData = TFIDFConverter.calculateDF(
@@ -251,7 +271,7 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void createRowIdVec(Configuration conf, FileSystem fs) {
+	private void createRowIdVec(String baseDir) {
 		String vecRootString = baseDir + "/vec";
 		
 		String rowIdVecDir = baseDir + "/" + "rowid_vec";
@@ -269,26 +289,27 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private static int getNumTerms(Configuration conf, Path dictionaryPath) throws IOException {
-        FileSystem fs = dictionaryPath.getFileSystem(conf);
+	private int getNumTerms(Path dictionaryPath) throws IOException {
         Text key = new Text();
         IntWritable value = new IntWritable();
         int maxTermId = -1;
+        SequenceFile.Reader reader = null;
         for (FileStatus stat : fs.globStatus(dictionaryPath)) {
-            SequenceFile.Reader reader = new SequenceFile.Reader(fs, stat.getPath(), conf);
+            reader = new SequenceFile.Reader(fs, stat.getPath(), conf);
             while (reader.next(key, value)) {
                 maxTermId = Math.max(maxTermId, value.get());
             }
+            reader.close();
         }
         return maxTermId + 1;
     }
 	
-	private void executeDirichlet(Configuration conf, FileSystem fs, String rowIdDir) {
+	private void executeDirichlet(String baseDir) {
 		String[] arg = null;
 		
 		//String tfidfDir = baseDir + "/vec/tfidf-vectors";
 		//String rowIdDir = baseDir + "/rowid_vec/matrix";
-		String targetInput = rowIdDir;
+		String rowIdDir = baseDir + "/rowid_vec/matrix";
 		String topicOutputDir = baseDir + "/topic_output";
 		String docOutputDir = baseDir + "/doc_output";
 		String dicFilePath = baseDir + "/vec/dictionary.file-0";
@@ -304,7 +325,7 @@ public class SimpleLDAExample {
 		
 		File testFile;
 		
-		testFile = new File(targetInput);
+		testFile = new File(rowIdDir);
 		if (!testFile.exists()) {
 			System.err.println("No matrix file: " + rowIdDir);
 			return ;
@@ -331,12 +352,11 @@ public class SimpleLDAExample {
 			HadoopUtil.delete(conf, new Path(docOutputDir));
 			HadoopUtil.delete(conf, new Path(tmpDir));
 			
-			int numTerm = this.getNumTerms(conf, new Path(dicFilePath));
+			int numTerm = this.getNumTerms(new Path(dicFilePath));
 			//int numTerm = 2000;
 			System.out.println("Total terms: " + numTerm);
-			long seed = System.nanoTime() % 10000;
-			
-			arg = new String[]{"--input", targetInput, 
+			long seed = System.nanoTime() % 10000;			
+			arg = new String[]{"--input", rowIdDir, 
 					"--output", topicOutputDir, 
 					"--num_topics", String.valueOf(numTopics),
 					"--num_terms", String.valueOf(numTerm),
@@ -347,7 +367,7 @@ public class SimpleLDAExample {
 					"--doc_topic_output", docOutputDir,
 					"--topic_model_temp_dir", tmpDir};
 			//CVB0Driver.main(arg);
-			CVB0Driver.run(conf, 
+			int result = CVB0Driver.run(conf, 
 					new Path(rowIdDir), 
 					new Path(topicOutputDir), 
 					numTopics, 
@@ -362,21 +382,22 @@ public class SimpleLDAExample {
 					new Path(tmpDir), seed, testFraction, 
 					numTrainThreads, numUpdateThreads, 
 					maxIterPerDoc, numReduceTasks, backfillPerplexity);
-		} catch (Exception ex) {
+			
+			System.out.println("CVB0 result: " + result);
+		} catch (Throwable ex) {
 			ex.printStackTrace();
 		}
 		
-		System.out.println("Dirichlet execution completes");		
+		System.out.println("Dirichlet execution completes");
 	}
 	
-	private void ldaVectorDump(Configuration conf, String input, String output) throws IOException {
+	private void ldaVectorDump(Configuration conf, String dictionary, String input, String output) throws IOException {
 		//String topicOutputDir = baseDir + "/doc_output";
-		String dicFilePath = baseDir + "/vec/dictionary.file-0";
 		//String topicTermVectorDumpPath = baseDir + "/topicdump/dumpfile";
-		int vectorSize = this.getNumTerms(conf, new Path(dicFilePath));
+		int vectorSize = this.getNumTerms(new Path(dictionary));
 		System.out.println("Vector size: " + vectorSize);
 		String[] arg = new String[] {"--input", input, 
-				"--dictionary", dicFilePath, 
+				"--dictionary", dictionary, 
 				"--output", output, 
 				"--dictionaryType", "sequencefile", 
 				"--vectorSize", String.valueOf(vectorSize),
@@ -443,10 +464,10 @@ public class SimpleLDAExample {
 		LDAPrintTopics.main(arg);
 	}
 	
-	private Map<String, List<Word>> getResult(Configuration conf, FileSystem fs) {
+	private Map<String, List<Word>> getResult(String baseOutputDir) {
 		try {
-			String topicFile = baseDir + "/topic_output/part-m-00000";
-			String dicFilePath = baseDir + "/vec/dictionary.file-0";
+			String topicFile = baseOutputDir + "/topic_output/part-m-00000";
+			String dicFilePath = baseOutputDir + "/vec/dictionary.file-0";
 			
 			String[] dictionary = VectorHelper.loadTermDictionary(conf, dicFilePath);
 			
@@ -454,7 +475,7 @@ public class SimpleLDAExample {
 				System.out.println("Word key vale: " + i + dictionary[i]);
 			}*/
 			
-			int maxEntries = this.getNumTerms(conf, new Path(dicFilePath));
+			int maxEntries = this.getNumTerms(new Path(dicFilePath));
 			boolean sort = false;
 			
 			Map<String, List<Word>> topicMap = new HashMap<String, List<Word>>();
@@ -505,9 +526,9 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void printTokenize(Configuration conf, FileSystem fs) {
+	private void printTokenize(String baseOutputDir) {
 		try {
-			String tokenFile = baseDir + "/vec/tokenized-documents/part-m-00000";
+			String tokenFile = baseOutputDir + "/vec/tokenized-documents/part-m-00000";
 			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(tokenFile), conf);
 			
 			Text key = new Text();
@@ -531,6 +552,7 @@ public class SimpleLDAExample {
 			while(reader.next(key, val)) {
 				System.out.println(key.toString() + ": " + val);
 			}
+			reader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -546,6 +568,7 @@ public class SimpleLDAExample {
 			while(reader.next(key, val)) {
 				System.out.println(key + ": " + val);
 			}
+			reader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -561,12 +584,13 @@ public class SimpleLDAExample {
 			while(reader.next(key, val)) {
 				System.out.println(key.toString() + ": " + val);
 			}
+			reader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 	
-	private void printMatrix(Configuration conf, FileSystem fs) {
+	private void printMatrix(String baseDir) {
 		try {
 			String matrixFile = baseDir + "/rowid_vec/matrix";
 			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(matrixFile), conf);
@@ -577,8 +601,9 @@ public class SimpleLDAExample {
 				System.out.println("Key: " + key.toString());
 				Vector tmpVal = val.get();
 				System.out.println("Val: " + tmpVal.asFormatString());
-				System.out.println("Val change: " + tmpVal.times(2).asFormatString());
+				//System.out.println("Val change: " + tmpVal.times(2).asFormatString());
 			}
+			reader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -595,7 +620,7 @@ public class SimpleLDAExample {
 			while(reader.next(key, val)) {
 				System.out.println("Term: " + key + " Index: " + val.get());
 			}
-			
+			reader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -612,76 +637,84 @@ public class SimpleLDAExample {
 			while(reader.next(key, val)) {
 				System.out.println("Term: " + key + "Count: " + val.get());
 			}
+			reader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 	
-	private Map<String, List<Word>> driveLDA(String rowIdDir) {
-		try {
-			Configuration conf = new Configuration();
-			FileSystem fs = FileSystem.get(conf);
-			this.convertFilesToSeq(conf, fs);
-			this.tokenizeSeq(conf, fs);
-			this.printTokenize(conf, fs);
-			this.createTFIDF(conf, fs);
-			this.createRowIdVec(conf, fs);
-			
-			this.executeDirichlet(conf, fs, rowIdDir);
-			Map<String, List<Word>> topicMap = this.getResult(conf, fs);
-			return topicMap;
+	@Metamorphic
+	private Map<String, List<Word>> driveLDA(String baseDir) {
+		Map<String, List<Word>> topicMap = null;
+		try {			
+			this.executeDirichlet(baseDir);
+			topicMap = this.getResult(baseDir);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return null;
 		}
+		return topicMap;
 	}
 	
 	/**
 	 * @param args
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		// TODO Auto-generated method stub
+		
+		String pattern = "pool-[0-9]+-thread-[0-9]+";
 
 		try {
+			SimpleLDAExample ex = new SimpleLDAExample();
+			String baseDir = "lda";
+			
 			Configuration conf = new Configuration();
 			FileSystem fs = FileSystem.get(conf);
+			ex.setConfiguration(conf);
+			ex.setFileSystem(fs);
 			
-			SimpleLDAExample ex = new SimpleLDAExample();
-			String rowIdDir = "lda/rowid_vec/matrix";
-			//Map<String, List<Word>> topicMap = ex.driveLDA(rowIdDir);
-			/*ex.convertFilesToSeq(conf, fs);
-			ex.tokenizeSeq(conf, fs);
-			ex.printTokenize(conf, fs);
-			ex.createTFIDF(conf, fs);
-			ex.printDFCount(conf, fs);
-			ex.printTF(conf, fs);
-			ex.printTFIDF(conf, fs);
-			ex.printDictionary(conf, fs);
+			/*ex.convertFilesToSeq(baseDir);
+			ex.tokenizeSeq(baseDir);
+			ex.printTokenize(baseDir);
+			ex.createTFIDF(baseDir);
+			ex.createRowIdVec(baseDir);
 			
-			ex.createRowIdVec(conf, fs);
-			ex.printMatrix(conf, fs);
-			ex.executeDirichlet(conf, fs, rowIdDir);
-			Map<String, List<Word>> topicMap = ex.getResult(conf, fs);*/
+			Map<String, List<Word>> topicMap = ex.driveLDA(baseDir);
 			
-			/*for (String key: topicMap.keySet()) {
-				System.out.println("Topic: " + key);
+			if (topicMap != null) {
+				for (String key: topicMap.keySet()) {
+					System.out.println("Topic: " + key);
 				
-				List<Word> wordList = topicMap.get(key);
-				for (Word w: wordList) {
+					List<Word> wordList = topicMap.get(key);
+					for (Word w: wordList) {
 					System.out.println("Word: " + w);
+					}
 				}
 			}*/
+			ex.printMatrix("lda");
+			ex.printMatrix("lda_copy");
 			
-			System.out.println("Execution ends");
+			ex.ldaVectorDump(conf, baseDir + "/vec/dictionary.file-0", baseDir + "/topic_output", baseDir + "/topicdump/topicdumpfile");
+			ex.ldaVectorDump(conf, "lda_copy" + "/vec/dictionary.file-0", "lda_copy" + "/topic_output", "lda_copy" + "/topicdump/topicdumpfile");
+			//ex.ldaVectorDump(conf, baseDir + "/vec/dictionary.file-0", baseDir + "/doc_output", baseDir + "/docdump/docdumpfile");
 			
-			//ex.ldaVectorDump(conf, baseDir + "/topic_output", baseDir + "/topicdump/topicdumpfile");
-			//ex.ldaVectorDump(conf, baseDir + "/doc_output", baseDir + "/docdump/docdumpfile");
-			ex.printMatrix(conf, fs);
-			
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			ex.printStackTrace();
 		}
-		System.out.println("Execution ends final");
+		
+		/*try {
+			Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+			for (Thread tmp: threadSet) {
+				System.out.println("Check thread: " + tmp.getName() + " " + tmp.isDaemon());
+				
+				if (tmp.getName().matches(pattern)) {
+					System.out.println("Got thread: " + tmp.getName());
+					tmp.interrupt();
+				}
+			}
+		} catch (Exception ex) {
+			Thread.currentThread().interrupt();
+			ex.printStackTrace();
+		}*/
 	}
-
 }

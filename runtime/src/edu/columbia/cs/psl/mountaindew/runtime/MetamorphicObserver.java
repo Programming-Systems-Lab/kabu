@@ -45,9 +45,9 @@ public class MetamorphicObserver {
 //		properties.add(ConstructRelChecker.class);
 //		properties.add(SizeChecker.class);
 //		properties.add(ProjectionEqualer.class);
-//		properties.add(ContentEqualer.class);
+		properties.add(ContentEqualer.class);
 //		properties.add(InorderEqualer.class);
-		properties.add(CentroidEqualer.class);
+//		properties.add(CentroidEqualer.class);
 	}
 	public static MetamorphicObserver getInstance() {
 //		System.out.println("Get metamorphic observer instance");
