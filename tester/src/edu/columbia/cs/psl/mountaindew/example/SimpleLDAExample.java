@@ -197,7 +197,7 @@ public class SimpleLDAExample {
 	}
 	
 	private void createTF(String baseDir) {
-		int minSupport = 1;
+		int minSupport = 2;
 	    int maxNGramSize = 1;
 	    int minLLRValue = 50;
 	    int reduceTasks = 1;
@@ -275,7 +275,9 @@ public class SimpleLDAExample {
 		String vecRootString = baseDir + "/vec";
 		
 		String rowIdVecDir = baseDir + "/" + "rowid_vec";
-		String[] arg = new String[] {"-Dmapred.input.dir=" + vecRootString + "/tfidf-vectors/part-r-00000", "-Dmapred.output.dir=" + rowIdVecDir};
+		
+		//String[] arg = new String[] {"-Dmapred.input.dir=" + vecRootString + "/tfidf-vectors/part-r-00000", "-Dmapred.output.dir=" + rowIdVecDir};
+		String[] arg = new String[] {"-Dmapred.input.dir=" + vecRootString + "/tf-vectors/part-r-00000", "-Dmapred.output.dir=" + rowIdVecDir};
 		
 		try {
 			System.out.println("Start to convert row id");
@@ -542,7 +544,7 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void printTF(Configuration conf, FileSystem fs) {
+	private void printTF(String baseDir) {
 		try {
 			String tfidfFile = baseDir + "/vec/tf-vectors/part-r-00000";
 			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(tfidfFile), conf);
@@ -673,10 +675,15 @@ public class SimpleLDAExample {
 			ex.setConfiguration(conf);
 			ex.setFileSystem(fs);
 			
-			/*ex.convertFilesToSeq(baseDir);
+			ex.convertFilesToSeq(baseDir);
+			
 			ex.tokenizeSeq(baseDir);
 			ex.printTokenize(baseDir);
-			ex.createTFIDF(baseDir);
+			
+			ex.createTF(baseDir);
+			ex.printTF(baseDir);
+			
+			//ex.createTFIDF(baseDir);
 			ex.createRowIdVec(baseDir);
 			
 			Map<String, List<Word>> topicMap = ex.driveLDA(baseDir);
@@ -690,12 +697,12 @@ public class SimpleLDAExample {
 					System.out.println("Word: " + w);
 					}
 				}
-			}*/
-			ex.printMatrix("lda");
-			ex.printMatrix("lda_copy");
+			}
+			//ex.printMatrix("lda");
+			//ex.printMatrix("lda_copy");
 			
-			ex.ldaVectorDump(conf, baseDir + "/vec/dictionary.file-0", baseDir + "/topic_output", baseDir + "/topicdump/topicdumpfile");
-			ex.ldaVectorDump(conf, "lda_copy" + "/vec/dictionary.file-0", "lda_copy" + "/topic_output", "lda_copy" + "/topicdump/topicdumpfile");
+			//ex.ldaVectorDump(conf, baseDir + "/vec/dictionary.file-0", baseDir + "/topic_output", baseDir + "/topicdump/topicdumpfile");
+			//ex.ldaVectorDump(conf, "lda_copy" + "/vec/dictionary.file-0", "lda_copy" + "/topic_output", "lda_copy" + "/topicdump/topicdumpfile");
 			//ex.ldaVectorDump(conf, baseDir + "/vec/dictionary.file-0", baseDir + "/doc_output", baseDir + "/docdump/docdumpfile");
 			
 		} catch (Throwable ex) {
