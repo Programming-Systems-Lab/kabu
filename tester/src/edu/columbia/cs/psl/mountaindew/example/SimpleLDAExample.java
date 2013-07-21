@@ -2,6 +2,7 @@ package edu.columbia.cs.psl.mountaindew.example;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,26 +56,36 @@ import edu.columbia.cs.psl.metamorphic.struct.Word;
 public class SimpleLDAExample {
 	
 	//private static String baseDir = "/Users/mike/Desktop/reuters_ws";
-	private static String baseDir = "lda";
-	private static int numTopics = 5;
-	private static double doc_topic_smooth = 0.0001;
-	private static double term_topic_smooth = 0.0001;
-	private static int maxIter = 5;
-	private static int iterationBlockSize = 10;
-	private static double convergenceDelta = 0.0001f;
-	private static float testFraction = 0.1f;
-	private static int numTrainThreads = 1;
-	private static int numUpdateThreads = 1;
-	private static int maxIterPerDoc = 10;;
-	private static int numReduceTasks = 10;
-	private static boolean backfillPerplexity = true;
-	private static double threshold = 0.00001;
+	private int numTopics = 5;
+	private double doc_topic_smooth = 0.0001;
+	private double term_topic_smooth = 0.0001;
+	private int maxIter = 5;
+	private int iterationBlockSize = 10;
+	private double convergenceDelta = 0.0001f;
+	private float testFraction = 0.1f;
+	private int numTrainThreads = 1;
+	private int numUpdateThreads = 1;
+	private int maxIterPerDoc = 10;;
+	private int numReduceTasks = 10;
+	private boolean backfillPerplexity = true;
+	private double threshold = 0.00001;
+	private long seed = System.nanoTime() % 10000;
 	
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSS");
 	
 	private Configuration conf;
 	
 	private FileSystem fs;
+	
+	public SimpleLDAExample() {
+		try {
+			this.conf = new Configuration();
+			this.fs = FileSystem.get(conf);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	public void setConfiguration(Configuration conf) {
 		this.conf = conf;
@@ -84,7 +95,7 @@ public class SimpleLDAExample {
 		this.fs = fs;
 	}
 	
-	private void writeDataByToolRunner(Configuration conf, FileSystem fs) throws IOException {
+	private void writeDataByToolRunner(String baseDir, Configuration conf, FileSystem fs) throws IOException {
 		String[] arg = null;
 		
 		//Convert raw data to seq files
@@ -356,8 +367,7 @@ public class SimpleLDAExample {
 			
 			int numTerm = this.getNumTerms(new Path(dicFilePath));
 			//int numTerm = 2000;
-			System.out.println("Total terms: " + numTerm);
-			long seed = System.nanoTime() % 10000;			
+			System.out.println("Total terms: " + numTerm);			
 			arg = new String[]{"--input", rowIdDir, 
 					"--output", topicOutputDir, 
 					"--num_topics", String.valueOf(numTopics),
@@ -369,6 +379,7 @@ public class SimpleLDAExample {
 					"--doc_topic_output", docOutputDir,
 					"--topic_model_temp_dir", tmpDir};
 			//CVB0Driver.main(arg);
+			System.out.println("Check seed for lda: " + this.seed);
 			int result = CVB0Driver.run(conf, 
 					new Path(rowIdDir), 
 					new Path(topicOutputDir), 
@@ -393,7 +404,7 @@ public class SimpleLDAExample {
 		System.out.println("Dirichlet execution completes");
 	}
 	
-	private void ldaVectorDump(Configuration conf, String dictionary, String input, String output) throws IOException {
+	private void ldaVectorDump(String dictionary, String input, String output) throws IOException {
 		//String topicOutputDir = baseDir + "/doc_output";
 		//String topicTermVectorDumpPath = baseDir + "/topicdump/dumpfile";
 		int vectorSize = this.getNumTerms(new Path(dictionary));
@@ -438,7 +449,7 @@ public class SimpleLDAExample {
 	    }*/
 	}
 	
-	private void topicDump() {
+	private void topicDump(String baseDir) {
 		String topicOutputDir = baseDir + "/topic_output";
 		String dicFilePath = baseDir + "/vec/dictionary.file-0";
 		String topicTermVectorDumpPath = baseDir + "/topicdump/dumpfile_test";
@@ -456,7 +467,7 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void printLDATopics() throws Exception {
+	private void printLDATopics(String baseDir) throws Exception {
 		String dicFilePath = baseDir + "/vec/dictionary.file-0";
 		String rowIdDir = baseDir + "/rowid_vec/matrix";
 		String topicOutputDir = baseDir + "/topic_output";
@@ -560,7 +571,67 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void printDFCount(Configuration conf, FileSystem fs) {
+	private void printTFGeneral(String filePath) {
+		try {
+			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(filePath), conf);
+			
+			Text key = new Text();
+			VectorWritable val = new VectorWritable();
+			while(reader.next(key, val)) {
+				System.out.println(key.toString() + ": " + val);
+			}
+			reader.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	private void multiplyTF(String baseDir,String destDir) {
+		try {
+			String tfidfFile = baseDir + "/vec/tf-vectors/part-r-00000";
+			String tfidfFile2 = destDir + "/vec/tf-vectors/part-r-00000";
+			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(tfidfFile), conf);
+			
+			SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, new Path(tfidfFile2), Text.class, VectorWritable.class);
+			
+			Text key = new Text();
+			VectorWritable val = new VectorWritable();
+			Vector tmpVec;
+			while(reader.next(key, val)) {
+				//System.out.println(key.toString() + ": " + val);
+				tmpVec = val.get().times(2);
+				writer.append(key, new VectorWritable(tmpVec));
+			}
+			reader.close();
+			writer.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	private void multiplyMatrix(String baseDir, String destDir) {
+		try {
+			String oriFile = baseDir + "/rowid_vec/matrix";
+			String transFile = destDir + "/rowid_vec/matrix";
+			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(oriFile), conf);
+			
+			SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf , new Path(transFile), IntWritable.class, VectorWritable.class);
+			
+			IntWritable key = new IntWritable();
+			VectorWritable val = new VectorWritable();
+			Vector tmpVec;
+			while(reader.next(key, val)) {
+				tmpVec = val.get().times(2);
+				writer.append(key, new VectorWritable(tmpVec));
+			}
+			reader.close();
+			writer.close();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	private void printDFCount(String baseDir) {
 		try {
 			String tfidfFile = baseDir + "/vec/df-count/part-r-00000";
 			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(tfidfFile), conf);
@@ -576,7 +647,7 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void printTFIDF(Configuration conf, FileSystem fs) {
+	private void printTFIDF(String baseDir) {
 		try {
 			String tfidfFile = baseDir + "/vec/tfidf-vectors/part-r-00000";
 			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(tfidfFile), conf);
@@ -611,7 +682,7 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void printDictionary(Configuration conf, FileSystem fs) {
+	private void printDictionary(String baseDir) {
 		try {
 			String dicFile = baseDir + "/vec/dictionary.file-0";
 			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(dicFile), conf);
@@ -628,16 +699,33 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void printWordcount(Configuration conf, FileSystem fs) {
+	private void printFrequency(String baseDir) {
 		try {
-			String wordcountFile = baseDir + "vec/wordcount/part-r-00000";
+			String dicFile = baseDir + "/vec/frequency.file-0";
+			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(dicFile), conf);
+			
+			IntWritable key = new IntWritable();
+			LongWritable val = new LongWritable();
+			
+			while(reader.next(key, val)) {
+				System.out.println("Key: " + key + " Val: " + val);
+			}
+			reader.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	private void printWordcount(String baseDir) {
+		try {
+			String wordcountFile = baseDir + "/vec/wordcount/part-r-00000";
 			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(wordcountFile), conf);
 			
 			Text key = new Text();
 			LongWritable val = new LongWritable();
 			
 			while(reader.next(key, val)) {
-				System.out.println("Term: " + key + "Count: " + val.get());
+				System.out.println("Term: " + key + " Count: " + val.get());
 			}
 			reader.close();
 		} catch (Exception ex) {
@@ -646,14 +734,26 @@ public class SimpleLDAExample {
 	}
 	
 	@Metamorphic
-	private Map<String, List<Word>> driveLDA(String baseDir) {
+	private Map<String, List<Word>> driveLDA(String baseDir) {		
 		Map<String, List<Word>> topicMap = null;
-		try {			
+		try {
 			this.executeDirichlet(baseDir);
 			topicMap = this.getResult(baseDir);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		
+		if (topicMap != null) {
+			for (String key: topicMap.keySet()) {
+				System.out.println("Topic: " + key);
+			
+				List<Word> wordList = topicMap.get(key);
+				for (Word w: wordList) {
+				System.out.println("Word: " + w);
+				}
+			}
+		}
+		
 		return topicMap;
 	}
 	
@@ -669,26 +769,48 @@ public class SimpleLDAExample {
 		try {
 			SimpleLDAExample ex = new SimpleLDAExample();
 			String baseDir = "lda";
-			
-			Configuration conf = new Configuration();
-			FileSystem fs = FileSystem.get(conf);
-			ex.setConfiguration(conf);
-			ex.setFileSystem(fs);
-			
+
 			ex.convertFilesToSeq(baseDir);
 			
 			ex.tokenizeSeq(baseDir);
+			System.out.println("Check tokinized document");
 			ex.printTokenize(baseDir);
-			
-			ex.createTF(baseDir);
+			System.out.println();
+
+			ex.createTFIDF(baseDir);
+			System.out.println("Check term frequency");
 			ex.printTF(baseDir);
+			System.out.println();
 			
-			//ex.createTFIDF(baseDir);
+			System.out.println("Check word count");
+			ex.printWordcount(baseDir);
+			System.out.println();
+			
+			System.out.println("Check dictionary");
+			ex.printDictionary(baseDir);
+			System.out.println();
+			
+			System.out.println("Check frequency");
+			ex.printFrequency(baseDir);
+			System.out.println();
+			
+			System.out.println("Check DF");
+			ex.printDFCount(baseDir);
+			System.out.println();
+			
+			
+			/*ex.multiplyTF(baseDir);
+			ex.printTFGeneral(baseDir + "/vec/tf-vectors/part-r-00000");
+			System.out.println();
+			ex.printTFGeneral(baseDir + "/vec/tf-vectors/part-r-00001");*/
+			
+			System.out.println("Check row vector");
 			ex.createRowIdVec(baseDir);
+			ex.printMatrix(baseDir);
 			
 			Map<String, List<Word>> topicMap = ex.driveLDA(baseDir);
 			
-			if (topicMap != null) {
+			/*if (topicMap != null) {
 				for (String key: topicMap.keySet()) {
 					System.out.println("Topic: " + key);
 				
@@ -697,9 +819,89 @@ public class SimpleLDAExample {
 					System.out.println("Word: " + w);
 					}
 				}
+			}*/
+			//ex.ldaVectorDump("lda/vec/dictionary.file-0", "lda/topic_output", "lda/topicdump/topicdumpfile");
+			//ex.ldaVectorDump("lda/vec/dictionary.file-0", "lda/doc_output", "lda/docdump/docdumpfile");
+			//ex.driveLDA("lda_copy");
+
+			/*System.out.println("Dictionary");
+			ex.printDictionary("lda");
+			System.out.println();
+			ex.printDictionary("lda_copy");
+			System.out.println();*/
+			
+			/*System.out.println("TF");
+			ex.printTF("lda");
+			System.out.println();
+			ex.printTF("lda_copy");
+			System.out.println();*/
+			
+			/*System.out.println("Matrix");
+			ex.printMatrix("lda");
+			System.out.println();
+			ex.printMatrix("lda_copy");
+			System.out.println();*/
+			
+			/*System.out.println("DF");
+			ex.printDFCount("lda");
+			System.out.println();
+			ex.printDFCount("lda_copy");
+			System.out.println();*/
+			
+			/*System.out.println("Word count");
+			ex.printWordcount("lda");
+			System.out.println();
+			ex.printWordcount("lda_copy");
+			System.out.println();*/
+			
+			/*System.out.println("Frequency");
+			ex.printFrequency("lda");
+			System.out.println();
+			ex.printFrequency("lda_copy");*/
+			
+			/*Map<String, List<Word>> topicMap = ex.driveLDA("lda");
+			
+			if (topicMap != null) {
+				for (String key: topicMap.keySet()) {
+					System.out.println("Topic: " + key);
+				
+					List<Word> wordList = topicMap.get(key);
+					for (Word w: wordList) {
+						System.out.println("Word: " + w);
+					}
+				}
 			}
-			//ex.printMatrix("lda");
-			//ex.printMatrix("lda_copy");
+			
+			System.out.println("Result");
+			System.out.println(ex.getResult("lda"));*/
+			
+			/*ex.multiplyMatrix("lda", "lda_copy");
+			System.out.println("Original matrix");
+			ex.printMatrix("lda");
+			System.out.println("Transfomr matrix");
+			ex.printMatrix("lda_copy");
+			
+			Map<String, List<Word>> topicMap2 = ex.driveLDA("lda_copy");
+			
+			if (topicMap2 != null) {
+				for (String key: topicMap2.keySet()) {
+					System.out.println("Topic: " + key);
+					
+					List<Word> wordList = topicMap2.get(key);
+					for (Word w: wordList) {
+						System.out.println("Word: " + w);
+					}
+				}
+			}
+			
+			
+			System.out.println();
+			System.out.println(ex.getResult("lda_copy"));*/
+			
+			/*System.out.println(ex.getResult("lda"));
+			System.out.println(ex.getResult("lda_copy"));*/
+			//ex.ldaVectorDump("lda/vec/dictionary.file-0", "lda/topic_output", "lda/topicdump/topicdumpfile");
+			//ex.ldaVectorDump("lda_copy/vec/dictionary.file-0", "lda_copy/topic_output", "lda_copy/topicdump/topicdumpfile");
 			
 			//ex.ldaVectorDump(conf, baseDir + "/vec/dictionary.file-0", baseDir + "/topic_output", baseDir + "/topicdump/topicdumpfile");
 			//ex.ldaVectorDump(conf, "lda_copy" + "/vec/dictionary.file-0", "lda_copy" + "/topic_output", "lda_copy" + "/topicdump/topicdumpfile");

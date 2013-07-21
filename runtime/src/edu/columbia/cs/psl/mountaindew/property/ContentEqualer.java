@@ -54,8 +54,8 @@ public class ContentEqualer extends EqualerAbstract{
 			List c1List = new ArrayList((Collection)c1);
 			List c2List = new ArrayList((Collection)c2);
 			if (Word.class.isAssignableFrom(sentinel.getClass())) {
-				c1List = this.selectTopWords((List<Word>)c1List, 20);
-				c2List = this.selectTopWords((List<Word>)c2List, 20);
+				c1List = this.selectTopWords((List<Word>)c1List, 10);
+				c2List = this.selectTopWords((List<Word>)c2List, 10);
 			}
 			
 			System.out.println("Check c1List: " + c1List);
