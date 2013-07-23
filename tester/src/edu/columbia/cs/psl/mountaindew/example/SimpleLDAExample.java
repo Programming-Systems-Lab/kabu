@@ -76,17 +76,7 @@ public class SimpleLDAExample {
 	private Configuration conf;
 	
 	private FileSystem fs;
-	
-	public SimpleLDAExample() {
-		try {
-			this.conf = new Configuration();
-			this.fs = FileSystem.get(conf);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
+		
 	public void setConfiguration(Configuration conf) {
 		this.conf = conf;
 	}
@@ -360,7 +350,7 @@ public class SimpleLDAExample {
 			return ;
 		}
 		
-		try {
+		try {			
 			HadoopUtil.delete(conf, new Path(topicOutputDir));
 			HadoopUtil.delete(conf, new Path(docOutputDir));
 			HadoopUtil.delete(conf, new Path(tmpDir));
@@ -768,6 +758,10 @@ public class SimpleLDAExample {
 
 		try {
 			SimpleLDAExample ex = new SimpleLDAExample();
+			Configuration conf = new Configuration();
+			FileSystem fs = FileSystem.get(conf);
+			ex.setConfiguration(conf);
+			ex.setFileSystem(fs);
 			String baseDir = "lda";
 
 			ex.convertFilesToSeq(baseDir);
@@ -809,7 +803,7 @@ public class SimpleLDAExample {
 			ex.printMatrix(baseDir);
 			
 			Map<String, List<Word>> topicMap = ex.driveLDA(baseDir);
-			//topicMap = ex.driveLDA("lda_copy");
+			//Map<String, List<Word>>topicMap = ex.driveLDA("lda_copy");
 			
 			/*if (topicMap != null) {
 				for (String key: topicMap.keySet()) {
