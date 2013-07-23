@@ -22,6 +22,7 @@ import edu.columbia.cs.psl.mountaindew.property.ProjectionEqualer;
 import edu.columbia.cs.psl.mountaindew.property.ContentEqualer;
 import edu.columbia.cs.psl.mountaindew.property.InorderEqualer;
 import edu.columbia.cs.psl.mountaindew.property.CentroidEqualer;
+import edu.columbia.cs.psl.mountaindew.property.SuperWordEqualer;
 
 public class MetamorphicObserver {
 	HashSet<Interceptor> interceptors = new HashSet<Interceptor>();
@@ -45,7 +46,8 @@ public class MetamorphicObserver {
 //		properties.add(ConstructRelChecker.class);
 //		properties.add(SizeChecker.class);
 //		properties.add(ProjectionEqualer.class);
-		properties.add(ContentEqualer.class);
+//		properties.add(ContentEqualer.class);
+		properties.add(SuperWordEqualer.class);
 //		properties.add(InorderEqualer.class);
 //		properties.add(CentroidEqualer.class);
 	}

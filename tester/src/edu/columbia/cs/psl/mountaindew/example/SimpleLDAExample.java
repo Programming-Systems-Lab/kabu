@@ -809,6 +809,7 @@ public class SimpleLDAExample {
 			ex.printMatrix(baseDir);
 			
 			Map<String, List<Word>> topicMap = ex.driveLDA(baseDir);
+			//topicMap = ex.driveLDA("lda_copy");
 			
 			/*if (topicMap != null) {
 				for (String key: topicMap.keySet()) {

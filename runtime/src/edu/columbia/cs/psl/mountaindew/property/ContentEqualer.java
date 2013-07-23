@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 public class ContentEqualer extends EqualerAbstract{
 
 	@Override
@@ -71,7 +69,7 @@ public class ContentEqualer extends EqualerAbstract{
 			
 			return c1Set.equals(c2Set);
 		} else if (Map.class.isAssignableFrom(c1.getClass()) && Map.class.isAssignableFrom(c2.getClass())) {
-			System.out.println("c1 c2 are maps");
+			//System.out.println("c1 c2 are maps");
 			Map c1Map = (Map)c1;
 			Map c2Map = (Map)c2;
 			
@@ -86,7 +84,7 @@ public class ContentEqualer extends EqualerAbstract{
 			List c2List = new ArrayList(c2Map.values());
 
 			for (int i = 0; i < c1List.size(); i++) {
-				for (int j =0; j < c2List.size(); j++) {
+				for (int j = 0; j < c2List.size(); j++) {
 					if (this.checkEquivalence(c1List.get(i), c2List.get(j)))
 						count++;
 				}
@@ -103,7 +101,7 @@ public class ContentEqualer extends EqualerAbstract{
 		return false;
 	}
 	
-	private List<String> selectTopWords(List<Word>targetList, int k) {
+	protected List<String> selectTopWords(List<Word>targetList, int k) {
 		int finalK = 0;
 		
 		if (k > targetList.size())
