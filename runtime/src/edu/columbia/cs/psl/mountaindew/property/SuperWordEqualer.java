@@ -46,7 +46,6 @@ public class SuperWordEqualer extends ContentEqualer{
 				return true;
 		} else if (Collection.class.isAssignableFrom(o1.getClass()) && Collection.class.isAssignableFrom(o2.getClass())) {
 			Object sentinel = ((Collection)o1).iterator().next();
-			int topK = 10;
 			
 			if (Word.class.isAssignableFrom(sentinel.getClass())) {
 				List c1List = new ArrayList((Collection)o1);
@@ -54,6 +53,14 @@ public class SuperWordEqualer extends ContentEqualer{
 				
 				if (c1List.size()+1 != c2List.size())
 					return false;
+				
+				//Select top 20%
+				int topK = (int)(0.2 * c1List.size());
+				
+				//System.out.println("Select top " + topK + " words");
+				
+				if (topK < 1)
+					topK = 1;
 				
 				//Filter out top word
 				if (Word.class.isAssignableFrom(sentinel.getClass())) {

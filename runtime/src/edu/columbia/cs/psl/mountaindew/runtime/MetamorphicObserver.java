@@ -46,8 +46,8 @@ public class MetamorphicObserver {
 //		properties.add(ConstructRelChecker.class);
 //		properties.add(SizeChecker.class);
 //		properties.add(ProjectionEqualer.class);
-//		properties.add(ContentEqualer.class);
-		properties.add(SuperWordEqualer.class);
+		properties.add(ContentEqualer.class);
+//		properties.add(SuperWordEqualer.class);
 //		properties.add(InorderEqualer.class);
 //		properties.add(CentroidEqualer.class);
 	}

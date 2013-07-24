@@ -48,12 +48,17 @@ public class ContentEqualer extends EqualerAbstract{
 		Set c1Set, c2Set;
 		if (Collection.class.isAssignableFrom(c1.getClass()) && Collection.class.isAssignableFrom(c2.getClass())) {
 			Object sentinel = ((Collection)c1).iterator().next();
-			
+						
 			List c1List = new ArrayList((Collection)c1);
 			List c2List = new ArrayList((Collection)c2);
+			
+			int topK = (int)(0.2 * c1List.size());
+			
+			//System.out.println("Select top " + topK + " words");
+			
 			if (Word.class.isAssignableFrom(sentinel.getClass())) {
-				c1List = this.selectTopWords((List<Word>)c1List, 10);
-				c2List = this.selectTopWords((List<Word>)c2List, 10);
+				c1List = this.selectTopWords((List<Word>)c1List, topK);
+				c2List = this.selectTopWords((List<Word>)c2List, topK);
 			}
 			
 			System.out.println("Check c1List: " + c1List);
@@ -104,6 +109,8 @@ public class ContentEqualer extends EqualerAbstract{
 	protected List<String> selectTopWords(List<Word>targetList, int k) {
 		int finalK = 0;
 		
+		//this.selectNonZeroWords(targetList);
+		
 		if (k > targetList.size())
 			finalK = targetList.size();
 		else 
@@ -113,12 +120,22 @@ public class ContentEqualer extends EqualerAbstract{
 		
 		List<String> topList = new ArrayList<String>();
 		Word tmpWord;
-		for (int i = 0; i < finalK; i++) {
+		for (int i = 0; i < targetList.size(); i++) {
 			tmpWord = targetList.get(i);
-			topList.add(tmpWord.getContent());
+			
+			if (i >= finalK) {
+				if (targetList.get(i-1).getRoundVal() * 0.95 < tmpWord.getRoundVal()) {
+					topList.add(tmpWord.getContent());
+				} else {
+					break;
+				}
+			} else {
+				topList.add(tmpWord.getContent());
+			}
 		}
 		return topList;
 	}
+	
 
 	@Override
 	public String getName() {

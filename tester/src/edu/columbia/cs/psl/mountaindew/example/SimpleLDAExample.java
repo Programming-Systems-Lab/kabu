@@ -69,7 +69,8 @@ public class SimpleLDAExample {
 	private int numReduceTasks = 10;
 	private boolean backfillPerplexity = true;
 	private double threshold = 0.00001;
-	private long seed = System.nanoTime() % 10000;
+	//private long seed = System.nanoTime() % 10000;
+	private long seed = 2000;
 	
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSS");
 	
