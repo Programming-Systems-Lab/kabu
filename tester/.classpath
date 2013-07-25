@@ -25,5 +25,6 @@
 	<classpathentry kind="lib" path="lib/mahout-core-0.7.jar"/>
 	<classpathentry kind="lib" path="lib/mahout-integration-0.7.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop-core-0.20.204.0.jar"/>
+	<classpathentry kind="lib" path="lib/weka.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
