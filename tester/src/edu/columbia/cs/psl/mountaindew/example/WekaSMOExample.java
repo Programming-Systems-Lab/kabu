@@ -3,6 +3,8 @@ package edu.columbia.cs.psl.mountaindew.example;
 import java.io.File;
 import java.io.IOException;
 
+import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
+
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.SMO;
 import weka.core.Instance;
@@ -12,7 +14,7 @@ import weka.core.converters.ArffLoader;
 public class WekaSMOExample {
 	
 	public Instances loadData(String dataPath) {
-		ArffLoader dataLoader = new ArffLoader();
+		ArffLoader dataLoader = new ArffLoader ();
 		try {
 			dataLoader.setFile(new File(dataPath));
 			
@@ -27,12 +29,15 @@ public class WekaSMOExample {
 		return null;
 	}
 	
+	@Metamorphic
 	public SMO trainSMOModel(Instances data) {
 		SMO smoDriver = new SMO();
 		String[] options = new String[]{"-t"};
 		try {
 			smoDriver.setOptions(options);
 			smoDriver.buildClassifier(data);
+			
+			System.out.println("Check smo object: " + smoDriver.toString());
 			
 			return smoDriver;
 		} catch (Exception ex) {

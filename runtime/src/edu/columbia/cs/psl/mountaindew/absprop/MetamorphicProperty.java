@@ -12,6 +12,9 @@ import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.DependentProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.runtime.MetamorphicInputProcessorGroup;
+import edu.columbia.cs.psl.mountaindew.adapter.AbstractAdapter;
+import edu.columbia.cs.psl.mountaindew.adapter.AdapterLoader;
+import edu.columbia.cs.psl.mountaindew.adapter.DefaultAdapter;
 import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 import edu.columbia.cs.psl.mountaindew.struct.PossiblyMetamorphicMethodInvocation;
 
@@ -31,7 +34,9 @@ public abstract class MetamorphicProperty {
 	private List<MetamorphicInputProcessor> processors = new ArrayList<MetamorphicInputProcessor>();
 	
 	private ArrayList<MethodInvocation> invocations = new ArrayList<MethodInvocation>();
-
+	
+	protected AbstractAdapter targetAdapter;
+	
 	protected ArrayList<MethodInvocation> getInvocations() {
 		return invocations;
 	}
@@ -111,13 +116,30 @@ public abstract class MetamorphicProperty {
 			}
 		}
 	}
+	
+	private void loadTargetAdapter() {
+		//Can use a configuration file here to get adapter name;
+		String className = "edu.columbia.cs.psl.mountaindew.adapter.WekaAdapter";
+		try {
+			this.targetAdapter = (AbstractAdapter)AdapterLoader.loadClass(className).newInstance();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.err.println("Loading target adapter fails. Use default adapter");
+			this.targetAdapter = new DefaultAdapter();
+		} 
+	}
 
 	private Cloner cloner = new Cloner();
 
 	public HashSet<PossiblyMetamorphicMethodInvocation> createChildren(MethodInvocation inv) {
+		this.loadTargetAdapter();
+		System.out.println("Check adapter class: " + this.targetAdapter.getClass().getName());
+
 		HashSet<PossiblyMetamorphicMethodInvocation> ret = new HashSet<PossiblyMetamorphicMethodInvocation>();
 		
 		for (MetamorphicInputProcessor processor: this.processors) {
+			this.targetAdapter.setProcessor(processor);
+			
 			boolean[] paramFlipping = new boolean[inv.params.length];
 			
 			ArrayList<boolean[]> combis = computeCombinations(paramFlipping);		
@@ -142,7 +164,8 @@ public abstract class MetamorphicProperty {
 							
 							try {
 								child.propertyParams[i] = propertyParams;
-								child.params[i] = processor.apply((Object) cloner.deepClone(inv.params[i]), propertyParams);
+								//child.params[i] = processor.apply((Object) cloner.deepClone(inv.params[i]), propertyParams);
+								child.params[i] = this.targetAdapter.adaptInput((Object)cloner.deepClone(inv.params[i]), propertyParams);
 							} catch (Exception ex) {
 								ex.printStackTrace();
 								continue CombiLoop;

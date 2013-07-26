@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import weka.core.Instances;
+
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.MultiplyByNumericConstant;
@@ -214,9 +216,8 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 
 	@Override
 	protected int[] getInterestedVariableIndices() {
+		//Find a way to make this more flexible
 		ArrayList<Integer> rets = new ArrayList<Integer>();
-		/*System.out.println("Check method parameter types: " + getMethod().getParameterTypes().length);
-		System.out.println("Check method parameter: " + getMethod().getParameterTypes()[0].getComponentType().getName());*/
 		for(int i = 0;i<getMethod().getParameterTypes().length; i++)
 		{
 			if(getMethod().getParameterTypes()[i].equals(Integer.TYPE) || 
@@ -227,7 +228,8 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					Float.class.isAssignableFrom(getMethod().getParameterTypes()[i])|| 
 					Double.class.isAssignableFrom(getMethod().getParameterTypes()[i])||
 					getMethod().getParameterTypes()[i].isArray()||
-					Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
+					Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i])||
+					Instances.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
 				rets.add(i);
 		}
 		int[] ret = new int[rets.size()];
