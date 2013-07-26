@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
+import weka.classifiers.Evaluation;
 import weka.classifiers.functions.SMO;
 import weka.core.Attribute;
 import weka.core.Instance;
@@ -18,6 +19,8 @@ public class WekaAdapter implements AbstractAdapter{
 	private MetamorphicInputProcessor processor;
 	
 	private List<Integer> skipList = new ArrayList<Integer>();
+	
+	private Instances testingData;
 		
 	public void setProcessor(MetamorphicInputProcessor processor) {
 		this.processor = processor;
@@ -83,15 +86,33 @@ public class WekaAdapter implements AbstractAdapter{
 		}
 	}
 	
+	@Override
 	public Object adaptOutput(Object output) {
 		
 		if (SMO.class.isAssignableFrom(output.getClass())) {
-			return output.toString();
+			SMO s = (SMO)output;
+			try {
+				Evaluation e = new Evaluation(this.testingData);
+				e.evaluateModel(s, this.testingData);
+				return adaptOutput(e);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if (Evaluation.class.isAssignableFrom(output.getClass())) {
+			Evaluation e = (Evaluation)output;
+			return e.confusionMatrix();
 		}
 		return null;
 	}
 	
 	private boolean shouldSkipped(int i) {
 		return this.skipList.contains(i);
+	}
+	
+	@Override
+	public void setTestingData(Object testingData) {
+		if (Instances.class.isAssignableFrom(testingData.getClass())) {
+			this.testingData = (Instances)testingData;
+		}
 	}
 }

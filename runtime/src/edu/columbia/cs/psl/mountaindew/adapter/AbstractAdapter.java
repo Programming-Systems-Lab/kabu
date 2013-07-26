@@ -10,6 +10,8 @@ public interface AbstractAdapter {
 		
 	public Object adaptInput(Object input, Object[] propertyParams);
 	
-	public Object adaptOutput(Object outpu);
+	public Object adaptOutput(Object output);
+	
+	public void setTestingData(Object testData);
 
 }

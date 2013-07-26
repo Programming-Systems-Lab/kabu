@@ -31,7 +31,7 @@ public class MetamorphicObserver {
 	static
 	{
 //		properties.add(AdditiveByConstant.class);
-		properties.add(MultiplicativeByConstant.class);
+//		properties.add(MultiplicativeByConstant.class);
 //		properties.add(InclusiveByMax.class);
 //		properties.add(InclusiveByMin.class);
 //		properties.add(InclusiveByMid.class);
@@ -46,7 +46,7 @@ public class MetamorphicObserver {
 //		properties.add(ConstructRelChecker.class);
 //		properties.add(SizeChecker.class);
 //		properties.add(ProjectionEqualer.class);
-//		properties.add(ContentEqualer.class);
+		properties.add(ContentEqualer.class);
 //		properties.add(SuperWordEqualer.class);
 //		properties.add(InorderEqualer.class);
 //		properties.add(CentroidEqualer.class);

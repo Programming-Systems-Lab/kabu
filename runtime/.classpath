@@ -17,10 +17,10 @@
 	<classpathentry kind="lib" path="/mtndew-tester/lib/mahout-core-0.7.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/mahout-integration-0.7.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/mahout-math-0.7.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/invivo-runtime"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/java-cup.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/JFlex.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/junit.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/weka_modified.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/invivo-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

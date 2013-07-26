@@ -37,7 +37,7 @@ public class WekaSMOExample {
 			smoDriver.setOptions(options);
 			smoDriver.buildClassifier(data);
 			
-			System.out.println("Check smo object: " + smoDriver.toString());
+			//System.out.println("Check smo object: " + smoDriver.toString());
 			
 			return smoDriver;
 		} catch (Exception ex) {

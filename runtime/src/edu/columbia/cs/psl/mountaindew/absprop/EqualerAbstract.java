@@ -3,6 +3,9 @@ package edu.columbia.cs.psl.mountaindew.absprop;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import weka.classifiers.functions.SMO;
+import weka.core.Instances;
+
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 
@@ -15,7 +18,8 @@ public abstract class EqualerAbstract extends PairwiseMetamorphicProperty{
 		{
 			if(getMethod().getParameterTypes()[i].isArray() || 
 					Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]) ||
-					String.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
+					String.class.isAssignableFrom(getMethod().getParameterTypes()[i]) ||
+					Instances.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
 				rets.add(i);
 		}
 		int[] ret = new int[rets.size()];

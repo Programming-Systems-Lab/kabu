@@ -4,6 +4,7 @@ import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.struct.Word;
 import edu.columbia.cs.psl.mountaindew.absprop.EqualerAbstract;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -69,10 +70,23 @@ public class ContentEqualer extends EqualerAbstract{
 			
 			return c1Set.equals(c2Set);
 		} else if (c1.getClass().isArray() && c2.getClass().isArray()) {
-			c1Set = new HashSet(Arrays.asList((Object[])c1));
-			c2Set = new HashSet(Arrays.asList((Object[])c2));
+			//c1Set = new HashSet(Arrays.asList((Object[])c1));
+			//c2Set = new HashSet(Arrays.asList((Object[])c2));
+			System.out.println("Comparing array");
+			int c1Len = Array.getLength(c1);
+			int c2Len = Array.getLength(c2);
 			
-			return c1Set.equals(c2Set);
+			if (c1Len != c2Len)
+				return false;
+			
+			for (int i = 0; i < c1Len; i++) {
+				System.out.println("Check c1 element: " + Array.get(c1, i));
+				System.out.println("Check c2 element: " + Array.get(c2, i));
+				if (!this.checkEquivalence(Array.get(c1, i), Array.get(c2, i)))
+					return false;
+			}
+			
+			return true;
 		} else if (Map.class.isAssignableFrom(c1.getClass()) && Map.class.isAssignableFrom(c2.getClass())) {
 			//System.out.println("c1 c2 are maps");
 			Map c1Map = (Map)c1;
