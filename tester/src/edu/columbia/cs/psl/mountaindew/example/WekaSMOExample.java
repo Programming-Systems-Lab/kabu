@@ -2,11 +2,24 @@ package edu.columbia.cs.psl.mountaindew.example;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 
+import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
+import weka.classifiers.bayes.BayesNet;
+import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.GaussianProcesses;
+import weka.classifiers.functions.LeastMedSq;
+import weka.classifiers.functions.LibSVM;
+import weka.classifiers.functions.LinearRegression;
+import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.SMO;
+import weka.classifiers.functions.VotedPerceptron;
+import weka.classifiers.lazy.IBk;
+import weka.classifiers.rules.DecisionTable;
+import weka.classifiers.trees.J48;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
@@ -20,7 +33,7 @@ public class WekaSMOExample {
 			
 			Instances data = dataLoader.getDataSet();
 			data.setClassIndex(data.numAttributes() - 1);
-			
+
 			return data;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -46,11 +59,140 @@ public class WekaSMOExample {
 		return null;
 	}
 	
-	public void evalModel(SMO smoDriver, Instances data) {
+	@Metamorphic
+	public J48 trainJ48Model(Instances data) {
+		J48 tree = new J48();
+		String[] options = new String[]{"-t"};
+		try {
+			tree.setOptions(options);
+			tree.buildClassifier(data);
+			
+			return tree;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Metamorphic
+	public BayesNet trainBayesModel(Instances data) {
+		BayesNet net = new BayesNet();
+		//String[] options = new String[]{"-t"};
+		try {
+			//net.setOptions(options);
+			net.buildClassifier(data);
+			
+			return net;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	@Metamorphic
+	public NaiveBayes trainNaiveBayesModel(Instances data) {
+		NaiveBayes nb = new NaiveBayes();
+		//String[] options = new String[]{"-t"};
+		try {
+			//nb.setOptions(options);
+			nb.buildClassifier(data);
+			
+			return nb;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	@Metamorphic
+	public LinearRegression trainLR(Instances data) {
+		LinearRegression lr = new LinearRegression();
+		String[] options = new String[]{"-t"};
+		try {
+			lr.buildClassifier(data);
+			
+			return lr;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	
+	public LibSVM trainSVM(Instances data) {
+		LibSVM svm = new LibSVM();
+		//String[] options = new String[]{"-t"};
+		try {
+			svm.buildClassifier(data);
+			
+			return svm;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Metamorphic
+	public Logistic trainLogistic(Instances data) {
+		Logistic log = new Logistic();
+		String[] options = new String[]{"-t"};
+		try {
+			log.setOptions(options);
+			log.buildClassifier(data);
+			return log;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Metamorphic
+	public IBk trainKnn(Instances data) {
+		IBk ibk = new IBk();
+		String[] options = new String[]{"-t"};
+		try {
+			//ibk.setOptions(options);
+			ibk.buildClassifier(data);
+			
+			return ibk;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Metamorphic
+	public DecisionTable trainDT(Instances data) {
+		DecisionTable dt = new DecisionTable();
+		String[] options = new String[]{"-t"};
+		try {
+			dt.setOptions(options);
+			dt.buildClassifier(data);
+			
+			return dt;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void evalModel(Classifier classifier) {
 		Evaluation eval = null;
 		try {
+			//Use same data to test
+			Instances data = this.loadData("data/iris.arff");
+			
 			eval = new Evaluation(data);
-			eval.evaluateModel(smoDriver, data);
+			eval.evaluateModel(classifier, data);
+			
+			double[][] confMatrix = eval.confusionMatrix();
+			for (int i = 0; i < confMatrix.length; i++) {				
+				for (int j = 0; j < confMatrix[i].length; j++) {
+					System.out.println("Check content: " + i + " " + j + " " + confMatrix[i][j]);
+				}
+			}
+			
 			System.out.println(eval.toSummaryString("Result\n", false));
 		} catch(Exception ex) {
 			ex.printStackTrace();
@@ -76,11 +218,47 @@ public class WekaSMOExample {
 		SMO smo = smoEx.trainSMOModel(data);
 		
 		if (smo == null) {
-			System.err.println("Fail to train model");
+			System.err.println("Fail to train smo model");
 			return ;
 		}
+		smoEx.evalModel(smo);
 		
-		smoEx.evalModel(smo, data);
+		/*J48 tree = smoEx.trainJ48Model(data);
+		if (tree == null) {
+			System.err.println("Fail to train j48 model");
+		}
+		smoEx.evalModel(tree);*/
+		
+		/*BayesNet net = smoEx.trainBayesModel(data);
+		if (net == null) {
+			System.err.println("Fail to train Bayesnet");
+		}
+		smoEx.evalModel(net);*/
+		
+		/*NaiveBayes nb = smoEx.trainNaiveBayesModel(data);
+		if (nb == null) {
+			System.err.println("Fail to train Naive Bayes");
+		}
+		smoEx.evalModel(nb);*/
+		
+		/*Logistic log = smoEx.trainLogistic(data);
+		if (log == null) {
+			System.err.println("Fail to train GP");
+		}
+		smoEx.evalModel(log);*/
+		
+		/*IBk ibk = smoEx.trainKnn(data);
+		if (ibk == null) {
+			System.err.println("Fail to train ibk");
+		}
+		smoEx.evalModel(ibk);*/
+		
+		/*DecisionTable dt = smoEx.trainDT(data);
+		if (dt == null) {
+			System.err.println("Fail to train decision table");
+		}
+		smoEx.evalModel(dt);*/
+		
 	}
 
 }

@@ -2,16 +2,23 @@ package edu.columbia.cs.psl.mountaindew.adapter;
 
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 
-public interface AbstractAdapter {
+public abstract class AbstractAdapter {
 	
-	public void setProcessor(MetamorphicInputProcessor processor);
+	private MetamorphicInputProcessor processor;
 	
-	public MetamorphicInputProcessor getProcessor();
+	public void setProcessor(MetamorphicInputProcessor processor) {
+		this.processor = processor;
+	}
+	
+	public MetamorphicInputProcessor getProcessor() {
+		return this.processor;
+	}
 		
-	public Object adaptInput(Object input, Object[] propertyParams);
+	public abstract Object unboxInput(Object input);
 	
-	public Object adaptOutput(Object output);
+	public abstract Object adaptInput(Object transInput);
 	
-	public void setTestingData(Object testData);
-
+	public abstract Object adaptOutput(Object output);
+	
+	public abstract void setTestingData(Object testData);
 }

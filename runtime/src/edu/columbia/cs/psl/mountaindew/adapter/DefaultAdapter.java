@@ -2,25 +2,12 @@ package edu.columbia.cs.psl.mountaindew.adapter;
 
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 
-public class DefaultAdapter implements AbstractAdapter{
-	
-	private MetamorphicInputProcessor processor;
+public class DefaultAdapter extends AbstractAdapter{
 		
 	@Override
-	public void setProcessor(MetamorphicInputProcessor processor) {
-		this.processor = processor;
-	}
-
-	@Override
-	public MetamorphicInputProcessor getProcessor() {
+	public Object adaptInput(Object input) {
 		// TODO Auto-generated method stub
-		return this.processor;
-	}
-	
-	@Override
-	public Object adaptInput(Object input, Object[] propertyParams) {
-		// TODO Auto-generated method stub
-		return this.processor.apply(input, propertyParams);
+		return input;
 	}
 	
 	@Override
@@ -32,6 +19,10 @@ public class DefaultAdapter implements AbstractAdapter{
 	public void setTestingData(Object testingData) {
 		//Default is to do nothing
 	}
-	
 
+	@Override
+	public Object unboxInput(Object input) {
+		// TODO Auto-generated method stub
+		return input;
+	}
 }

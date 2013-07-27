@@ -65,28 +65,58 @@ public class ContentEqualer extends EqualerAbstract{
 			System.out.println("Check c1List: " + c1List);
 			System.out.println("Check c2List: " + c2List);
 			
-			c1Set = new HashSet((Collection)c1List);
-			c2Set = new HashSet((Collection)c2List);
-			
-			return c1Set.equals(c2Set);
-		} else if (c1.getClass().isArray() && c2.getClass().isArray()) {
-			//c1Set = new HashSet(Arrays.asList((Object[])c1));
-			//c2Set = new HashSet(Arrays.asList((Object[])c2));
-			System.out.println("Comparing array");
-			int c1Len = Array.getLength(c1);
-			int c2Len = Array.getLength(c2);
-			
-			if (c1Len != c2Len)
+			if (c1List.size() != c2List.size())
 				return false;
 			
-			for (int i = 0; i < c1Len; i++) {
+			int shouldCorrect = c1List.size();
+			int count = 0;
+			
+			for (int i = 0; i < c1List.size(); i++) {
+				if (this.checkEquivalence(c1List.get(i), c2List.get(i)))
+					count++;
+			}
+			
+			if (count == shouldCorrect)
+				return true;
+			else
+				return false;
+			
+			/*c1Set = new HashSet((Collection)c1List);
+			c2Set = new HashSet((Collection)c2List);
+			
+			return c1Set.equals(c2Set);*/
+		} else if (c1.getClass().isArray() && c2.getClass().isArray()) {
+			//c1Set = new HashSet(Arrays.asList((Object[])c1));
+			//c2Set = new HashSet(Arrays.asList((Object[])c2));			
+			int c1Length = Array.getLength(c1);
+			int c2Length = Array.getLength(c2);
+			
+			if (c1Length != c2Length)
+				return false;
+			
+			int shouldCorrect = c1Length;
+			int count = 0;
+			
+			for (int i = 0; i < c1Length; i++) {
+				if (this.checkEquivalence(Array.get(c1, i), Array.get(c2, i)))
+					count++;
+			}
+			
+			System.out.println("Check should correct: " + shouldCorrect);
+			System.out.println("Check count: " + count);
+			
+			if (count == shouldCorrect)
+				return true;
+			else
+				return false;
+			
+			/*for (int i = 0; i < c1Len; i++) {
 				System.out.println("Check c1 element: " + Array.get(c1, i));
 				System.out.println("Check c2 element: " + Array.get(c2, i));
 				if (!this.checkEquivalence(Array.get(c1, i), Array.get(c2, i)))
 					return false;
 			}
-			
-			return true;
+			return true;*/
 		} else if (Map.class.isAssignableFrom(c1.getClass()) && Map.class.isAssignableFrom(c2.getClass())) {
 			//System.out.println("c1 c2 are maps");
 			Map c1Map = (Map)c1;
