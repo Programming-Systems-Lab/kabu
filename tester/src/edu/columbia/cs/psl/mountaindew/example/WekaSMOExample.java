@@ -181,7 +181,7 @@ public class WekaSMOExample {
 		Evaluation eval = null;
 		try {
 			//Use same data to test
-			Instances data = this.loadData("data/iris.arff");
+			Instances data = this.loadData("data/iris_short.arff");
 			
 			eval = new Evaluation(data);
 			eval.evaluateModel(classifier, data);
@@ -205,7 +205,7 @@ public class WekaSMOExample {
 	 */
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-		String dataPath = "data/iris.arff";
+		String dataPath = "data/iris_short.arff";
 		
 		WekaSMOExample smoEx = new WekaSMOExample();
 		Instances data = smoEx.loadData(dataPath);

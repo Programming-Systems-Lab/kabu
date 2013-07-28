@@ -167,10 +167,7 @@ public abstract class MetamorphicProperty {
 								//child.params[i] = processor.apply((Object) cloner.deepClone(inv.params[i]), propertyParams);
 								//child.params[i] = this.targetAdapter.adaptInput((Object)cloner.deepClone(inv.params[i]), propertyParams);
 								Object unboxInput = this.targetAdapter.unboxInput((Object)cloner.deepClone(inv.params[i]));
-								System.out.println("Check unbox: " + unboxInput.getClass().getName());
 								Object transformed = processor.apply(unboxInput, propertyParams);
-								System.out.println("Transformed: " + transformed.getClass().getName());
-								System.out.println("Check return class: " + this.targetAdapter.adaptInput(transformed).getClass().getName());
 								child.params[i] = this.targetAdapter.adaptInput(transformed);
 							} catch (Exception ex) {
 								ex.printStackTrace();

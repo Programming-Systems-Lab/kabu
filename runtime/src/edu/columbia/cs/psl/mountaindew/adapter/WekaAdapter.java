@@ -57,7 +57,7 @@ public class WekaAdapter extends AbstractAdapter{
 				}
 			}
 			this.skipList.add(inputInstances.classIndex());
-			
+
 			Enumeration e = inputInstances.enumerateInstances();
 			Object tmpObj;
 			Instance tmpInstance;
@@ -102,16 +102,7 @@ public class WekaAdapter extends AbstractAdapter{
 		for (int i = 0; i < transInput.length; i++) {
 			double[] row = transInput[i];
 			for (int j = 0; j < row.length; j++) {
-				System.out.println("Transinput " + i + " " + j + " " + transInput[i][j]);
-				System.out.println("ComplementMap " + i + " " + j + " " + complementMap[i][j]);
 				transInput[i][j] = transInput[i][j] + complementMap[i][j];
-			}
-		}
-		
-		for (int i = 0;i < transInput.length; i++) {
-			double[] row = transInput[i];
-			for (int j = 0; j < row.length; j++) {
-				System.out.println("Check i: " + i + " j: " + j + " " + transInput[i][j]);
 			}
 		}
 		
