@@ -24,7 +24,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
 
-public class WekaSMOExample {
+public class WekaClassifierExample {
 	
 	public Instances loadData(String dataPath) {
 		ArffLoader dataLoader = new ArffLoader ();
@@ -177,12 +177,9 @@ public class WekaSMOExample {
 		return null;
 	}
 	
-	public void evalModel(Classifier classifier) {
+	public void evalModel(Classifier classifier, Instances data) {
 		Evaluation eval = null;
-		try {
-			//Use same data to test
-			Instances data = this.loadData("data/iris_short.arff");
-			
+		try {			
 			eval = new Evaluation(data);
 			eval.evaluateModel(classifier, data);
 			
@@ -205,60 +202,58 @@ public class WekaSMOExample {
 	 */
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-		String dataPath = "data/iris_short.arff";
+		String dataPath = "data/iris.arff";
 		
-		WekaSMOExample smoEx = new WekaSMOExample();
-		Instances data = smoEx.loadData(dataPath);
+		WekaClassifierExample wcEx = new WekaClassifierExample();
+		Instances data = wcEx.loadData(dataPath);
 		
 		if (data == null) {
 			System.err.println("Load no data");
 			return ;
 		}
 		
-		SMO smo = smoEx.trainSMOModel(data);
-		
+		/*SMO smo = wcEx.trainSMOModel(data);
 		if (smo == null) {
 			System.err.println("Fail to train smo model");
 			return ;
 		}
-		smoEx.evalModel(smo);
+		wcEx.evalModel(smo, data);*/
 		
-		/*J48 tree = smoEx.trainJ48Model(data);
+		/*J48 tree = wcEx.trainJ48Model(data);
 		if (tree == null) {
 			System.err.println("Fail to train j48 model");
 		}
-		smoEx.evalModel(tree);*/
+		wcEx.evalModel(tree, data);*/
 		
-		/*BayesNet net = smoEx.trainBayesModel(data);
+		/*BayesNet net = wcEx.trainBayesModel(data);
 		if (net == null) {
 			System.err.println("Fail to train Bayesnet");
 		}
-		smoEx.evalModel(net);*/
+		wcEx.evalModel(net, data);*/
 		
-		/*NaiveBayes nb = smoEx.trainNaiveBayesModel(data);
+		NaiveBayes nb = wcEx.trainNaiveBayesModel(data);
 		if (nb == null) {
 			System.err.println("Fail to train Naive Bayes");
 		}
-		smoEx.evalModel(nb);*/
+		wcEx.evalModel(nb, data);
 		
-		/*Logistic log = smoEx.trainLogistic(data);
+		/*Logistic log = wcEx.trainLogistic(data);
 		if (log == null) {
 			System.err.println("Fail to train GP");
 		}
-		smoEx.evalModel(log);*/
+		wcEx.evalModel(log, data);*/
 		
-		/*IBk ibk = smoEx.trainKnn(data);
+		/*IBk ibk = wcEx.trainKnn(data);
 		if (ibk == null) {
 			System.err.println("Fail to train ibk");
 		}
-		smoEx.evalModel(ibk);*/
+		wcEx.evalModel(ibk, data);*/
 		
-		/*DecisionTable dt = smoEx.trainDT(data);
+		/*DecisionTable dt = wcEx.trainDT(data);
 		if (dt == null) {
 			System.err.println("Fail to train decision table");
 		}
-		smoEx.evalModel(dt);*/
-		
+		wcEx.evalModel(dt, data);*/
 	}
 
 }

@@ -11,6 +11,8 @@ import com.rits.cloning.Cloner;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.DependentProcessor;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.Reverse;
+import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.Shuffle;
 import edu.columbia.cs.psl.metamorphic.runtime.MetamorphicInputProcessorGroup;
 import edu.columbia.cs.psl.mountaindew.adapter.AbstractAdapter;
 import edu.columbia.cs.psl.mountaindew.adapter.AdapterLoader;
@@ -30,6 +32,8 @@ public abstract class MetamorphicProperty {
 	}
 	
 	private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
+	
+	private HashSet<Class<? extends MetamorphicInputProcessor>> nonValueChangeProcessors = MetamorphicInputProcessorGroup.getInstance().getNonValueChangeProcessors();
 	
 	private List<MetamorphicInputProcessor> processors = new ArrayList<MetamorphicInputProcessor>();
 	
@@ -138,7 +142,7 @@ public abstract class MetamorphicProperty {
 		HashSet<PossiblyMetamorphicMethodInvocation> ret = new HashSet<PossiblyMetamorphicMethodInvocation>();
 		
 		for (MetamorphicInputProcessor processor: this.processors) {
-			this.targetAdapter.setProcessor(processor);
+			//this.targetAdapter.setProcessor(processor);
 			
 			boolean[] paramFlipping = new boolean[inv.params.length];
 			
@@ -166,9 +170,25 @@ public abstract class MetamorphicProperty {
 								child.propertyParams[i] = propertyParams;
 								//child.params[i] = processor.apply((Object) cloner.deepClone(inv.params[i]), propertyParams);
 								//child.params[i] = this.targetAdapter.adaptInput((Object)cloner.deepClone(inv.params[i]), propertyParams);
-								Object unboxInput = this.targetAdapter.unboxInput((Object)cloner.deepClone(inv.params[i]));
-								Object transformed = processor.apply(unboxInput, propertyParams);
-								child.params[i] = this.targetAdapter.adaptInput(transformed);
+								Object input = (Object)cloner.deepClone(inv.params[i]);
+								Object unboxInput;
+								Object transformed;
+								
+								if  (this.nonValueChangeProcessors.contains(processor.getClass())) {
+									unboxInput = this.targetAdapter.unboxInput(input);
+									transformed = processor.apply(unboxInput, propertyParams);
+									child.params[i] = this.targetAdapter.adaptInput(transformed);
+								} else {
+									System.out.println("Check input class: " + input.getClass().getName());
+									
+									List<Object> skipList = this.targetAdapter.skipColumn(input);
+									this.targetAdapter.setSkipList(skipList);
+									unboxInput = this.targetAdapter.unboxInput(input);
+									this.targetAdapter.setupComplementMap(unboxInput);
+									transformed = processor.apply(unboxInput, propertyParams);
+									this.targetAdapter.complementTransformInput(transformed);
+									child.params[i] = this.targetAdapter.adaptInput(transformed);
+								}
 							} catch (Exception ex) {
 								ex.printStackTrace();
 								continue CombiLoop;

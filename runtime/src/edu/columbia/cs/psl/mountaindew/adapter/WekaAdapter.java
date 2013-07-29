@@ -18,9 +18,7 @@ import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 
 public class WekaAdapter extends AbstractAdapter{
 	
-	private List<Integer> skipList = new ArrayList<Integer>();
-	
-	private Instances testingData;
+	//private List<Integer> skipList = new ArrayList<Integer>();
 	
 	private double[][] complementMap;
 	
@@ -31,6 +29,31 @@ public class WekaAdapter extends AbstractAdapter{
 	private FastVector attrVector;
 	
 	private int classIdx;
+	
+	@Override
+	public List<Object> skipColumn(Object input) {
+		Class objClass = input.getClass();
+		List<Object> skipList = new ArrayList<Object>();
+		
+		if (objClass == Instances.class) {
+			Instances inputInstances = (Instances)input;
+			
+			Attribute tmpAttribute;
+			
+			for (int i = 0; i < inputInstances.numAttributes(); i++) {
+				tmpAttribute = inputInstances.attribute(i);
+				
+				if (!tmpAttribute.isNumeric())
+					skipList.add(i);
+			}
+			
+			if (!skipList.contains(inputInstances.classIndex()))
+				skipList.add(inputInstances.classIndex());
+			
+			return skipList;
+		}
+		return null;
+	}
 	
 	@Override
 	public Object unboxInput(Object input) {
@@ -45,9 +68,8 @@ public class WekaAdapter extends AbstractAdapter{
 			this.classIdx = inputInstances.classIndex();
 			this.attrVector = new FastVector();
 			double[][] instancesRep = new double[instanceNum][attrNum];
-			this.complementMap = new double[instanceNum][attrNum];
 			
-			Attribute tmpAttribute;
+			/*Attribute tmpAttribute;
 			for (int i = 0; i < inputInstances.numAttributes(); i++) {
 				tmpAttribute = inputInstances.attribute(i);
 				attrVector.addElement(tmpAttribute);
@@ -56,7 +78,13 @@ public class WekaAdapter extends AbstractAdapter{
 					this.skipList.add(i);
 				}
 			}
-			this.skipList.add(inputInstances.classIndex());
+			this.skipList.add(inputInstances.classIndex());*/
+			
+			Attribute tmpAttribute;
+			for (int i = 0; i < inputInstances.numAttributes(); i++) {
+				tmpAttribute = inputInstances.attribute(i);
+				attrVector.addElement(tmpAttribute);
+			}
 
 			Enumeration e = inputInstances.enumerateInstances();
 			Object tmpObj;
@@ -72,12 +100,10 @@ public class WekaAdapter extends AbstractAdapter{
 				newVals = new double[vals.length];
 				
 				for (int i = 0; i < vals.length; i++) {
-					if (this.shouldSkipped(i)) {
-						newVals[i] = 0;
+					/*if (this.getSkipList().contains(i)) {
 						complementMap[count][i] = vals[i];
-					} else {
-						newVals[i] = vals[i];
-					}
+					}*/
+					newVals[i] = vals[i];
 				}
 				
 				instancesRep[count++] = newVals; 
@@ -99,12 +125,15 @@ public class WekaAdapter extends AbstractAdapter{
 	public Object adaptInput(Object transInputObj) {
 		double[][] transInput = (double[][])transInputObj;
 		//Put the non-numeric value back
-		for (int i = 0; i < transInput.length; i++) {
+		/*for (int i = 0; i < transInput.length; i++) {
 			double[] row = transInput[i];
 			for (int j = 0; j < row.length; j++) {
-				transInput[i][j] = transInput[i][j] + complementMap[i][j];
+				
+				if (this.complementMap[i][j] != -1) {
+					transInput[i][j] = complementMap[i][j];
+				}
 			}
-		}
+		}*/
 		
 		Instances ret = new Instances(this.instancesName, this.attrVector, this.capacity);
 		ret.setClassIndex(this.classIdx);
@@ -117,8 +146,6 @@ public class WekaAdapter extends AbstractAdapter{
 		
 		return ret;
 	}
-	
-
 			
 	/*public Object adaptInput(Object input, Object[] propertyParams) {
 		Class objClazz = input.getClass();
@@ -168,19 +195,31 @@ public class WekaAdapter extends AbstractAdapter{
 	}*/
 	
 	@Override
-	public Object adaptOutput(Object output) {
+	public Object adaptOutput(Object outputModel, Object...testingData) {
 		
-		if (Classifier.class.isAssignableFrom(output.getClass())) {
-			Classifier c = (Classifier)output;
+		Instances finalData;
+		if (Classifier.class.isAssignableFrom(outputModel.getClass())) {
+			Classifier c = (Classifier)outputModel;
+			
+			Object tmpObj = null;
+			
+			if (testingData.length != 0)
+				tmpObj = testingData[0];
+			
+			if (Instances.class.isAssignableFrom(tmpObj.getClass()))
+				finalData = (Instances)tmpObj;
+			else
+				finalData = (Instances)this.getDefaultTestingData();
+			
 			try {
-				Evaluation e = new Evaluation(this.testingData);
-				e.evaluateModel(c, this.testingData);
+				Evaluation e = new Evaluation(finalData);
+				e.evaluateModel(c, finalData);
 				return adaptOutput(e);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else if (Evaluation.class.isAssignableFrom(output.getClass())) {
-			Evaluation e = (Evaluation)output;
+		} else if (Evaluation.class.isAssignableFrom(outputModel.getClass())) {
+			Evaluation e = (Evaluation)outputModel;
 			System.out.println("Check confusion matrix");
 			double[][] confusionMatrix = e.confusionMatrix();
 			for (int i = 0; i < confusionMatrix.length; i++) {
@@ -193,14 +232,7 @@ public class WekaAdapter extends AbstractAdapter{
 		return null;
 	}
 	
-	private boolean shouldSkipped(int i) {
+	/*private boolean shouldSkipped(int i) {
 		return this.skipList.contains(i);
-	}
-	
-	@Override
-	public void setTestingData(Object testingData) {
-		if (Instances.class.isAssignableFrom(testingData.getClass())) {
-			this.testingData = (Instances)testingData;
-		}
-	}
+	}*/
 }

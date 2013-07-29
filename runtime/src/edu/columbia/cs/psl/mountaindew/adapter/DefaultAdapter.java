@@ -1,5 +1,7 @@
 package edu.columbia.cs.psl.mountaindew.adapter;
 
+import java.util.List;
+
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 
 public class DefaultAdapter extends AbstractAdapter{
@@ -11,18 +13,19 @@ public class DefaultAdapter extends AbstractAdapter{
 	}
 	
 	@Override
-	public Object adaptOutput(Object output) {
-		return output;
+	public Object adaptOutput(Object outputModel, Object...testingData) {
+		return outputModel;
 	}
 	
-	@Override
-	public void setTestingData(Object testingData) {
-		//Default is to do nothing
-	}
-
 	@Override
 	public Object unboxInput(Object input) {
 		// TODO Auto-generated method stub
 		return input;
+	}
+
+	@Override
+	public List<Object> skipColumn(Object input) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -40,10 +40,12 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								
 								this.mProfiler.addMethodProfile(i, j, result);
 								
-								//Set up testing data for ML model
-								this.targetAdapter.setTestingData(o1);
-								Object adaptRt1 = this.targetAdapter.adaptOutput(i.returnValue);
-								Object adaptRt2 = this.targetAdapter.adaptOutput(j.returnValue);
+								//By default, we use original data as testing data.
+								//It's adapter developer's responsibility to provide correct data in adaptOut of adapter.
+								this.targetAdapter.setData(o1, i.returnValue, o2, j.returnValue);
+								this.targetAdapter.setDefaultTestingData(o1);
+								Object adaptRt1 = this.targetAdapter.adaptOutput(i.returnValue, o1);
+								Object adaptRt2 = this.targetAdapter.adaptOutput(j.returnValue, o2);
 								//if(returnValuesApply(o1, i.returnValue, o2, j.returnValue))
 								if (returnValuesApply(o1, adaptRt1, o2, adaptRt2))
 								{
