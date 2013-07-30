@@ -53,6 +53,9 @@ public abstract class AbstractAdapter {
 	public abstract List<Object> skipColumn(Object input);
 	
 	public void setupComplementMap(Object input) {
+		if (this.skipList == null)
+			return ;
+		
 		double[][] inputInDouble = (double[][])input;
 		int dataNum = inputInDouble.length;
 		int columnNum = inputInDouble[0].length;
@@ -70,6 +73,9 @@ public abstract class AbstractAdapter {
 	}
 	
 	public void complementTransformInput(Object transInputObj) {
+		if (this.complementMap == null)
+			return ;
+		
 		double[][] transInput = (double[][])transInputObj;
 		//Put the non-numeric value back
 		for (int i = 0; i < transInput.length; i++) {

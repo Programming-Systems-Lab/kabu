@@ -3,6 +3,8 @@ package edu.columbia.cs.psl.mountaindew.absprop;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.mahout.classifier.ConfusionMatrix;
+
 import weka.classifiers.functions.SMO;
 import weka.core.Instances;
 
@@ -19,7 +21,8 @@ public abstract class EqualerAbstract extends PairwiseMetamorphicProperty{
 			if(getMethod().getParameterTypes()[i].isArray() || 
 					Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]) ||
 					String.class.isAssignableFrom(getMethod().getParameterTypes()[i]) ||
-					Instances.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
+					Instances.class.isAssignableFrom(getMethod().getParameterTypes()[i]) ||
+					ConfusionMatrix.class.isAssignableFrom(getMethod().getParameterTypes()[i]));
 				rets.add(i);
 		}
 		int[] ret = new int[rets.size()];

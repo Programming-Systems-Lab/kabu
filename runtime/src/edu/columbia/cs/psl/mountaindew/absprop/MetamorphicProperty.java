@@ -124,6 +124,7 @@ public abstract class MetamorphicProperty {
 	private void loadTargetAdapter() {
 		//Can use a configuration file here to get adapter name;
 		String className = "edu.columbia.cs.psl.mountaindew.adapter.WekaAdapter";
+		//String className = "edu.columbia.cs.psl.mountaindew.adapter.MahoutAdapter";
 		try {
 			this.targetAdapter = (AbstractAdapter)AdapterLoader.loadClass(className).newInstance();
 		} catch (Exception ex) {
