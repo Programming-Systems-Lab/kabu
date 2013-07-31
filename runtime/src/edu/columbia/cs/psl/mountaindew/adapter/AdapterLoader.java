@@ -10,7 +10,7 @@ public class AdapterLoader {
 	public static Class<? extends AbstractAdapter> loadClass(String className) {
 		try {
 			URL classUrl = AdapterLoader.class.getProtectionDomain().getCodeSource().getLocation();
-			System.out.println("AdapterLoader confirm current location: " + classUrl.getPath());
+			//System.out.println("AdapterLoader confirm current location: " + classUrl.getPath());
 			
 			URL[] classUrls = {classUrl};
 			URLClassLoader ucl = new URLClassLoader(classUrls);

@@ -30,26 +30,26 @@ public class MetamorphicObserver {
 	private static MetamorphicObserver instance = new MetamorphicObserver();
 	static
 	{
-//		properties.add(AdditiveByConstant.class);
-//		properties.add(MultiplicativeByConstant.class);
-//		properties.add(InclusiveByMax.class);
-//		properties.add(InclusiveByMin.class);
-//		properties.add(InclusiveByMid.class);
-//		properties.add(ExclusiveByMax.class);
-//		properties.add(ExclusiveByMid.class);
-//		properties.add(ExclusiveByMin.class);
-//		properties.add(Invertable.class);
-//		properties.add(Negatable.class);
-//		properties.add(Shufflable.class);
-//		properties.add(DirRelChecker.class);
-//		properties.add(InvRelChecker.class);
-//		properties.add(ConstructRelChecker.class);
-//		properties.add(SizeChecker.class);
-//		properties.add(ProjectionEqualer.class);
+		properties.add(AdditiveByConstant.class);
+		properties.add(MultiplicativeByConstant.class);
+		properties.add(InclusiveByMax.class);
+		properties.add(InclusiveByMin.class);
+		properties.add(InclusiveByMid.class);
+		properties.add(ExclusiveByMax.class);
+		properties.add(ExclusiveByMid.class);
+		properties.add(ExclusiveByMin.class);
+		properties.add(Invertable.class);
+		properties.add(Negatable.class);
+		properties.add(Shufflable.class);
+		properties.add(DirRelChecker.class);
+		properties.add(InvRelChecker.class);
+		properties.add(ConstructRelChecker.class);
+		properties.add(SizeChecker.class);
+		properties.add(ProjectionEqualer.class);
 		properties.add(ContentEqualer.class);
-//		properties.add(SuperWordEqualer.class);
-//		properties.add(InorderEqualer.class);
-//		properties.add(CentroidEqualer.class);
+		properties.add(SuperWordEqualer.class);
+		properties.add(InorderEqualer.class);
+		properties.add(CentroidEqualer.class);
 	}
 	public static MetamorphicObserver getInstance() {
 //		System.out.println("Get metamorphic observer instance");

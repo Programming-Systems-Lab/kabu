@@ -23,8 +23,11 @@ import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.runtime.MetamorphicInputProcessorGroup;
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty.PropertyResult;
+import edu.columbia.cs.psl.mountaindew.adapter.AbstractAdapter;
+import edu.columbia.cs.psl.mountaindew.adapter.AdapterLoader;
 import edu.columbia.cs.psl.mountaindew.stats.Correlationer;
 import edu.columbia.cs.psl.mountaindew.struct.MethodProfile;
+import edu.columbia.cs.psl.mountaindew.util.MetamorphicConfigurer;
 
 
 /**
@@ -43,10 +46,14 @@ public class Interceptor extends AbstractInterceptor {
 	//private static String profileRoot = "/Users/mike/Documents/metamorphic-projects/mountaindew/tester/profiles/";
 	private static String profileRoot = "profiles/";
 	private static String configString = "config/mutant.property";
+	private static String metaConfigString = "config/metamorphic.property";
 	private static SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+	private MetamorphicConfigurer mConfigurer = new MetamorphicConfigurer(metaConfigString);
 	private HashMap<Method, HashSet<MetamorphicProperty>> properties = new HashMap<Method, HashSet<MetamorphicProperty>>();
 	private HashSet<Class<? extends MetamorphicProperty>> propertyPrototypes;
 	private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes;
+	private HashSet<Class<? extends MetamorphicInputProcessor>> nonValueChangeProcessorPrototypes;
+	private Class<? extends AbstractAdapter> targetAdapter;
 	private HashMap<Integer, MethodInvocation> invocations = new HashMap<Integer, MethodInvocation>();
 	private Integer invocationId = 0;
 	private List<MethodProfiler> profilerList = new ArrayList<MethodProfiler>();
@@ -59,9 +66,45 @@ public class Interceptor extends AbstractInterceptor {
 	public Interceptor(Object intercepted) {
 		super(intercepted);
 		System.out.println("Interceptor created");
-		propertyPrototypes = MetamorphicObserver.getInstance().registerInterceptor(this);
-		processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
+		//propertyPrototypes = MetamorphicObserver.getInstance().registerInterceptor(this);
+		//processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
+		propertyPrototypes = this.filterCheckers(MetamorphicObserver.getInstance().registerInterceptor(this));
+		processorPrototypes = this.filterTransformers(MetamorphicInputProcessorGroup.getInstance().getProcessors());
+		nonValueChangeProcessorPrototypes = MetamorphicInputProcessorGroup.getInstance().getNonValueChangeProcessors();
+		targetAdapter = this.getAdapter();
 		this.getTimeTag();
+	}
+	
+	private HashSet<Class<? extends MetamorphicProperty>> filterCheckers(HashSet<Class<? extends MetamorphicProperty>> allCheckers) {
+		List<String> selectedClasses = this.mConfigurer.getCheckerNames();
+		HashSet<Class<? extends MetamorphicProperty>> ret = new HashSet<Class<? extends MetamorphicProperty>>();
+		
+		for (Class<? extends MetamorphicProperty> tmpChecker: allCheckers) {
+			if (selectedClasses.contains(tmpChecker.getName())) {
+				ret.add(tmpChecker);
+			}
+		}
+		
+		return ret;
+	}
+	
+	private HashSet<Class<? extends MetamorphicInputProcessor>> filterTransformers(HashSet<Class<? extends MetamorphicInputProcessor>> allTransformers) {
+		List<String> selectedClasses = this.mConfigurer.getTransformerNames();
+		HashSet<Class<? extends MetamorphicInputProcessor>> ret = new HashSet<Class<? extends MetamorphicInputProcessor>>();
+		
+		for (Class<? extends MetamorphicInputProcessor> tmpProcessor: allTransformers) {
+			if (selectedClasses.contains(tmpProcessor.getName())) {
+				ret.add(tmpProcessor);
+			}
+		}
+		
+		return ret;
+	}
+	
+	private Class<? extends AbstractAdapter> getAdapter() {
+		String targetClass = mConfigurer.getAdapterClassName();
+		Class<? extends AbstractAdapter> targetAdapter = AdapterLoader.loadClass(targetClass);
+		return targetAdapter;
 	}
 	
 	private void getTimeTag() {
@@ -110,6 +153,9 @@ public class Interceptor extends AbstractInterceptor {
 				try {
 					MetamorphicProperty p = c.newInstance();
 					p.setMethod(method);
+					p.setInputProcessors(this.processorPrototypes);
+					p.setTargetAdapter(this.targetAdapter);
+					p.setNonValueChangeInputProcessors(this.nonValueChangeProcessorPrototypes);
 					p.loadInputProcessors();
 					properties.get(method).add(p);
 				} catch (InstantiationException e) {
@@ -319,6 +365,11 @@ public class Interceptor extends AbstractInterceptor {
 		for (Class<? extends MetamorphicInputProcessor> processorPrototype: this.processorPrototypes) {
 			System.out.println(processorPrototype.getName());
 		}
+		
+		System.out.println("");
+		
+		System.out.println("Registered Adapter: ");
+		System.out.println(this.targetAdapter.getName());
 		
 		System.out.println("");
 		

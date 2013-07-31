@@ -19,6 +19,7 @@ import edu.columbia.cs.psl.mountaindew.adapter.AdapterLoader;
 import edu.columbia.cs.psl.mountaindew.adapter.DefaultAdapter;
 import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 import edu.columbia.cs.psl.mountaindew.struct.PossiblyMetamorphicMethodInvocation;
+import edu.columbia.cs.psl.mountaindew.util.MetamorphicConfigurer;
 
 public abstract class MetamorphicProperty {
 	public abstract String getName();
@@ -31,9 +32,13 @@ public abstract class MetamorphicProperty {
 		return "Metamorphic property: " + getName();
 	}
 	
-	private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
+	//private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
 	
-	private HashSet<Class<? extends MetamorphicInputProcessor>> nonValueChangeProcessors = MetamorphicInputProcessorGroup.getInstance().getNonValueChangeProcessors();
+	//private HashSet<Class<? extends MetamorphicInputProcessor>> nonValueChangeProcessors = MetamorphicInputProcessorGroup.getInstance().getNonValueChangeProcessors();
+	
+	private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes;
+	
+	private HashSet<Class<? extends MetamorphicInputProcessor>> nonValueChangeProcessors;
 	
 	private List<MetamorphicInputProcessor> processors = new ArrayList<MetamorphicInputProcessor>();
 	
@@ -108,6 +113,24 @@ public abstract class MetamorphicProperty {
 		this.method = method;
 	}
 	
+	public void setInputProcessors (HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes) {
+		this.processorPrototypes = processorPrototypes;
+	}
+	
+	public void setNonValueChangeInputProcessors (HashSet<Class<? extends MetamorphicInputProcessor>> nonValuePrototypes) {
+		this.nonValueChangeProcessors = nonValuePrototypes;
+	}
+	
+	public void setTargetAdapter(Class<? extends AbstractAdapter> targetClass) {
+		try {
+			this.targetAdapter = (AbstractAdapter)targetClass.newInstance();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.err.println("Loading target adapter fails. Use the defult adapter");
+			this.targetAdapter = new DefaultAdapter();
+		}
+	}
+	
 	public void loadInputProcessors() {
 		for (Class<? extends MetamorphicInputProcessor> processorClass: this.processorPrototypes) {
 			try {
@@ -121,10 +144,8 @@ public abstract class MetamorphicProperty {
 		}
 	}
 	
-	private void loadTargetAdapter() {
-		//Can use a configuration file here to get adapter name;
-		String className = "edu.columbia.cs.psl.mountaindew.adapter.WekaAdapter";
-		//String className = "edu.columbia.cs.psl.mountaindew.adapter.MahoutAdapter";
+	/*private void loadTargetAdapter() {
+		String className = this.mConfigurer.getAdapterClassName();
 		try {
 			this.targetAdapter = (AbstractAdapter)AdapterLoader.loadClass(className).newInstance();
 		} catch (Exception ex) {
@@ -132,19 +153,17 @@ public abstract class MetamorphicProperty {
 			System.err.println("Loading target adapter fails. Use default adapter");
 			this.targetAdapter = new DefaultAdapter();
 		} 
-	}
+	}*/
 
 	private Cloner cloner = new Cloner();
 
 	public HashSet<PossiblyMetamorphicMethodInvocation> createChildren(MethodInvocation inv) {
-		this.loadTargetAdapter();
+		//this.loadTargetAdapter();
 		System.out.println("Check adapter class: " + this.targetAdapter.getClass().getName());
 
 		HashSet<PossiblyMetamorphicMethodInvocation> ret = new HashSet<PossiblyMetamorphicMethodInvocation>();
 		
-		for (MetamorphicInputProcessor processor: this.processors) {
-			//this.targetAdapter.setProcessor(processor);
-			
+		for (MetamorphicInputProcessor processor: this.processors) {			
 			boolean[] paramFlipping = new boolean[inv.params.length];
 			
 			ArrayList<boolean[]> combis = computeCombinations(paramFlipping);		

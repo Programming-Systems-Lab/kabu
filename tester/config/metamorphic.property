@@ -1,2 +1,4 @@
-Additive=1,5,10
-Mutiplicative=1,50,100
+Adapter=WekaAdapter
+Transformers=AddNumericConstant,MultiplyByNumericConstant,Negate,Reverse,Shuffle,PolynomialTransformer
+Checkers=ContentEqualer
+
