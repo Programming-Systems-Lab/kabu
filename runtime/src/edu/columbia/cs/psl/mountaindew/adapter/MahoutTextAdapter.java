@@ -88,9 +88,6 @@ public class MahoutTextAdapter extends AbstractAdapter{
 				int dataNum = vecList.size();
 				int dataLength = vecList.get(0).size();
 				
-				System.out.println("Check input data number: " + dataNum);
-				System.out.println("Check input data length: " + dataLength);
-				
 				double[][] ret = new double[dataNum][dataLength];
 				
 				
@@ -133,9 +130,6 @@ public class MahoutTextAdapter extends AbstractAdapter{
 			Vector transform;
 			VectorWritable transformWritable;
 			
-			System.out.println("Check transform input data number: " + dataNum);
-			System.out.println("Check transform input data length: " + realInput[0].length);
-			
 			for (int i = 0; i < dataNum; i++) {
 				transform = new DenseVector(realInput[i].length);
 				transform.assign(realInput[i]);
@@ -168,15 +162,11 @@ public class MahoutTextAdapter extends AbstractAdapter{
 				int dataNum = realOutput.size();
 				int dataSize = realOutput.get(0).size();
 				
-				System.out.println("Trans output data num: " + dataNum);
-				System.out.println("Trans output data size: " + dataSize);
-				
 				double[][] ret = new double[dataNum][dataSize];
 				
 				Vector tmpVec;
 				for (int i = 0; i < ret.length; i++) {
 					tmpVec = realOutput.get(i);
-					System.out.println("Check trans output: " + tmpVec);
 					for (int j = 0; j < dataSize; j++) {
 						ret[i][j] = tmpVec.get(j);
 					}

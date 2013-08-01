@@ -13,6 +13,8 @@ import edu.columbia.cs.psl.metamorphic.inputProcessor.impl.MultiplyByNumericCons
 import edu.columbia.cs.psl.mountaindew.absprop.PairwiseMetamorphicProperty;
 
 public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
+	
+	private ContentEqualer ce = new ContentEqualer();
 	@Override
 	public String getName() {
 		return "C:Multiplicative";
@@ -21,11 +23,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 	@Override
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
 			Object p2, Object returnValue2) {
-		try
-		{
-
-			/*if(returnValue1.equals(returnValue2))
-				return true;*/
+		try {
 			if (Number.class.isAssignableFrom(p1.getClass()) && Number.class.isAssignableFrom(p2.getClass()) 
 					&& Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass()))
 				return getDivisor(p1, p2) == getDivisor(returnValue1, returnValue2);
@@ -98,6 +96,31 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 						return false;
 				}
 				return true;
+			} else if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
+				int rt1Length = Array.getLength(returnValue1);
+				int rt2Length = Array.getLength(returnValue2);
+				
+				if (rt1Length != rt2Length)
+					return false;
+				
+				double divisor = this.getFirstDivisor(returnValue1, returnValue2);
+				
+				Object divRt2 = this.multiplyObject(returnValue2, divisor);
+				
+				return ce.checkEquivalence(returnValue1, divRt2);
+			} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && 
+					Collection.class.isAssignableFrom(returnValue2.getClass())) {
+				List rt1List = (ArrayList)returnValue1;
+				List rt2List = (ArrayList)returnValue2;
+				
+				if (rt1List.size() != rt2List.size())
+					return false;
+				
+				double divisor = this.getFirstDivisor(returnValue1, returnValue2);
+				
+				Object divRt2 = this.multiplyObject(returnValue2, divisor);
+				
+				return ce.checkEquivalence(returnValue1, divRt2);
 			}
 			System.out.println("Warning: Shouldn't go here");
 			return getDivisor(p1, p2) == getDivisor(returnValue1, returnValue2);
@@ -107,6 +130,55 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			ex.printStackTrace();
 			return false;
 		}
+	}
+	
+	private double getFirstDivisor(Object o1, Object o2) {
+		if (Number.class.isAssignableFrom(o1.getClass()) && Number.class.isAssignableFrom(o2.getClass())) {
+			return getDivisor(o1, o2);
+		} else if (o1.getClass().isArray() && o2.getClass().isArray()) {
+			int i = 0;
+			while (true) {
+				double ret = getFirstDivisor(Array.get(o1, i), Array.get(o2, i));
+				if (ret == Double.MAX_VALUE)
+					i++;
+				else
+					return ret;
+			}
+		} else if (Collection.class.isAssignableFrom(o1.getClass()) && Collection.class.isAssignableFrom(o2.getClass())) {
+			List o1List = (ArrayList)o1;
+			List o2List = (ArrayList)o2;
+			int i = 0;
+			while (true) {
+				double ret = getFirstDivisor(o1List.get(i), o2List.get(i));
+				if (ret == Double.MAX_VALUE)
+					i++;
+				else return ret;
+			}
+		} else {
+			return getDivisor(o1, o2);
+		}
+	}
+	
+	private Object multiplyObject(Object obj, double divisor) {
+		if (Number.class.isAssignableFrom(obj.getClass())) {
+			return (double)obj * divisor;
+		} else if (obj.getClass().isArray()) {
+			int objLength = Array.getLength(obj);
+			
+			for (int i = 0; i < objLength; i++) {
+				Array.set(obj, i, this.multiplyObject(Array.get(obj, i), divisor));
+			}
+			return obj;
+		} else if (Collection.class.isAssignableFrom(obj.getClass())) {
+			List objList = (ArrayList)obj;
+			List retList = new ArrayList();
+			for (int i = 0; i < objList.size(); i++) {
+				retList.add(this.multiplyObject(objList.get(i), divisor));
+			}
+			return retList;
+		}
+		
+		return null;
 	}
 
 	private double getDivisor(Object o1, Object o2) throws IllegalArgumentException
@@ -118,6 +190,8 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			if((Integer) o2 != 0) {
 				double rawResult = ((Integer) o1) / ((Integer) o2);
 				return this.roundDouble(rawResult);
+			} else {
+				return Double.MAX_VALUE;
 			}
 		}
 		else if(o1.getClass().equals(Short.class) || o1.getClass().equals(Short.TYPE))
@@ -125,6 +199,8 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			if((Short) o2 != 0) {
 				double rawResult = ((Short) o1) / ((Short) o2);
 				return this.roundDouble(rawResult);
+			} else {
+				return Double.MAX_VALUE;
 			}
 		}
 		else if(o1.getClass().equals(Long.class) || o1.getClass().equals(Long.TYPE))
@@ -132,6 +208,8 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			if((Long) o2 != 0) {
 				double rawResult = ((Long) o1) / ((Long) o2);
 				return this.roundDouble(rawResult);
+			} else {
+				return Double.MAX_VALUE;
 			}
 		}
 		else if(o1.getClass().equals(Double.class) || o1.getClass().equals(Double.TYPE))
@@ -139,6 +217,8 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			if((Double) o2 != 0) {
 				double rawResult = ((Double)o1) / ((Double) o2);
 				return this.roundDouble(rawResult);
+			} else {
+				return Double.MAX_VALUE;
 			}
 		}
 		throw new IllegalArgumentException("Non numeric types");
@@ -229,7 +309,8 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					Double.class.isAssignableFrom(getMethod().getParameterTypes()[i])||
 					getMethod().getParameterTypes()[i].isArray()||
 					Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i])||
-					Instances.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
+					Instances.class.isAssignableFrom(getMethod().getParameterTypes()[i])||
+					String.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
 				rets.add(i);
 		}
 		int[] ret = new int[rets.size()];

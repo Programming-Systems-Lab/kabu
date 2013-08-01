@@ -1,4 +1,4 @@
 Adapter=MahoutTextAdapter
 Transformers=MultiplyByNumericConstant
-Checkers=ContentEqualer
+Checkers=MultiplicativeByConstant
 
