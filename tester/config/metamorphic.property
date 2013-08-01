@@ -1,4 +1,4 @@
-Adapter=WekaAdapter
-Transformers=AddNumericConstant,MultiplyByNumericConstant,Negate,Reverse,Shuffle,PolynomialTransformer
+Adapter=MahoutTextAdapter
+Transformers=MultiplyByNumericConstant
 Checkers=ContentEqualer
 

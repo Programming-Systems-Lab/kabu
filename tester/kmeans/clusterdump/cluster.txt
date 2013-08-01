@@ -1,0 +1,28 @@
+:VL-0{n=5 c=[about:0.883, after:0.664, around:0.604, artificial:0.542, because:0.542, collected:0.542
+	Top Terms: 
+		which                                   =>  1.0142952919006347
+		from                                    =>  1.0142952919006347
+		about                                   =>  0.8828427076339722
+		data                                    =>  0.8255304813385009
+		google                                  =>                 0.8
+		said                                    =>  0.7338861465454102
+		maps                                    =>   0.729491138458252
+		complex                                 =>   0.729491138458252
+		your                                    =>   0.663822603225708
+		you                                     =>   0.663822603225708
+		yahoo                                   =>   0.663822603225708
+		quantum                                 =>   0.663822603225708
+		after                                   =>   0.663822603225708
+		when                                    =>  0.6043302536010742
+		week                                    =>  0.6043302536010742
+		way                                     =>  0.6043302536010742
+		traffic                                 =>  0.6043302536010742
+		than                                    =>  0.6043302536010742
+		should                                  =>  0.6043302536010742
+		privacy                                 =>  0.6043302536010742
+	Weight : [props - optional]:  Point:
+	1.0: [artificial:2.710, complex:2.137, computers:2.710, data:1.511, google:1.000, gps:1.511, intelligence:2.710, internet:1.511, learning:2.710, like:1.511, machine:2.710, quantum:3.319, than:1.511, traffic:1.511, use:2.710, way:1.511, which:1.730]
+	1.0: [about:1.414, after:3.319, complex:1.511, employees:2.710, from:2.119, google:1.000, internet:1.511, memo:2.710, one:1.511, said:1.223, should:1.511, way:1.511, week:1.511, when:1.511, which:1.223, workplace:2.710, yahoo:3.319]
+	1.0: [about:1.000, around:1.511, fashion:1.511, frees:2.710, glass:2.710, like:1.511, make:1.511, one:1.511, only:1.511, potentially:2.710, privacy:1.511, said:1.223, should:1.511, smartphone:2.710, when:1.511, you:3.319, your:3.319]
+	1.0: [about:1.000, around:1.511, collected:2.710, collection:2.710, company:1.511, data:2.617, fashion:1.511, from:1.730, google:1.000, had:2.710, make:1.511, maps:1.511, million:2.710, other:1.511, privacy:1.511, said:1.223, street:2.710, view:2.710, were:2.710]
+	1.0: [about:1.000, because:2.710, company:1.511, deal:2.710, discussions:2.710, from:1.223, google:1.000, gps:1.511, its:2.710, maps:2.137, only:1.511, other:1.511, point:2.710, social:2.710, technology:2.710, than:1.511, traffic:1.511, users:2.710, waze:2.710, week:1.511, which:2.119]

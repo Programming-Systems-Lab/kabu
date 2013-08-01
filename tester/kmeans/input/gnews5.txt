@@ -1,0 +1,5 @@
+Google, which dominates the market for online maps, is close to a deal to acquire Waze, a largely Israeli company that has developed a social mapping service that is popular with drivers seeking to find the best route given actual traffic conditions.
+
+The proposed acquisition, for a price of more than $1 billion, could be announced early this week, according to three people with knowledge of the discussions who spoke on the condition of anonymity because the deal was not final.
+
+Waze, which was previously in discussions to sell itself to Facebook, attracted the interest of the bigger technology companies because of the social nature of its maps. Waze’s technology, which is available only on mobile devices, uses voluntary GPS tracking of its users and their live reports about accidents and other road hazards to dynamically adjust routing to get users from point A to point B in the shortest possible time.
