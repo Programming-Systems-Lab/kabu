@@ -1,6 +1,7 @@
 package edu.columbia.cs.psl.mountaindew.adapter;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
@@ -21,18 +22,28 @@ public class MahoutTextAdapter extends AbstractAdapter{
 	
 	private String tmpCopyDir;
 	
+	private String copyMatricPath;
+	
+	private String targetMatricFilePath;
+	
 	private Configuration conf;
 	
 	private FileSystem fs;
 	
-	private List<Text> keyList;
+	private List keyList;
+	
+	private Class keyClass;
+	
+	private Class valueClass;
 
 	@Override
 	public Object unboxInput(Object input) {
 		// unboxInput for text mining should take the dir string as input, retrieve tfidf vectors and give a double[][] back
 		
-		if (String.class.isAssignableFrom(input.getClass())) {
-			String srcDirPath = input.toString();
+		if (input.getClass().isArray() && String.class.isAssignableFrom(Array.get(input, 0).getClass())) {
+			
+			String srcDirPath = (String)Array.get(input, 0);
+			String matricPath = (String)Array.get(input, 1);
 			File srcDirFile = new File(srcDirPath);
 			if (!srcDirFile.exists()) {
 				System.err.println("Source director does not exist: " + srcDirFile.getAbsolutePath());
@@ -40,6 +51,7 @@ public class MahoutTextAdapter extends AbstractAdapter{
 			}
 			
 			tmpCopyDir = srcDirPath + "_copy";
+			copyMatricPath = matricPath;
 			keyList = new ArrayList<Text>();
 			
 			Path srcPath = new Path(srcDirPath);
@@ -66,42 +78,70 @@ public class MahoutTextAdapter extends AbstractAdapter{
 					return null;
 				}
 				
-				String srcTFPath = srcDirPath + "/vec/tfidf-vectors/part-r-00000";
-				
-				SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(srcTFPath), conf);
-				Text key = new Text();
-				VectorWritable val = new VectorWritable();
-				
-				Vector tmpVec;
+				SequenceFile.Reader reader;
 				List<Vector> vecList = new ArrayList<Vector>();
-				while(reader.next(key, val)) {
-					System.out.println("Key: " + key);
-					System.out.println("Ori val: " + val.get());
+				if (matricPath.contains("tfidf-vectors") || matricPath.contains("tf-vectors")) {
+					targetMatricFilePath = destPath.getAbsolutePath() + matricPath + "/part-r-00000";
+					this.keyClass = Text.class;
+					this.valueClass = VectorWritable.class;
 					
-					keyList.add(key);
+					System.out.println("Confirm targetMatricFilePath: " + targetMatricFilePath);
 					
-					tmpVec = val.get();
-					vecList.add(tmpVec);
+					reader = new SequenceFile.Reader(fs, new Path(targetMatricFilePath), conf);
+					Text key = new Text();
+					VectorWritable val = new VectorWritable();
+					
+					Vector tmpVec;
+					while(reader.next(key, val)) {
+						System.out.println("Key: " + key);
+						System.out.println("Ori val: " + val.get());
+						
+						Text copyKey = new Text();
+						copyKey.set(key);
+						keyList.add(copyKey);
+						
+						tmpVec = val.get();
+						vecList.add(tmpVec);
+					}
+					reader.close();
+				} else {
+					targetMatricFilePath = destPath.getAbsolutePath() + matricPath + "/matrix";
+					this.keyClass = IntWritable.class;
+					this.valueClass = VectorWritable.class;
+					
+					System.out.println("Confirm targetMatricFilePath: " + targetMatricFilePath);
+					
+					reader = new SequenceFile.Reader(fs, new Path(targetMatricFilePath), conf);
+					IntWritable key = new IntWritable();
+					VectorWritable val = new VectorWritable();
+					
+					Vector tmpVec;
+					while(reader.next(key, val)) {
+						System.out.println("Key: " + key);
+						System.out.println("Ori val: " + val.get());
+						
+						IntWritable copyKey = new IntWritable();
+						copyKey.set(key.get());
+						keyList.add(copyKey);
+						
+						tmpVec = val.get();
+						vecList.add(tmpVec);
+					}
+					reader.close();					
 				}
-				reader.close();
 				
 				int dataNum = vecList.size();
 				int dataLength = vecList.get(0).size();
 				
 				double[][] ret = new double[dataNum][dataLength];
 				
-				
+				Vector tmpVec;
 				for (int i = 0 ;i < dataNum; i++) {
 					tmpVec = vecList.get(i);
-					//System.out.println("Ori: " + tmpVec);
 					for (int j = 0; j < dataLength; j++) {
 						ret[i][j] = tmpVec.get(j);
 					}
 				}
-				
-				/*System.out.println("Check new lda base directory: " + tmpCopyDir);
-				System.out.println("Check new lda matrix: " + destFile.getAbsolutePath());
-				return tmpCopyDir;*/
 				
 				return ret;
 			} catch (Exception ex) {
@@ -111,21 +151,22 @@ public class MahoutTextAdapter extends AbstractAdapter{
 		
 		return null;
 	}
-
+	
 	@Override
 	public Object adaptInput(Object transInput) {
 		double[][] realInput = (double[][])transInput;
 		int dataNum = realInput.length;
 		
-		File destFile = new File(this.tmpCopyDir + "/vec/tfidf-vectors/part-r-00000");
+		File targetMatricFile = new File(this.targetMatricFilePath);
 		
-		if (destFile.exists()) {
-			destFile.delete();
+		if (targetMatricFile.exists()) {
+			targetMatricFile.delete();
 		}
+		
 		
 		try {
 			SequenceFile.Writer writer = new SequenceFile.Writer(fs, 
-					conf, new Path(destFile.getAbsolutePath()), Text.class, VectorWritable.class);
+					conf, new Path(targetMatricFile.getAbsolutePath()), this.keyClass, this.valueClass);
 			
 			Vector transform;
 			VectorWritable transformWritable;
@@ -141,9 +182,9 @@ public class MahoutTextAdapter extends AbstractAdapter{
 			}
 			
 			writer.close();
-				
-			System.out.println("Check new transform dir: " + tmpCopyDir);
-			return tmpCopyDir;
+							
+			System.out.println("Check new transform dir: " + tmpCopyDir + " " + copyMatricPath);
+			return new String[]{tmpCopyDir, copyMatricPath};
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

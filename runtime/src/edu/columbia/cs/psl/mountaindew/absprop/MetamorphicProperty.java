@@ -199,13 +199,34 @@ public abstract class MetamorphicProperty {
 									transformed = processor.apply(unboxInput, propertyParams);
 									child.params[i] = this.targetAdapter.adaptInput(transformed);
 								} else {
-									System.out.println("Check input class: " + input.getClass().getName());
-									
+									//System.out.println("Check input class: " + input.getClass().getName());
 									List<Object> skipList = this.targetAdapter.skipColumn(input);
 									this.targetAdapter.setSkipList(skipList);
 									unboxInput = this.targetAdapter.unboxInput(input);
+									
+									double[][] testOri1Array = (double[][])unboxInput;
+									for (int a = 0; a < testOri1Array.length; a++) {
+										System.out.print("Ori array: " + a + " ");
+										for (int b = 0; b < testOri1Array[0].length; b++) {
+											System.out.print(testOri1Array[a][b]);
+											System.out.print(" ");
+										}
+										System.out.println("");
+									}
+									
 									this.targetAdapter.setupComplementMap(unboxInput);
 									transformed = processor.apply(unboxInput, propertyParams);
+									
+									testOri1Array = (double[][])transformed;
+									for (int a = 0; a < testOri1Array.length; a++) {
+										System.out.print("Trans array: " + a + " ");
+										for (int b = 0; b < testOri1Array[0].length; b++) {
+											System.out.print(testOri1Array[a][b]);
+											System.out.print(" ");
+										}
+										System.out.println("");
+									}
+
 									this.targetAdapter.complementTransformInput(transformed);
 									child.params[i] = this.targetAdapter.adaptInput(transformed);
 								}

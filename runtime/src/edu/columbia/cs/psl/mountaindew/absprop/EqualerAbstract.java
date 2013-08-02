@@ -37,6 +37,14 @@ public abstract class EqualerAbstract extends PairwiseMetamorphicProperty{
 		return null;
 	}
 	
+	protected double roundDouble(double numberToRound, int digit) {
+		int roundMultiplier = (int)Math.pow(10, digit);
+		numberToRound = numberToRound * roundMultiplier;
+		numberToRound = Math.round(numberToRound);
+		numberToRound = numberToRound / roundMultiplier;
+		return numberToRound;
+	}
+	
 	protected abstract boolean returnValuesApply(Object p1, Object returnValue1, Object p2, Object returnValue2);
 	protected abstract boolean propertyApplies(MethodInvocation i1, MethodInvocation i2, int interestedVariable);
 	//protected abstract boolean checkEquivalence(Collection c1, Collection c2);

@@ -14,6 +14,8 @@ import edu.columbia.cs.psl.mountaindew.absprop.PairwiseMetamorphicProperty;
 
 public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 	
+	private int roundDigit = 5;
+	
 	private ContentEqualer ce = new ContentEqualer();
 	@Override
 	public String getName() {
@@ -32,6 +34,11 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 				if (Array.getLength(p1) != Array.getLength(p2))
 					return false;
 				
+				if (String.class.isAssignableFrom(Array.get(p1, 0).getClass()) && 
+						String.class.isAssignableFrom(Array.get(p2, 0).getClass())) {
+					return this.checkReturnValOnly(returnValue1, returnValue2);
+				}
+				
 				double p1Element, p2Element, rt1Element, rt2Element;
 				
 				List rt1List = this.returnList(returnValue1);
@@ -48,14 +55,6 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					p2Element = ((Number)Array.get(p2, i)).doubleValue();
 					rt1Element = ((Number)rt1List.get(i)).doubleValue();
 					rt2Element = ((Number)rt2List.get(i)).doubleValue();
-					
-					/*System.out.println("p1 element: " + p1Element);
-					System.out.println("p2 element: " + p2Element);
-					System.out.println("rt1 element: " + rt1Element);
-					System.out.println("rt2 element: " + rt2Element);*/
-					
-					/*System.out.println("Mul ori_input trans_input ori_output trans_output: " + p1Element + " " + p2Element + " " + rt1Element + " " + rt2Element);
-					System.out.println("Mul divisor input output: " + getDivisor(p1Element, p2Element) + " " + getDivisor(rt1Element, rt2Element));*/
 					
 					if (getDivisor(p1Element, p2Element) != getDivisor(rt1Element, rt2Element))
 						return false;
@@ -84,44 +83,11 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					rt1Element = ((Number)rt1List.get(i)).doubleValue();
 					rt2Element = ((Number)rt2List.get(i)).doubleValue();
 					
-					/*System.out.println("p1 element: " + p1Element);
-					System.out.println("p2 element: " + p2Element);
-					System.out.println("rt1 element: " + rt1Element);
-					System.out.println("rt2 element: " + rt2Element);*/
-					
-					/*System.out.println("Mul ori_input trans_input ori_output trans_output: " + p1Element + " " + p2Element + " " + rt1Element + " " + rt2Element);
-					System.out.println("Mul divisor input output: " + getDivisor(p1Element, p2Element) + " " + getDivisor(rt1Element, rt2Element));*/
-					
 					if (getDivisor(p1Element, p2Element) != getDivisor(rt1Element, rt2Element))
 						return false;
 				}
 				return true;
-			} else if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
-				int rt1Length = Array.getLength(returnValue1);
-				int rt2Length = Array.getLength(returnValue2);
-				
-				if (rt1Length != rt2Length)
-					return false;
-				
-				double divisor = this.getFirstDivisor(returnValue1, returnValue2);
-				
-				Object divRt2 = this.multiplyObject(returnValue2, divisor);
-				
-				return ce.checkEquivalence(returnValue1, divRt2);
-			} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && 
-					Collection.class.isAssignableFrom(returnValue2.getClass())) {
-				List rt1List = (ArrayList)returnValue1;
-				List rt2List = (ArrayList)returnValue2;
-				
-				if (rt1List.size() != rt2List.size())
-					return false;
-				
-				double divisor = this.getFirstDivisor(returnValue1, returnValue2);
-				
-				Object divRt2 = this.multiplyObject(returnValue2, divisor);
-				
-				return ce.checkEquivalence(returnValue1, divRt2);
-			}
+			} 
 			System.out.println("Warning: Shouldn't go here");
 			return getDivisor(p1, p2) == getDivisor(returnValue1, returnValue2);
 		}
@@ -130,6 +96,68 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			ex.printStackTrace();
 			return false;
 		}
+	}
+	
+	private boolean checkReturnValOnly(Object returnValue1, Object returnValue2) {
+		if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
+			int rt1Length = Array.getLength(returnValue1);
+			int rt2Length = Array.getLength(returnValue2);
+			
+			if (rt1Length != rt2Length)
+				return false;
+			
+			double[][] roundOriArray = (double[][])returnValue1;
+			
+			for (int i = 0; i < roundOriArray.length; i++) {
+				System.out.print("Rt1 array: " + i + " ");
+				for (int j = 0; j < roundOriArray[0].length; j++) {
+					roundOriArray[i][j] = this.roundDouble(roundOriArray[i][j], roundDigit);
+					System.out.print(roundOriArray[i][j]);
+					System.out.print(" ");
+				}
+				System.out.println("");
+			}
+			
+			double[][] roundTransArray = (double[][])returnValue2;
+			for (int i = 0; i < roundTransArray.length; i++) {
+				System.out.print("Rt2 array: " + i + " ");
+				for (int j = 0; j < roundTransArray[0].length; j++) {
+					roundTransArray[i][j] = this.roundDouble(roundTransArray[i][j], roundDigit);
+					System.out.print(roundTransArray[i][j]);
+					System.out.print(" ");
+				}
+				System.out.println("");
+			}
+			
+			double divisor = this.getFirstDivisor(returnValue1, returnValue2);
+			System.out.println("Confirm divisor: " + divisor);
+			
+			Object divRt2 = this.multiplyObject(returnValue2, divisor);
+			double[][] finalTransArray = (double[][])divRt2;
+			for (int i = 0; i < finalTransArray.length; i++) {
+				System.out.print("Transform array: " + i + " ");
+				for (int j = 0; j < finalTransArray[0].length; j++) {
+					//roundTransArray[i][j] = this.roundDouble(roundTransArray[i][j], roundDigit);
+					System.out.print(finalTransArray[i][j]);
+					System.out.print(" ");
+				}
+				System.out.println("");
+			}
+			return ce.checkEquivalence(roundOriArray, finalTransArray);
+		} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && 
+				Collection.class.isAssignableFrom(returnValue2.getClass())) {
+			List rt1List = (ArrayList)returnValue1;
+			List rt2List = (ArrayList)returnValue2;
+			
+			if (rt1List.size() != rt2List.size())
+				return false;
+			
+			double divisor = this.getFirstDivisor(returnValue1, returnValue2);		
+			Object divRt2 = this.multiplyObject(returnValue2, divisor);
+				
+			return ce.checkEquivalence(returnValue1, divRt2);
+		}
+		return false;
 	}
 	
 	private double getFirstDivisor(Object o1, Object o2) {
@@ -189,7 +217,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		{
 			if((Integer) o2 != 0) {
 				double rawResult = ((Integer) o1) / ((Integer) o2);
-				return this.roundDouble(rawResult);
+				return this.roundDouble(rawResult, 1);
 			} else {
 				return Double.MAX_VALUE;
 			}
@@ -198,7 +226,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		{
 			if((Short) o2 != 0) {
 				double rawResult = ((Short) o1) / ((Short) o2);
-				return this.roundDouble(rawResult);
+				return this.roundDouble(rawResult, 1);
 			} else {
 				return Double.MAX_VALUE;
 			}
@@ -207,7 +235,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		{
 			if((Long) o2 != 0) {
 				double rawResult = ((Long) o1) / ((Long) o2);
-				return this.roundDouble(rawResult);
+				return this.roundDouble(rawResult, 1);
 			} else {
 				return Double.MAX_VALUE;
 			}
@@ -216,7 +244,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		{
 			if((Double) o2 != 0) {
 				double rawResult = ((Double)o1) / ((Double) o2);
-				return this.roundDouble(rawResult);
+				return this.roundDouble(rawResult, 1);
 			} else {
 				return Double.MAX_VALUE;
 			}
@@ -224,10 +252,11 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		throw new IllegalArgumentException("Non numeric types");
 	}
 	
-	private double roundDouble(double numberToRound) {
-		numberToRound = numberToRound * 10000;
+	private double roundDouble(double numberToRound, int digit) {
+		int roundMultiplier = (int)Math.pow(10, digit);
+		numberToRound = numberToRound * roundMultiplier;
 		numberToRound = Math.round(numberToRound);
-		numberToRound = numberToRound / 10000;
+		numberToRound = numberToRound / roundMultiplier;
 		return numberToRound;
 	}
 	

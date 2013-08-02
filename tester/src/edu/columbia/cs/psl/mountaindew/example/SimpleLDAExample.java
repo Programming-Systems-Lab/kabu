@@ -26,6 +26,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.mahout.clustering.Cluster;
 import org.apache.mahout.clustering.classify.WeightedPropertyVectorWritable;
 import org.apache.mahout.clustering.classify.WeightedVectorWritable;
 import org.apache.mahout.clustering.lda.cvb.CVB0Driver;
@@ -308,12 +309,11 @@ public class SimpleLDAExample {
         return maxTermId + 1;
     }
 	
-	private void executeDirichlet(String baseDir) {
+	private void executeDirichlet(String[] dirInfo) {
 		String[] arg = null;
-		
-		//String tfidfDir = baseDir + "/vec/tfidf-vectors";
-		//String rowIdDir = baseDir + "/rowid_vec/matrix";
-		String rowIdDir = baseDir + "/rowid_vec/matrix";
+		String baseDir = dirInfo[0];
+		String matricDir = dirInfo[1];
+		String rowIdDir = baseDir + matricDir + "/matrix";
 		String topicOutputDir = baseDir + "/topic_output";
 		String docOutputDir = baseDir + "/doc_output";
 		String dicFilePath = baseDir + "/vec/dictionary.file-0";
@@ -468,7 +468,7 @@ public class SimpleLDAExample {
 		LDAPrintTopics.main(arg);
 	}
 	
-	private Map<String, List<Word>> getResult(String baseOutputDir) {
+	private Map<String, List<Word>> getWordResult(String baseOutputDir) {
 		try {
 			String topicFile = baseOutputDir + "/topic_output/part-m-00000";
 			String dicFilePath = baseOutputDir + "/vec/dictionary.file-0";
@@ -528,6 +528,30 @@ public class SimpleLDAExample {
 			ex.printStackTrace();
 			return null;
 		}
+	}
+	
+	private List<Vector> getResult(String baseDir) {
+		List<Vector> topicResult = new ArrayList<Vector>();
+		String vecDir = baseDir + "/vec";
+		String topicFile = baseDir + "/topic_output/part-m-00000";
+    	
+    	try {
+    		SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(topicFile), conf);
+        	
+        	IntWritable key = new IntWritable();
+        	VectorWritable value = new VectorWritable();
+        	
+        	while (reader.next(key, value)) {
+        		topicResult.add(value.get());
+        	}
+        	
+        	reader.close();
+        	
+        	return topicResult;
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
+    	}
+    	return null;
 	}
 	
 	private void printTokenize(String baseOutputDir) {
@@ -600,7 +624,7 @@ public class SimpleLDAExample {
 		}
 	}
 	
-	private void multiplyMatrix(String baseDir, String destDir) {
+	private void multiplyMatrix(String baseDir, String destDir, int multiplier) {
 		try {
 			String oriFile = baseDir + "/rowid_vec/matrix";
 			String transFile = destDir + "/rowid_vec/matrix";
@@ -612,7 +636,7 @@ public class SimpleLDAExample {
 			VectorWritable val = new VectorWritable();
 			Vector tmpVec;
 			while(reader.next(key, val)) {
-				tmpVec = val.get().times(2);
+				tmpVec = val.get().times(multiplier);
 				writer.append(key, new VectorWritable(tmpVec));
 			}
 			reader.close();
@@ -725,27 +749,15 @@ public class SimpleLDAExample {
 	}
 	
 	@Metamorphic
-	private Map<String, List<Word>> driveLDA(String baseDir) {		
-		Map<String, List<Word>> topicMap = null;
+	private List<Vector> driveLDA(String dirInfo[]) {		
+		List<Vector> topicList = null;
 		try {
-			this.executeDirichlet(baseDir);
-			topicMap = this.getResult(baseDir);
+			this.executeDirichlet(dirInfo);
+			topicList = this.getResult(dirInfo[0]);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-		}
-		
-		if (topicMap != null) {
-			for (String key: topicMap.keySet()) {
-				System.out.println("Topic: " + key);
-			
-				List<Word> wordList = topicMap.get(key);
-				for (Word w: wordList) {
-				System.out.println("Word: " + w);
-				}
-			}
-		}
-		
-		return topicMap;
+		}		
+		return topicList;
 	}
 	
 	/**
@@ -764,7 +776,7 @@ public class SimpleLDAExample {
 			ex.setConfiguration(conf);
 			ex.setFileSystem(fs);
 			String baseDir = "lda";
-
+			
 			ex.convertFilesToSeq(baseDir);
 			
 			ex.tokenizeSeq(baseDir);
@@ -793,17 +805,33 @@ public class SimpleLDAExample {
 			ex.printDFCount(baseDir);
 			System.out.println();
 			
-			
-			/*ex.multiplyTF(baseDir);
-			ex.printTFGeneral(baseDir + "/vec/tf-vectors/part-r-00000");
-			System.out.println();
-			ex.printTFGeneral(baseDir + "/vec/tf-vectors/part-r-00001");*/
-			
+						
 			System.out.println("Check row vector");
 			ex.createRowIdVec(baseDir);
 			ex.printMatrix(baseDir);
 			
-			Map<String, List<Word>> topicMap = ex.driveLDA(baseDir);
+			List<Vector> topicList = ex.driveLDA(new String[]{baseDir, "/rowid_vec"});
+			
+			if (topicList != null) {
+				for (int i = 0; i < topicList.size(); i++) {
+					System.out.println("Check topic: " + topicList.get(i));
+				}
+			}
+			
+			/*ex.multiplyMatrix("lda", "lda_copy", 3);
+			ex.printMatrix("lda");
+			ex.printMatrix("lda_copy");
+			topicList = ex.driveLDA(new String[]{"lda_copy", "/rowid_vec"});
+			
+			if (topicList != null) {
+				for (int i =0; i < topicList.size(); i++) {
+					System.out.println("Check topic: " + topicList.get(i));
+				}
+			}*/
+			/*ex.printMatrix("lda");
+			ex.printMatrix("lda_copy");*/
+			
+			//Map<String, List<Word>> topicMap = ex.driveLDA(new String[]{baseDir, "/rowid_vec"});
 			//Map<String, List<Word>>topicMap = ex.driveLDA("lda_copy");
 			
 			/*if (topicMap != null) {

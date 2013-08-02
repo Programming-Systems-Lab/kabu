@@ -34,7 +34,8 @@ public class MethodProfile {
 			sBuilder.append("[");
 			for (int i = 0; i < Array.getLength(params); i++) {
 				//sBuilder.append(((Double)Array.get(params, i)).toString());
-				sBuilder.append(String.valueOf((Number)Array.get(params, i)));
+				//sBuilder.append(String.valueOf((Number)Array.get(params, i)));
+				sBuilder.append(interpretParams(Array.get(params, i)));
 				sBuilder.append(" ");
 			}
 			sBuilder.append("]");

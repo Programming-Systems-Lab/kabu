@@ -174,14 +174,18 @@ public class KMeansTextExample {
 		}
 	}
 	
-	private void createCentroids(String baseDir) {
+	private void createCentroids(String baseDir, String matricDir) {
 		System.out.println("Initialize cluster centroids");
-	    String vecDir = baseDir + "/" + "vec";
-	    String centorids = baseDir + "/" + "centroids";
+	    //String vecDir = baseDir + "/vec";
+	    //String centorids = baseDir + "/centroids";
 	    
-	    Path tfidfPath = new Path(vecDir, "tfidf-vectors");
-	    Path centroids = new Path(vecDir, "centroids");
-	    Path clusterOutput = new Path(vecDir, "clusters");
+	    //Path tfidfPath = new Path(vecDir, "tfidf-vectors");
+	    //Path centroids = new Path(vecDir, "centroids");
+	    
+	    Path tfidfPath = new Path(baseDir + matricDir);
+	    Path vecDir = tfidfPath.getParent();
+	    
+	    Path centroids = new Path(vecDir.getName(), "centroids");
 	    
 	    try {
 	    	HadoopUtil.delete(conf, centroids);
@@ -276,13 +280,19 @@ public class KMeansTextExample {
 		}
 	}
 	
-	private void executeKMeans(String baseDir) {
+	private void executeKMeans(String baseDir, String matricDir) {
 		System.out.println("Start to execte KMeans algorithm");
 		
-		String vecDir = baseDir + "/" + "vec";
-		String centroids = vecDir + "/" + "centroids";
+		Path tfidfPath = new Path(baseDir + matricDir);
+		Path vecDir = tfidfPath.getParent();
 		
-		Path tfidfPath = new Path(vecDir, "tfidf-vectors");
+		System.out.println("Confirm vec root: " + vecDir.getName());
+		
+		
+		String vecDirString = vecDir.getName();
+		String centroids = vecDirString + "/" + "centroids";
+		
+		
 		Path clusterOutput = new Path(vecDir, "clusters");
 		
 		try {
@@ -332,12 +342,13 @@ public class KMeansTextExample {
     	}
     	return null;
 	}
-	
+		
 	@Metamorphic
-	private List<Vector> driveKMeans(String baseDir) {
-		this.createCentroids(baseDir);
-		this.executeKMeans(baseDir);
-		return this.getResult(baseDir);
+	private List<Vector> driveKMeans(String[] dirInfo) {
+		//dirInfo[0]: baseDirectory, dirInfo[1]:tfidf, tf or matrix
+		this.createCentroids(dirInfo[0], dirInfo[1]);
+		this.executeKMeans(dirInfo[0], dirInfo[1]);
+		return this.getResult(dirInfo[0]);
 	}
 	
 	public static void main(String args[]) {
@@ -376,7 +387,8 @@ public class KMeansTextExample {
 	    	System.out.println("Check dictionary");
 	    	kt.printDictionary(baseDir);
 	    	
-	    	List<Vector> resultList = kt.driveKMeans(baseDir);
+	    	String[] dirInfo = new String[]{"kmeans", "/vec/tfidf-vectors"};
+	    	List<Vector> resultList = kt.driveKMeans(dirInfo);
 	    	
 	    	for (Vector tmpVec: resultList) {
 	    		System.out.println("Check result vec: " + tmpVec.asFormatString());
