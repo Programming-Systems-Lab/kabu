@@ -22,8 +22,8 @@ public class ContentEqualer extends EqualerAbstract{
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
 			Object p2, Object returnValue2) {
 		System.out.println("In the return value apply");
-		System.out.println("RT1: " + returnValue1.getClass().getName());
-		System.out.println("RT2: " + returnValue2.getClass().getName());
+		//System.out.println("RT1: " + returnValue1.getClass().getName());
+		//System.out.println("RT2: " + returnValue2.getClass().getName());
 		return this.checkEquivalence(returnValue1, returnValue2);
 	}
 

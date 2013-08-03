@@ -542,6 +542,7 @@ public class SimpleLDAExample {
         	VectorWritable value = new VectorWritable();
         	
         	while (reader.next(key, value)) {
+        		System.out.println("Key Val: " + key + " " + value.get());
         		topicResult.add(value.get());
         	}
         	
@@ -817,6 +818,20 @@ public class SimpleLDAExample {
 					System.out.println("Check topic: " + topicList.get(i));
 				}
 			}
+			/*System.out.println("Original matrix:");
+			ex.printMatrix(baseDir);
+			System.out.println();
+			
+			System.out.println("Original result:");
+			ex.getResult(baseDir);
+			System.out.println();
+			
+			System.out.println("Transformed matrix");
+			ex.printMatrix("lda_sandbox/20130802143227");
+			System.out.println();
+			
+			System.out.println("Transformed result:");
+			ex.getResult("lda_sandbox/20130802143227");*/
 			
 			/*ex.multiplyMatrix("lda", "lda_copy", 3);
 			ex.printMatrix("lda");

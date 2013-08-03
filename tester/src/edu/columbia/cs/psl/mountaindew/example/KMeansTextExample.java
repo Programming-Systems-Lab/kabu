@@ -48,6 +48,8 @@ import edu.columbia.cs.psl.metamorphic.struct.Word;
 
 public class KMeansTextExample {
 	
+	private static String clusterFinalPattern = "clusters-[0-9]+-final";
+	
 	private Configuration conf;
 	
 	private FileSystem fs;
@@ -183,9 +185,11 @@ public class KMeansTextExample {
 	    //Path centroids = new Path(vecDir, "centroids");
 	    
 	    Path tfidfPath = new Path(baseDir + matricDir);
-	    Path vecDir = tfidfPath.getParent();
+	    //Path vecDir = tfidfPath.getParent();
+	    String vecDir = baseDir + "/" + tfidfPath.getParent().getName();
 	    
-	    Path centroids = new Path(vecDir.getName(), "centroids");
+	    Path centroids = new Path(vecDir, "centroids");
+	    System.out.println("Check centroid path: " + centroids.toString());
 	    
 	    try {
 	    	HadoopUtil.delete(conf, centroids);
@@ -289,15 +293,31 @@ public class KMeansTextExample {
 		System.out.println("Confirm vec root: " + vecDir.getName());
 		
 		
-		String vecDirString = vecDir.getName();
-		String centroids = vecDirString + "/" + "centroids";
+		String vecDirString = baseDir + "/" + vecDir.getName();
+		String centroids = vecDirString + "/centroids";
+		String clusters = vecDirString + "/clusters";
 		
 		
-		Path clusterOutput = new Path(vecDir, "clusters");
+		Path clusterOutput = new Path(clusters);
+		
+		//System.out.println("Check cluster output: " + clusterOutput.toString());
+		File centroidDir = new File(centroids);
+		System.out.println("Cluster centroids: " + centroidDir.getAbsolutePath());
+		System.out.println("Check dir under clusters: " + centroidDir.length());
+		File[] centroidChilds = centroidDir.listFiles();
+		String finalCentroid = null;
+		for (int i = 0; i < centroidChilds.length; i++) {
+			System.out.println("Check cluster child files: " + centroidChilds[i].getName());
+			if (centroidChilds[i].getName().matches(clusterFinalPattern)) {
+				System.out.println("Got the file: " + centroidChilds[i].getAbsolutePath());
+				finalCentroid = centroidChilds[i].getAbsolutePath();
+				break;
+			}
+		}
 		
 		try {
 			HadoopUtil.delete(conf, clusterOutput);
-			KMeansDriver.run(conf, tfidfPath, new Path(centroids, "clusters-0-final"), clusterOutput, new SquaredEuclideanDistanceMeasure(), 0.01, 10, true, 0, false);
+			KMeansDriver.run(conf, tfidfPath, new Path(finalCentroid), clusterOutput, new SquaredEuclideanDistanceMeasure(), 0.01, 10, true, 0, false);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -330,7 +350,7 @@ public class KMeansTextExample {
         	WeightedVectorWritable value = new WeightedVectorWritable();
         	
         	while (reader.next(key, value)) {
-        		//System.out.println("Check clustered result" + value.getVector());
+        		System.out.println("Check clustered result key val " + key + " " + value.getVector());
         		clusterResult.add(value.getVector());
         	}
         	
@@ -362,7 +382,7 @@ public class KMeansTextExample {
 	    int norm = 2;
 	    boolean sequentialAccessOutput = true;
 	    
-	    String baseDir = "kmeans";
+	    String baseDir = "kmeans_sandbox/20130802215958316";
 	    Configuration conf;
 	    FileSystem fs;
 	    
@@ -387,7 +407,8 @@ public class KMeansTextExample {
 	    	System.out.println("Check dictionary");
 	    	kt.printDictionary(baseDir);
 	    	
-	    	String[] dirInfo = new String[]{"kmeans", "/vec/tfidf-vectors"};
+	    	String[] dirInfo = new String[]{baseDir, "/vec/tfidf-vectors"};
+	    	//String[] dirInfo = new String[]{"kmeans_sandbox/2013080221482866", "/vec/tfidf-vectors"};
 	    	List<Vector> resultList = kt.driveKMeans(dirInfo);
 	    	
 	    	for (Vector tmpVec: resultList) {

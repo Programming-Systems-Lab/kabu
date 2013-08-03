@@ -2,7 +2,10 @@ package edu.columbia.cs.psl.mountaindew.adapter;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Collection;
 
@@ -20,6 +23,8 @@ import org.apache.mahout.math.VectorWritable;
 
 public class MahoutTextAdapter extends AbstractAdapter{
 	
+	private static SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSS");
+	
 	private String tmpCopyDir;
 	
 	private String copyMatricPath;
@@ -30,7 +35,9 @@ public class MahoutTextAdapter extends AbstractAdapter{
 	
 	private FileSystem fs;
 	
-	private List keyList;
+	private List keyList = new ArrayList();
+	
+	private HashMap keyMap = new HashMap();
 	
 	private Class keyClass;
 	
@@ -50,9 +57,10 @@ public class MahoutTextAdapter extends AbstractAdapter{
 				return null;
 			}
 			
-			tmpCopyDir = srcDirPath + "_copy";
+			String dirIdentifier = formatter.format(new Date());
+			
+			tmpCopyDir = srcDirPath + "_sandbox/" + dirIdentifier;
 			copyMatricPath = matricPath;
-			keyList = new ArrayList<Text>();
 			
 			Path srcPath = new Path(srcDirPath);
 			File destPath = new File(tmpCopyDir);
@@ -97,10 +105,13 @@ public class MahoutTextAdapter extends AbstractAdapter{
 						System.out.println("Ori val: " + val.get());
 						
 						Text copyKey = new Text();
-						copyKey.set(key);
-						keyList.add(copyKey);
+						copyKey.set(key.toString());
 						
 						tmpVec = val.get();
+						
+						keyList.add(copyKey);
+						keyMap.put(tmpVec, copyKey);
+						
 						vecList.add(tmpVec);
 					}
 					reader.close();
@@ -122,9 +133,13 @@ public class MahoutTextAdapter extends AbstractAdapter{
 						
 						IntWritable copyKey = new IntWritable();
 						copyKey.set(key.get());
-						keyList.add(copyKey);
+
 						
 						tmpVec = val.get();
+						
+						keyList.add(copyKey);
+						keyMap.put(tmpVec, copyKey);
+						
 						vecList.add(tmpVec);
 					}
 					reader.close();					
@@ -171,14 +186,20 @@ public class MahoutTextAdapter extends AbstractAdapter{
 			Vector transform;
 			VectorWritable transformWritable;
 			
+			System.out.println("Traverse keyMap");
+			for (Object key: this.keyMap.keySet()) {
+				System.out.println("Key: " + key);
+				System.out.println("Val: " + this.keyMap.get(key));
+			}
+			
 			for (int i = 0; i < dataNum; i++) {
 				transform = new DenseVector(realInput[i].length);
 				transform.assign(realInput[i]);
-				//System.out.println("Trans: " + transform);
+				//System.out.println("Trans: key val " + this.keyList.get(i) + " " + transform);
 				
 				transformWritable = new VectorWritable(transform);
 				
-				writer.append(this.keyList.get(i), transformWritable);
+				writer.append(this.keyMap.get(transform), transformWritable);
 			}
 			
 			writer.close();
@@ -228,7 +249,15 @@ public class MahoutTextAdapter extends AbstractAdapter{
 	
 	@Override
 	public void complementTransformInput(Object input) {
-		
+		double[][] realInput = (double[][])input;
+		this.keyMap = new HashMap();
+		Vector tmpVector;
+		for (int i = 0; i < realInput.length; i++) {
+			tmpVector = new DenseVector(realInput[i]);
+			this.keyMap.put(tmpVector, this.keyList.get(i));
+			
+			//System.out.println("Check name vec: " + this.nameList.get(i) + " " + tmpVector);
+		}
 	}
 
 }
