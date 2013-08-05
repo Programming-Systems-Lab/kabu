@@ -21,6 +21,6 @@
 	<classpathentry kind="lib" path="/mtndew-tester/lib/JFlex.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/junit.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/weka_modified.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/invivo-runtime"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/invivo-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -204,7 +204,7 @@ public abstract class MetamorphicProperty {
 									this.targetAdapter.setSkipList(skipList);
 									unboxInput = this.targetAdapter.unboxInput(input);
 									
-									double[][] testOri1Array = (double[][])unboxInput;
+									/*double[][] testOri1Array = (double[][])unboxInput;
 									for (int a = 0; a < testOri1Array.length; a++) {
 										System.out.print("Ori array: " + a + " ");
 										for (int b = 0; b < testOri1Array[0].length; b++) {
@@ -212,12 +212,12 @@ public abstract class MetamorphicProperty {
 											System.out.print(" ");
 										}
 										System.out.println("");
-									}
+									}*/
 									
 									this.targetAdapter.setupComplementMap(unboxInput);
 									transformed = processor.apply(unboxInput, propertyParams);
 									
-									testOri1Array = (double[][])transformed;
+									/*testOri1Array = (double[][])transformed;
 									for (int a = 0; a < testOri1Array.length; a++) {
 										System.out.print("Trans array: " + a + " ");
 										for (int b = 0; b < testOri1Array[0].length; b++) {
@@ -225,7 +225,7 @@ public abstract class MetamorphicProperty {
 											System.out.print(" ");
 										}
 										System.out.println("");
-									}
+									}*/
 
 									this.targetAdapter.complementTransformInput(transformed);
 									child.params[i] = this.targetAdapter.adaptInput(transformed);

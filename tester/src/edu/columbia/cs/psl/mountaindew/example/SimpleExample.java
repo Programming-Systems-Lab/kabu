@@ -279,6 +279,8 @@ public class SimpleExample extends AbstractExample {
 	}
 		
 	public static void main(String[] args) {
+		SimpleExample s = new SimpleExample();
+		s.selectMax(new int[]{3, 4, 5});
 //		String[] barzzz = {"aa","bb"};
 //		System.out.println("Max memory: " + Runtime.getRuntime().maxMemory());
 //		Interceptor.catchParam(args, args);

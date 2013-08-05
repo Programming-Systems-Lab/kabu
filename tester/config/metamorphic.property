@@ -1,4 +1,4 @@
-Adapter=MahoutTextAdapter
+Adapter=DefaultAdapter
 Transformers=MultiplyByNumericConstant,AddNumericConstant,Negate,PolynomialTransformer,Shuffle,Reverse
 Checkers=ContentEqualer
 
