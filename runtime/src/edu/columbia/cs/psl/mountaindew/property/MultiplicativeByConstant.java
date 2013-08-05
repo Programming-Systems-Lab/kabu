@@ -138,12 +138,23 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 				System.out.print("Transform array: " + i + " ");
 				for (int j = 0; j < finalTransArray[0].length; j++) {
 					//roundTransArray[i][j] = this.roundDouble(roundTransArray[i][j], roundDigit);
+					finalTransArray[i][j] = this.roundDouble(finalTransArray[i][j], roundDigit);
 					System.out.print(finalTransArray[i][j]);
 					System.out.print(" ");
 				}
 				System.out.println("");
 			}
-			return ce.checkEquivalence(roundOriArray, finalTransArray);
+			//return ce.checkEquivalence(roundOriArray, finalTransArray);
+			
+			for (int i = 0; i < finalTransArray.length; i++) {
+				for (int j = 0; j < finalTransArray[0].length; j++) {
+					if (!this.checkEquivalenceWithThreshold(roundOriArray[i][j], finalTransArray[i][j])) {
+						return false;
+					}
+				}
+			}
+			
+			return true;
 		} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && 
 				Collection.class.isAssignableFrom(returnValue2.getClass())) {
 			List rt1List = (ArrayList)returnValue1;
@@ -152,12 +163,21 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			if (rt1List.size() != rt2List.size())
 				return false;
 			
-			double divisor = this.getFirstDivisor(returnValue1, returnValue2);		
+			double divisor = this.getFirstDivisor(returnValue1, returnValue2);	
 			Object divRt2 = this.multiplyObject(returnValue2, divisor);
 				
 			return ce.checkEquivalence(returnValue1, divRt2);
 		}
 		return false;
+	}
+	
+	private boolean checkEquivalenceWithThreshold(double d1, double d2) {
+		//Need a way to define a more scientific threshold
+		if (Math.abs(d1 - d2) <= 5 * Math.pow(10, this.roundDigit * -1)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	private double getFirstDivisor(Object o1, Object o2) {

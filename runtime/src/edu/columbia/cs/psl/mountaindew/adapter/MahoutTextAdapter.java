@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -230,6 +231,30 @@ public class MahoutTextAdapter extends AbstractAdapter{
 				for (int i = 0; i < ret.length; i++) {
 					tmpVec = realOutput.get(i);
 					for (int j = 0; j < dataSize; j++) {
+						ret[i][j] = tmpVec.get(j);
+					}
+				}
+				
+				return ret;
+			}
+		} else if (Map.class.isAssignableFrom(outputModel.getClass())) {
+			Map outputMap = (Map)outputModel;
+			
+			Object keySentinel = outputMap.keySet().iterator().next();
+			Object valSentinel = outputMap.get(keySentinel);
+			
+			if (Number.class.isAssignableFrom(keySentinel.getClass()) && Vector.class.isAssignableFrom(valSentinel.getClass())) {
+				Map<Number, Vector>realMap = (Map<Number, Vector>)outputMap;
+				
+				int dataNum = realMap.size();
+				int dataLen = realMap.get(realMap.keySet().iterator().next()).size();
+				
+				double[][] ret = new double[dataNum][dataLen];
+				
+				Vector tmpVec;
+				for (int i = 0; i < dataNum; i++) {
+					tmpVec = realMap.get(i);
+					for (int j = 0; j < dataLen; j++) {
 						ret[i][j] = tmpVec.get(j);
 					}
 				}

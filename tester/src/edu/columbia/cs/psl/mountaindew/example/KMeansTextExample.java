@@ -3,10 +3,14 @@ package edu.columbia.cs.psl.mountaindew.example;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Comparator;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -33,17 +37,22 @@ import org.apache.mahout.common.StringTuple;
 import org.apache.mahout.common.distance.CosineDistanceMeasure;
 import org.apache.mahout.common.distance.EuclideanDistanceMeasure;
 import org.apache.mahout.common.distance.SquaredEuclideanDistanceMeasure;
+import org.apache.mahout.common.iterator.sequencefile.PathType;
+import org.apache.mahout.common.iterator.sequencefile.SequenceFileDirValueIterable;
 import org.apache.mahout.common.iterator.sequencefile.SequenceFileIterable;
 import org.apache.mahout.math.RandomAccessSparseVector;
 import org.apache.mahout.math.Vector;
 import org.apache.mahout.math.VectorWritable;
 import org.apache.mahout.text.SequenceFilesFromDirectory;
+import org.apache.mahout.utils.clustering.AbstractClusterWriter;
 import org.apache.mahout.utils.clustering.ClusterDumper;
 import org.apache.mahout.utils.vectors.VectorHelper;
 import org.apache.mahout.vectorizer.DictionaryVectorizer;
 import org.apache.mahout.vectorizer.DocumentProcessor;
 import org.apache.mahout.vectorizer.SparseVectorsFromSequenceFiles;
 import org.apache.mahout.vectorizer.tfidf.TFIDFConverter;
+
+import com.google.common.collect.Lists;
 
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 import edu.columbia.cs.psl.metamorphic.struct.Word;
@@ -57,6 +66,8 @@ public class KMeansTextExample {
 	private FileSystem fs;
 	
 	int kNum = 1;
+	
+	int topTermNum = 20;
 	
 	public void setConfiguration(Configuration conf) {
 		this.conf = conf;
@@ -77,7 +88,6 @@ public class KMeansTextExample {
 			}
 		}
 		
-		
 		String dict = baseDir + "/vec/dictionary.file-0";
 		String clusterFile = finalClusterDir + "/part-r-00000";
 		String outputFile = baseDir + "/clusterdump/cluster.txt";
@@ -89,6 +99,174 @@ public class KMeansTextExample {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	private Map<Integer, Vector> getClusterResult(String baseDir) {
+		String clusterRoot = baseDir + "/vec/clusters";
+		File clusterRootFile = new File(clusterRoot);
+		File[] clusterChilds = clusterRootFile.listFiles();
+		String finalClusterDir = null;
+		for (int i = 0; i < clusterChilds.length; i++) {
+			if (clusterChilds[i].getName().matches(clusterFinalPattern)) {
+				finalClusterDir = clusterChilds[i].getAbsolutePath();
+			}
+		}
+		
+		String dicFilePath = baseDir + "/vec/dictionary.file-0";
+		String[] dictionary = VectorHelper.loadTermDictionary(conf, dicFilePath);
+		
+		try {
+			Map<Integer, Vector> resultMap = new HashMap<Integer, Vector>();
+			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(finalClusterDir, "part-r-00000"), conf);
+			
+			IntWritable key = new IntWritable();
+			ClusterWritable val = new ClusterWritable();
+			Vector tmpCenter;
+			while(reader.next(key, val)) {
+				tmpCenter = val.getValue().getCenter();
+				System.out.println("Check cluster center: " + tmpCenter);
+				resultMap.put(key.get(), tmpCenter);
+			}
+			
+			return resultMap;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	
+	private Map<Integer, String> getTopTermString(String baseDir) {
+		String clusterRoot = baseDir + "/vec/clusters";
+		File clusterRootFile = new File(clusterRoot);
+		File[] clusterChilds = clusterRootFile.listFiles();
+		String finalClusterDir = null;
+		for (int i = 0; i < clusterChilds.length; i++) {
+			if (clusterChilds[i].getName().matches(clusterFinalPattern)) {
+				finalClusterDir = clusterChilds[i].getAbsolutePath();
+			}
+		}
+		
+		String dicFilePath = baseDir + "/vec/dictionary.file-0";
+		String[] dictionary = VectorHelper.loadTermDictionary(conf, dicFilePath);
+		
+		try {
+			Map<Integer, String> resultMap = new HashMap<Integer, String>();
+			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(finalClusterDir, "part-r-00000"), conf);
+			
+			IntWritable key = new IntWritable();
+			ClusterWritable val = new ClusterWritable();
+			Vector tmpCenter;
+			while(reader.next(key, val)) {
+				tmpCenter = val.getValue().getCenter();
+				System.out.println("Check cluster center: " + tmpCenter);
+				String topTermString = AbstractClusterWriter.getTopFeatures(tmpCenter, dictionary, topTermNum);
+				resultMap.put(key.get(), topTermString);
+			}
+			
+			return resultMap;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	
+	private Map<Integer, List<Pair<String, Double>>> getTopTermMap(String baseDir) {
+		String clusterRoot = baseDir + "/vec/clusters";
+		File clusterRootFile = new File(clusterRoot);
+		File[] clusterChilds = clusterRootFile.listFiles();
+		String finalClusterDir = null;
+		for (int i = 0; i < clusterChilds.length; i++) {
+			if (clusterChilds[i].getName().matches(clusterFinalPattern)) {
+				finalClusterDir = clusterChilds[i].getAbsolutePath();
+			}
+		}
+		
+		String dicFilePath = baseDir + "/vec/dictionary.file-0";
+		String[] dictionary = VectorHelper.loadTermDictionary(conf, dicFilePath);
+		
+		try {
+			Map<Integer, List<Pair<String, Double>>> resultMap = new HashMap<Integer, List<Pair<String, Double>>>();
+			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(finalClusterDir, ",part-r-00000"), conf);
+			
+			IntWritable key = new IntWritable();
+			ClusterWritable val = new ClusterWritable();
+			Vector tmpCenter;
+			while(reader.next(key, val)) {
+				tmpCenter = val.getValue().getCenter();
+				System.out.println("Check cluster center: " + tmpCenter);
+				
+				List<TermIndexWeight> vectorTerms = Lists.newArrayList();
+				Iterator<Vector.Element> iter = tmpCenter.iterateNonZero();
+				
+				while (iter.hasNext()) {
+					Vector.Element elt = iter.next();
+					vectorTerms.add(new TermIndexWeight(elt.index(), elt.get()));
+				}
+				
+				Collections.sort(vectorTerms, new Comparator<TermIndexWeight>() {
+					public int compare(TermIndexWeight one, TermIndexWeight two) {
+						return Double.compare(two.weight, one.weight);
+					}
+				});
+				
+				List<Pair<String, Double>> topTerms = new LinkedList<Pair<String, Double>>();
+				
+				for (int i = 0; i < vectorTerms.size() && i < topTermNum; i++) {
+					int index = vectorTerms.get(i).index;
+					String dictTerm = dictionary[index];
+					
+					if (dictTerm == null) {
+						System.err.println("Wrong term index: " + index);
+						continue;
+					}
+					topTerms.add(new Pair<String, Double>(dictTerm, vectorTerms.get(i).weight));
+				}
+				
+			}
+			
+			return resultMap;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+		
+		
+		/*SequenceFileDirValueIterable<ClusterWritable> sfdi = new SequenceFileDirValueIterable<ClusterWritable>(new Path(finalClusterDir, "part-*"), PathType.GLOB, conf);
+		Iterator<ClusterWritable> sfIT = sfdi.iterator();
+		Vector tmpCenter;
+		while (sfIT.hasNext()) {
+			tmpCenter = sfIT.next().getValue().getCenter();
+			System.out.println("ClusterWritable: " + tmpCenter);
+			String topTermString = AbstractClusterWriter.getTopFeatures(tmpCenter, dictionary, topTermNum);
+			System.out.println("Check top terms: " + topTermString);
+			
+			List<TermIndexWeight> vectorTerms = Lists.newArrayList();
+			Iterator<Vector.Element> iter = tmpCenter.iterateNonZero();
+			
+			while (iter.hasNext()) {
+				Vector.Element elt = iter.next();
+				vectorTerms.add(new TermIndexWeight(elt.index(), elt.get()));
+			}
+			
+			Collections.sort(vectorTerms, new Comparator<TermIndexWeight>() {
+				public int compare(TermIndexWeight one, TermIndexWeight two) {
+					return Double.compare(two.weight, one.weight);
+				}
+			});
+			
+			Collection<Pair<String, Double>> topTerms = new LinkedList<Pair<String, Double>>();
+			
+			for (int i = 0; i < vectorTerms.size() && i < topTermNum; i++) {
+				int index = vectorTerms.get(i).index;
+				String dictTerm = dictionary[index];
+				
+				if (dictTerm == null) {
+					System.err.println("Wrong term index: " + index);
+					continue;
+				}
+				topTerms.add(new Pair<String, Double>(dictTerm, vectorTerms.get(i).weight));
+			}
+		}*/
 	}
 	
 	private void convertFilesToSeq(String baseDir) {
@@ -414,12 +592,14 @@ public class KMeansTextExample {
 	}
 		
 	@Metamorphic
-	private List<Vector> driveKMeans(String[] dirInfo) {
+	private Map<Integer, Vector> driveKMeans(String[] dirInfo) {
 		//dirInfo[0]: baseDirectory, dirInfo[1]:tfidf, tf or matrix
 		//this.createCentroids(dirInfo[0], dirInfo[1]);
 		this.writeKluster(dirInfo[0]);
 		this.executeKMeans(dirInfo[0], dirInfo[1]);
-		return this.getResult(dirInfo[0]);
+		//return this.getResult(dirInfo[0]);
+		//return this.getTopTermString(dirInfo[0]);
+		return this.getClusterResult(dirInfo[0]);
 	}
 	
 	public static void main(String args[]) {
@@ -460,15 +640,26 @@ public class KMeansTextExample {
 	    	kt.printDictionary(baseDir);
 	    	
 	    	String[] dirInfo = new String[]{baseDir, "/vec/tfidf-vectors"};
-	    	//String[] dirInfo = new String[]{"kmeans_sandbox/2013080221482866", "/vec/tfidf-vectors"};
+	    	Map<Integer, Vector> resultMap = kt.driveKMeans(dirInfo);
 	    	
-	    	List<Vector> resultList = kt.driveKMeans(dirInfo);
+	    	for (int i: resultMap.keySet()) {
+	    		System.out.println("Cluster: " + i + " Term vec: " + resultMap.get(i));
+	    	}
+	    	
+	    	/*Map<Integer, String> resultMap = kt.driveKMeans(dirInfo);
+	    	
+	    	for (int i: resultMap.keySet()) {
+	    		System.out.println("Cluster: " + i + " Terms: " + resultMap.get(i));
+	    	}*/
+	    	
+	    	/*List<Vector> resultList = kt.driveKMeans(dirInfo);
 	    	
 	    	for (Vector tmpVec: resultList) {
 	    		System.out.println("Check result vec: " + tmpVec.asFormatString());
-	    	}
+	    	}*/
 	    	
 	    	/*kt.printTFIDF(baseDir);
+	    	kt.printDictionary(baseDir);
 	    	kt.printCentroids(baseDir);
 	    	kt.printClusters(baseDir);
 	    	kt.dumpClusters(baseDir);*/
@@ -494,6 +685,17 @@ public class KMeansTextExample {
 	    } catch (Exception ex) {
 	    	ex.printStackTrace();
 	    }
+	}
+	
+	private static class TermIndexWeight {
+		private final int index;
+		
+		private final double weight;
+		
+		TermIndexWeight(int index, double weight) {
+			this.index = index;
+			this.weight = weight;
+		}
 	}
 	
 	

@@ -555,6 +555,32 @@ public class SimpleLDAExample {
     	return null;
 	}
 	
+	private Map<Integer, Vector> getResultWithTopicID(String baseDir) {
+		Map<Integer, Vector> resultMap = new HashMap<Integer, Vector>();
+		String vecDir = baseDir + "/vec";
+		String topicFile = baseDir + "/topic_output/part-m-00000";
+		
+		try {
+			SequenceFile.Reader reader = new SequenceFile.Reader(fs, new Path(topicFile), conf);
+			
+			IntWritable key = new IntWritable();
+			VectorWritable value = new VectorWritable();
+			
+			while (reader.next(key, value)) {
+				System.out.println("Key Val: " + key + " " + value.get());
+				resultMap.put(key.get(), value.get());
+			}
+			
+			reader.close();
+			
+			return resultMap;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return null;
+	}
+	
 	private void printTokenize(String baseOutputDir) {
 		try {
 			String tokenFile = baseOutputDir + "/vec/tokenized-documents/part-m-00000";
@@ -750,15 +776,18 @@ public class SimpleLDAExample {
 	}
 	
 	@Metamorphic
-	private List<Vector> driveLDA(String dirInfo[]) {		
-		List<Vector> topicList = null;
+	private Map<Integer, Vector> driveLDA(String dirInfo[]) {		
+		//List<Vector> topicList = null;
+		Map<Integer, Vector> topicMap = null;
 		try {
 			this.executeDirichlet(dirInfo);
-			topicList = this.getResult(dirInfo[0]);
+			//topicList = this.getResult(dirInfo[0]);
+			topicMap = this.getResultWithTopicID(dirInfo[0]);
+			return topicMap;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}		
-		return topicList;
+		return null;
 	}
 	
 	/**
@@ -811,13 +840,19 @@ public class SimpleLDAExample {
 			ex.createRowIdVec(baseDir);
 			ex.printMatrix(baseDir);
 			
-			List<Vector> topicList = ex.driveLDA(new String[]{baseDir, "/rowid_vec"});
+			Map<Integer, Vector> topicMap = ex.driveLDA(new String[]{baseDir, "/rowid_vec"});
+			
+			for (int i: topicMap.keySet()) {
+				System.out.println("Check topic id: " + i + " val: " + topicMap.get(i));
+			}
+			
+			/*List<Vector> topicList = ex.driveLDA(new String[]{baseDir, "/rowid_vec"});
 			
 			if (topicList != null) {
 				for (int i = 0; i < topicList.size(); i++) {
 					System.out.println("Check topic: " + topicList.get(i));
 				}
-			}
+			}*/
 			/*System.out.println("Original matrix:");
 			ex.printMatrix(baseDir);
 			System.out.println();
