@@ -43,6 +43,8 @@ import edu.columbia.cs.psl.mountaindew.util.MetamorphicConfigurer;
 public class Interceptor extends AbstractInterceptor {
 	private static String header = 
 			"Method name,ori_input,ori_output,trans_input,trans_output,frontend_transformer,backend_checker,Holds\n";
+	private static String holdHeader =
+			"Method name, frontend_transformer,backend_checker\n";
 	//private static String profileRoot = "/Users/mike/Documents/metamorphic-projects/mountaindew/tester/profiles/";
 	private static String profileRoot = "profiles/";
 	private static String configString = "config/mutant.property";
@@ -60,6 +62,7 @@ public class Interceptor extends AbstractInterceptor {
 //	private Cloner cloner = new Cloner();
 	private String calleeName;
 	private String timeTag = "default";
+	private String holdTag = "hold";
 	
 //	private static int fileCount = 0;
 	
@@ -311,19 +314,19 @@ public class Interceptor extends AbstractInterceptor {
 		sBuilder.append(header);
 		
 		MethodProfiler tmpProfiler;
-		while (!this.profilerList.isEmpty()) {
+		/*while (!this.profilerList.isEmpty()) {
 			tmpProfiler = this.profilerList.remove(0);
 			for (MethodProfile mProfile: tmpProfiler.getMethodProfiles()) {
 				sBuilder.append(mProfile.toString());
 			}
 			System.gc();
-		}
+		}*/
 		
-		/*for (MethodProfiler mProfiler: this.profilerList) {
+		for (MethodProfiler mProfiler: this.profilerList) {
 			for (MethodProfile mProfile: mProfiler.getMethodProfiles()) {
 				sBuilder.append(mProfile.toString());
 			}
-		}*/
+		}
 		//System.out.println("Test export string: " + sBuilder.toString());
 		
 		File rootDir = new File(profileRoot + this.timeTag);
@@ -351,6 +354,130 @@ public class Interceptor extends AbstractInterceptor {
 		
 		try {
 			FileWriter fWriter = new FileWriter(absPath + this.calleeName + "_" + (new Date()).toString().replaceAll(" ", "") + ".csv");
+			BufferedWriter bWriter = new BufferedWriter(fWriter);
+			bWriter.write(sBuilder.toString());
+			bWriter.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
+	
+	public void exportHoldMethodProfile() {
+		
+		StringBuilder sBuilder = new StringBuilder();
+		
+		sBuilder.append(holdHeader);
+		
+		MethodProfiler tmpProfiler;
+		for (MethodProfiler mProfiler: this.profilerList) {
+			for (MethodProfile mProfile: mProfiler.getHoldMethodProfiles()) {
+				sBuilder.append(mProfile.getOri().getMethod().getName() + ",");
+				sBuilder.append(mProfile.getFrontend() + ",");
+				sBuilder.append(mProfile.getBackend() + "\n");
+				//sBuilder.append(mProfile.getResult().holds + "\n");
+			}
+		}
+		//System.out.println("Test export string: " + sBuilder.toString());
+		
+		//File rootDir = new File(profileRoot + this.timeTag);
+		File rootDir = new File(profileRoot + this.holdTag);
+		
+		String absPath = "";
+		if (rootDir.exists() && rootDir.isDirectory()) {
+			absPath = rootDir.getAbsolutePath() + "/";
+			System.out.println("Confirm root directory for exporting: " + absPath);
+		} else if (!rootDir.exists()) {
+			System.out.println("Profile directory does not exists. Create one...");
+			boolean success = rootDir.mkdir();
+			
+			if (success) {
+				System.out.println("Profile directory creation succeeds.");
+				absPath = rootDir.getAbsolutePath() + "/";
+				System.out.println("Confirm root direcotry for exporting: " + absPath);
+			} else {
+				System.out.println("Profile directory creation fails");
+				return ;
+			}
+		} else {
+			System.out.println("For some reason, profile directory creation fails.");
+			return ;
+		}
+		
+		try {
+			File holdFile = new File(absPath + this.calleeName + ".csv");
+			
+			if (holdFile.exists()) {
+				holdFile.delete();
+			}
+			
+			//FileWriter fWriter = new FileWriter(absPath + this.calleeName + "_" + (new Date()).toString().replaceAll(" ", "") + "_holds.csv");
+			FileWriter fWriter = new FileWriter(holdFile);
+			BufferedWriter bWriter = new BufferedWriter(fWriter);
+			bWriter.write(sBuilder.toString());
+			bWriter.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
+	
+	public void exportHoldMethodProperty() {
+		
+		Properties prop = new Properties();
+		HashSet<String> remainedT = new HashSet<String>();
+		HashSet<String> remainedC = new HashSet<String>();
+		
+		String methodKey = "Method";
+		String tKey = "Transformers";
+		String cKey = "Checkers";
+		
+		StringBuilder sBuilder = new StringBuilder();
+		
+		sBuilder.append(holdHeader);
+		
+		MethodProfiler tmpProfiler;
+		for (MethodProfiler mProfiler: this.profilerList) {
+			for (MethodProfile mProfile: mProfiler.getHoldMethodProfiles()) {
+				sBuilder.append(mProfile.getOri().getMethod().getName() + ",");
+				sBuilder.append(mProfile.getFrontend() + ",");
+				sBuilder.append(mProfile.getBackend() + "\n");
+				//sBuilder.append(mProfile.getResult().holds + "\n");
+			}
+		}
+		//System.out.println("Test export string: " + sBuilder.toString());
+		
+		//File rootDir = new File(profileRoot + this.timeTag);
+		File rootDir = new File(profileRoot + this.holdTag);
+		
+		String absPath = "";
+		if (rootDir.exists() && rootDir.isDirectory()) {
+			absPath = rootDir.getAbsolutePath() + "/";
+			System.out.println("Confirm root directory for exporting: " + absPath);
+		} else if (!rootDir.exists()) {
+			System.out.println("Profile directory does not exists. Create one...");
+			boolean success = rootDir.mkdir();
+			
+			if (success) {
+				System.out.println("Profile directory creation succeeds.");
+				absPath = rootDir.getAbsolutePath() + "/";
+				System.out.println("Confirm root direcotry for exporting: " + absPath);
+			} else {
+				System.out.println("Profile directory creation fails");
+				return ;
+			}
+		} else {
+			System.out.println("For some reason, profile directory creation fails.");
+			return ;
+		}
+		
+		try {
+			File holdFile = new File(absPath + this.calleeName + ".csv");
+			
+			if (holdFile.exists()) {
+				holdFile.delete();
+			}
+			
+			//FileWriter fWriter = new FileWriter(absPath + this.calleeName + "_" + (new Date()).toString().replaceAll(" ", "") + "_holds.csv");
+			FileWriter fWriter = new FileWriter(holdFile);
 			BufferedWriter bWriter = new BufferedWriter(fWriter);
 			bWriter.write(sBuilder.toString());
 			bWriter.close();

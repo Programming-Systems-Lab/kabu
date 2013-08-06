@@ -55,6 +55,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 									result.supportingSize++;
 									result.supportingInvocations.add(new MethodInvocation[] {i, j});
 									result.combinedProperty = j.getFrontend() + "=>" + j.getBackend();
+									this.mProfiler.addHoldMethodProfile(i, j, result);
 								}
 								else
 								{

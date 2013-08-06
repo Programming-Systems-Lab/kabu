@@ -56,6 +56,10 @@ public class MetamorphicObserver {
 		return instance;
 	}
 	
+	public static void refineProperties(HashSet<Class<? extends MetamorphicProperty>> newSet) {
+		properties = newSet;
+	}
+	
 	public HashSet<Class<? extends MetamorphicProperty>> registerInterceptor(Interceptor i)
 	{
 		interceptors.add(i);
@@ -69,6 +73,7 @@ public class MetamorphicObserver {
 			i.reportPropertyResultList();
 			System.out.println("");
 			i.exportMethodProfile();
+			i.exportHoldMethodProfile();
 		}
 	}
 }
