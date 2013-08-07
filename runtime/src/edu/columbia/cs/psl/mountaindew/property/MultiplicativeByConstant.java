@@ -19,7 +19,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 	private ContentEqualer ce = new ContentEqualer();
 	@Override
 	public String getName() {
-		return "C:Multiplicative";
+		return "C:MultiplicativeByConstant";
 	}
 
 	@Override

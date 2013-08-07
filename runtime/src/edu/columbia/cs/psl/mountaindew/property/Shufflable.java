@@ -19,7 +19,7 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 
 	@Override
 	public String getName() {
-		return "C:Shuffleable";
+		return "C:Shufflable";
 	}
 
 

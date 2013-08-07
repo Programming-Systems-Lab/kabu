@@ -3,6 +3,7 @@ package edu.columbia.cs.psl.mountaindew.runtime;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -62,7 +63,10 @@ public class Interceptor extends AbstractInterceptor {
 //	private Cloner cloner = new Cloner();
 	private String calleeName;
 	private String timeTag = "default";
-	private String holdTag = "hold";
+	private String configRoot = "config";
+	private String transKey = "Transformers";
+	private String checkKey = "Checkers";
+	private String holdTag = "Holds";
 	
 //	private static int fileCount = 0;
 	
@@ -363,60 +367,50 @@ public class Interceptor extends AbstractInterceptor {
 	}
 	
 	public void exportHoldMethodProfile() {
-		
-		StringBuilder sBuilder = new StringBuilder();
-		
-		sBuilder.append(holdHeader);
-		
-		MethodProfiler tmpProfiler;
+		List<MethodProp> methodPropList = new ArrayList<MethodProp>();
 		for (MethodProfiler mProfiler: this.profilerList) {
+			String methodName;
+
 			for (MethodProfile mProfile: mProfiler.getHoldMethodProfiles()) {
-				sBuilder.append(mProfile.getOri().getMethod().getName() + ",");
-				sBuilder.append(mProfile.getFrontend() + ",");
-				sBuilder.append(mProfile.getBackend() + "\n");
-				//sBuilder.append(mProfile.getResult().holds + "\n");
+				methodName = mProfile.getOri().getMethod().getName();
+				
+				boolean found = false;
+				for (MethodProp tmpProp: methodPropList) {
+					if (tmpProp.getMethodName().equals(methodName)) {
+						tmpProp.addTransformer(mProfile.getFrontend());
+						tmpProp.addChecker(mProfile.getBackend());
+						found = true;
+					}
+				}
+				
+				if (!found) {
+					MethodProp mProp = new MethodProp(methodName);
+					methodPropList.add(mProp);
+				}
 			}
-		}
-		//System.out.println("Test export string: " + sBuilder.toString());
-		
-		//File rootDir = new File(profileRoot + this.timeTag);
-		File rootDir = new File(profileRoot + this.holdTag);
-		
-		String absPath = "";
-		if (rootDir.exists() && rootDir.isDirectory()) {
-			absPath = rootDir.getAbsolutePath() + "/";
-			System.out.println("Confirm root directory for exporting: " + absPath);
-		} else if (!rootDir.exists()) {
-			System.out.println("Profile directory does not exists. Create one...");
-			boolean success = rootDir.mkdir();
-			
-			if (success) {
-				System.out.println("Profile directory creation succeeds.");
-				absPath = rootDir.getAbsolutePath() + "/";
-				System.out.println("Confirm root direcotry for exporting: " + absPath);
-			} else {
-				System.out.println("Profile directory creation fails");
-				return ;
-			}
-		} else {
-			System.out.println("For some reason, profile directory creation fails.");
-			return ;
 		}
 		
 		try {
-			File holdFile = new File(absPath + this.calleeName + ".csv");
-			
-			if (holdFile.exists()) {
-				holdFile.delete();
+			Properties prop = new Properties();
+			String propertyFileName;
+			File propertyFile;
+			for (MethodProp tmpProp: methodPropList) {
+				System.out.println("Start to load property");
+				propertyFileName = this.configRoot + "/" + tmpProp.getMethodName() + ".property";
+				propertyFile = new File(propertyFileName);
+				
+				if (propertyFile.exists()) {
+					propertyFile.delete();
+				}
+				
+				//prop.load(new FileInputStream(propertyFileName));
+				prop.setProperty(this.transKey, tmpProp.getTransformersString());
+				prop.setProperty(this.checkKey, tmpProp.getCheckersString());
+				
+				prop.store(new FileOutputStream(propertyFileName), null);
 			}
-			
-			//FileWriter fWriter = new FileWriter(absPath + this.calleeName + "_" + (new Date()).toString().replaceAll(" ", "") + "_holds.csv");
-			FileWriter fWriter = new FileWriter(holdFile);
-			BufferedWriter bWriter = new BufferedWriter(fWriter);
-			bWriter.write(sBuilder.toString());
-			bWriter.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}		
 	}
 	
@@ -504,6 +498,74 @@ public class Interceptor extends AbstractInterceptor {
 		
 		for (Class<? extends MetamorphicProperty> checkerPrototype: this.propertyPrototypes) {
 			System.out.println(checkerPrototype.getName());
+		}
+	}
+	
+	private static class MethodProp {
+		
+		private String methodName;
+		
+		private HashSet<String> transformers = new HashSet<String>();
+		
+		private HashSet<String> checkers = new HashSet<String>();
+		
+		public MethodProp(String methodName) {
+			this.methodName = methodName;
+		}
+		
+		public void addTransformer(String transformer) {
+			this.transformers.add(transformer);
+		}
+		
+		public void addChecker(String checker) {
+			this.checkers.add(checker);
+		}
+		
+		public HashSet<String> getTransformers() {
+			return this.transformers;
+		}
+		
+		public HashSet<String> getCheckers() {
+			return this.checkers;
+		}
+		
+		public String getTransformersString() {
+			StringBuilder sb = new StringBuilder();
+			
+			for (String tran: this.transformers) {
+				sb.append(tran + ",");
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			return sb.toString();
+		}
+		
+		public String getCheckersString() {
+			StringBuilder sb = new StringBuilder();
+			
+			for (String check: this.checkers) {
+				sb.append(check + ",");
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			return sb.toString();
+		}
+		
+		public String getMethodName() {
+			return this. methodName;
+		}
+			
+		public boolean equals(Object tmp) {
+			if (tmp == this)
+				return true;
+			
+			if (tmp.getClass() != this.getClass())
+				return false;
+			
+			MethodProp input = (MethodProp)tmp;
+			
+			if (input.getMethodName().equals(this.getMethodName()) && input.getTransformers() == this.getTransformers() && input.getCheckers() == this.getCheckers())
+				return true;
+			else
+				return false;
 		}
 	}
 } 

@@ -39,7 +39,7 @@ public class ConstructRelChecker extends RelationAbstract{
 
 	@Override
 	public String getName() {
-		return "C:ConstructRelationChecker";
+		return "C:ConstructRelChecker";
 	}
 
 	@Override

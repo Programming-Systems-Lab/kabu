@@ -212,12 +212,12 @@ public class WekaClassifierExample {
 			return ;
 		}
 		
-		/*SMO smo = wcEx.trainSMOModel(data);
+		SMO smo = wcEx.trainSMOModel(data);
 		if (smo == null) {
 			System.err.println("Fail to train smo model");
 			return ;
 		}
-		wcEx.evalModel(smo, data);*/
+		wcEx.evalModel(smo, data);
 		
 		/*J48 tree = wcEx.trainJ48Model(data);
 		if (tree == null) {

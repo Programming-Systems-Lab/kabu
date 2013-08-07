@@ -17,7 +17,7 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 
 	@Override
 	public String getName() {
-		return "C:Additive";
+		return "C:AdditiveByConstant";
 	}
 
 	boolean returnDoesntChange;
