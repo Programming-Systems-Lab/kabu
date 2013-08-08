@@ -277,10 +277,22 @@ public class SimpleExample extends AbstractExample {
 		
 		return in;
 	}
-		
+	
+	@Metamorphic
+	public double[] sort(double[] in) {
+		Arrays.sort(in);
+		return in;
+	}
+	
+	@Metamorphic
+	public int[] sortInt(int[] in) {
+		Arrays.sort(in);
+		return in;
+	}
+	
 	public static void main(String[] args) {
 		SimpleExample s = new SimpleExample();
-		s.selectMax(new int[]{3, 4, 5});
+//		s.selectMax(new int[]{3, 4, 5});
 //		String[] barzzz = {"aa","bb"};
 //		System.out.println("Max memory: " + Runtime.getRuntime().maxMemory());
 //		Interceptor.catchParam(args, args);
@@ -361,12 +373,16 @@ public class SimpleExample extends AbstractExample {
 			ex.printStackTrace();
 		}*/
 		SimpleExample ex = new SimpleExample();
-		System.out.println("Ran simple example");
-		//System.out.println(ex.arrayDiv(new int[] {8, 3, 2, 9}));
-		List<Integer> input = new ArrayList<Integer>();
+		/*List<Integer> input = new ArrayList<Integer>();
 		input.add(3);
 		input.add(4);
 		input.add(5);
-		System.out.println(ex.arrayDiv(input));
+		System.out.println(ex.arrayDiv(input));*/
+		
+		int[] out = ex.sortInt(new int[]{3, 1, 2});
+		for (int i = 0; i < out.length; i++) {
+			System.out.println(out[i]);
+		}
+		
 	}
 }

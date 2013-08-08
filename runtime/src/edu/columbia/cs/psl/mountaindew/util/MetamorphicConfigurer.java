@@ -30,6 +30,8 @@ public class MetamorphicConfigurer {
 	//Only one adapter per time
 	private String adapterClassName;
 	
+	private String adapterName;
+	
 	private List<String> transformerNames = new ArrayList<String>();
 	
 	private List<String> checkerNames = new ArrayList<String>();
@@ -53,7 +55,9 @@ public class MetamorphicConfigurer {
 		
 		try {
 			prop.load(new FileInputStream(propertyFile.getAbsolutePath()));
-			this.adapterClassName = adapterPackage + dot +  this.prop.getProperty(adapterKey);
+			this.adapterName = this.prop.getProperty(adapterKey);
+			//this.adapterClassName = adapterPackage + dot +  this.prop.getProperty(adapterKey);
+			this.adapterClassName = adapterPackage + dot + this.adapterName;
 			this.transformerNames = parseProperty(this.prop.getProperty(transformKey), transformerPackage);
 			this.checkerNames = parseProperty(this.prop.getProperty(checkerKey), checkerPackage);
 		} catch (Exception ex) {
@@ -75,6 +79,10 @@ public class MetamorphicConfigurer {
 		return this.adapterClassName;
 	}
 	
+	public String getAdapterName() {
+		return this.adapterName;
+	}
+	
 	public List<String> getTransformerNames() {
 		return this.transformerNames;
 	}
@@ -82,5 +90,4 @@ public class MetamorphicConfigurer {
 	public List<String> getCheckerNames() {
 		return this.checkerNames;
 	}
-
 }

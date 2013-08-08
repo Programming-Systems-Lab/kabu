@@ -52,8 +52,8 @@ public class ContentEqualer extends EqualerAbstract{
 		
 		Set c1Set, c2Set;
 		if (Number.class.isAssignableFrom(c1.getClass()) && Number.class.isAssignableFrom(c2.getClass())) {
-			double roundC1 = this.roundDouble((double)c1, roundDigit);
-			double roundC2 = this.roundDouble((double)c2, roundDigit);
+			double roundC1 = this.roundDouble(((Number)c1).doubleValue(), roundDigit);
+			double roundC2 = this.roundDouble(((Number)c2).doubleValue(), roundDigit);
 			//System.out.println("rt1 rt2: " + roundC1 + " " + roundC2);
 			return (roundC1 == roundC2);
 		} else if (Collection.class.isAssignableFrom(c1.getClass()) && Collection.class.isAssignableFrom(c2.getClass())) {

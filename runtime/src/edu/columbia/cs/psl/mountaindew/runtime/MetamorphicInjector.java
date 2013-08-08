@@ -1,12 +1,20 @@
 package edu.columbia.cs.psl.mountaindew.runtime;
 
+import java.io.File;
+
 import edu.columbia.cs.psl.invivo.runtime.InvivoPreMain;
 
 
 
 
 public class MetamorphicInjector {
-
+	
+	private static String configRoot = "config/";
+	
+	private static String metaPropertyFile = "metamorphic.property";
+	
+	private static String mutantPropertyFile = "mutant.property";
+	
 	public void go(String[] args)
 	{
 //		InvivoPreMain.config = new Configuration();
@@ -30,13 +38,37 @@ public class MetamorphicInjector {
 		
 //		SimpleExample.main(args);
 	}
+	
 	public static void main(String[] args) {
 		if(args.length == 0)
 		{
 			System.err.println("Usage: java edu.columbia.cs.psl.metamorphic.runtime.MetamorphicInjector nameOfClassWithMain [Optional arguments for said class]");
 			System.exit(0);
 		}
-		new MetamorphicInjector().go(args);
+		//new MetamorphicInjector().go(args);
+		
+		for (int i = 0; i < 3; i++) {
+			System.out.println("Round execution: " + i);
+			new MetamorphicInjector().go(args);
+			System.out.println();
+		}
+		
+		cleanPropertyFiles();
+	}
+	
+	private static void cleanPropertyFiles() {
+		File configDir = new File(configRoot);
+		String tmpFileName;
+		for (File tmpFile: configDir.listFiles()) {
+			tmpFileName = tmpFile.getName();
+			if (tmpFileName.equals(metaPropertyFile))
+				continue;
+			
+			if (tmpFileName.equals(mutantPropertyFile))
+				continue;
+			
+			tmpFile.delete();
+		}
 	}
 }
 

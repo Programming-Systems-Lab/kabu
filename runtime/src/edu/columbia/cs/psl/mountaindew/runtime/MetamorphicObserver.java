@@ -1,8 +1,13 @@
 package edu.columbia.cs.psl.mountaindew.runtime;
 
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty;
+import edu.columbia.cs.psl.mountaindew.adapter.AbstractAdapter;
+import edu.columbia.cs.psl.mountaindew.adapter.AdapterLoader;
 import edu.columbia.cs.psl.mountaindew.property.AdditiveByConstant;
 import edu.columbia.cs.psl.mountaindew.property.ConstructRelChecker;
 import edu.columbia.cs.psl.mountaindew.property.DirRelChecker;
@@ -55,25 +60,34 @@ public class MetamorphicObserver {
 //		System.out.println("Get metamorphic observer instance");
 		return instance;
 	}
-	
-	public static void refineProperties(HashSet<Class<? extends MetamorphicProperty>> newSet) {
-		properties = newSet;
-	}
-	
+		
 	public HashSet<Class<? extends MetamorphicProperty>> registerInterceptor(Interceptor i)
 	{
 		interceptors.add(i);
 		return properties;
 	}
+	
 	public void reportResults()
 	{
-		for(Interceptor i : interceptors)
+		Iterator<Interceptor> i = interceptors.iterator();
+		Interceptor tmp;
+		while(i.hasNext()) {
+			tmp = i.next();
+			tmp.reportPropertyResultList();
+			System.out.println("");
+			
+			tmp.exportMethodProfile();
+			tmp.exportHoldMethodProfile();
+			i.remove();
+			
+		}
+		/*for(Interceptor i : interceptors)
 		{
 			//i.reportPropertyResults();
 			i.reportPropertyResultList();
 			System.out.println("");
 			i.exportMethodProfile();
 			i.exportHoldMethodProfile();
-		}
+		}*/
 	}
 }
