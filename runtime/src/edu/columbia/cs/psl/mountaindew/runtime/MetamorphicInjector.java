@@ -1,6 +1,8 @@
 package edu.columbia.cs.psl.mountaindew.runtime;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
 
 import edu.columbia.cs.psl.invivo.runtime.InvivoPreMain;
 
@@ -47,13 +49,31 @@ public class MetamorphicInjector {
 		}
 		//new MetamorphicInjector().go(args);
 		
-		for (int i = 0; i < 3; i++) {
-			System.out.println("Round execution: " + i);
-			new MetamorphicInjector().go(args);
-			System.out.println();
+		File metaPropFile = new File("config/metamorphic.property");
+		
+		if (!metaPropFile.exists()) {
+			System.err.println("Load no metamorphic configuration file: " + metaPropFile.getAbsolutePath());
+			return ;
 		}
 		
-		cleanPropertyFiles();
+		try {
+			Properties metaProp = new Properties();
+			metaProp.load(new FileInputStream(metaPropFile));
+			
+			int roundNumber = Integer.valueOf(metaProp.getProperty("Round"));
+			
+			System.out.println("Confirm round number: " + roundNumber);
+			
+			for (int i = 0; i < roundNumber; i++) {
+				System.out.println("Round execution: " + i);
+				new MetamorphicInjector().go(args);
+				System.out.println();
+			}
+			
+			cleanPropertyFiles();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	private static void cleanPropertyFiles() {

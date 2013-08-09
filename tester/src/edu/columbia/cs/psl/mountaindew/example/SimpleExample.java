@@ -290,6 +290,11 @@ public class SimpleExample extends AbstractExample {
 		return in;
 	}
 	
+	@Metamorphic
+	public double getLength(int[] in) {
+		return Double.valueOf(String.valueOf(in.length));
+	}
+	
 	public static void main(String[] args) {
 		SimpleExample s = new SimpleExample();
 //		s.selectMax(new int[]{3, 4, 5});
@@ -383,6 +388,8 @@ public class SimpleExample extends AbstractExample {
 		for (int i = 0; i < out.length; i++) {
 			System.out.println(out[i]);
 		}
+		
+		double arrayLength = ex.getLength(new int[]{4,7,8});
 		
 	}
 }
