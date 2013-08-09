@@ -1,5 +1,4 @@
 Adapter=DefaultAdapter
 Transformers=AddNumericConstant,MultiplyByNumericConstant,Negate,PolynomialTransformer,Shuffle,Reverse
 Checkers=ContentEqualer
-Round=3
 

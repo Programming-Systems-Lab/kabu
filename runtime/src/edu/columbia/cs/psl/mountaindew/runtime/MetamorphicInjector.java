@@ -47,9 +47,9 @@ public class MetamorphicInjector {
 			System.err.println("Usage: java edu.columbia.cs.psl.metamorphic.runtime.MetamorphicInjector nameOfClassWithMain [Optional arguments for said class]");
 			System.exit(0);
 		}
-		//new MetamorphicInjector().go(args);
+		new MetamorphicInjector().go(args);
 		
-		File metaPropFile = new File("config/metamorphic.property");
+		/*File metaPropFile = new File("config/metamorphic.property");
 		
 		if (!metaPropFile.exists()) {
 			System.err.println("Load no metamorphic configuration file: " + metaPropFile.getAbsolutePath());
@@ -73,7 +73,7 @@ public class MetamorphicInjector {
 			cleanPropertyFiles();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-		}
+		}*/
 	}
 	
 	private static void cleanPropertyFiles() {
