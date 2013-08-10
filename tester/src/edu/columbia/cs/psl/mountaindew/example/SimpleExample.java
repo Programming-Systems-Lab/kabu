@@ -295,6 +295,15 @@ public class SimpleExample extends AbstractExample {
 		return Double.valueOf(String.valueOf(in.length));
 	}
 	
+	@Metamorphic
+	public double foo(int[] in) {
+		double ret = 0;
+		for (int i = 0; i < in.length; i++) {
+			ret = ret + Double.valueOf(in[i]);
+		}
+		return ret;
+	}
+	
 	public static void main(String[] args) {
 		SimpleExample s = new SimpleExample();
 //		s.selectMax(new int[]{3, 4, 5});
@@ -384,12 +393,15 @@ public class SimpleExample extends AbstractExample {
 		input.add(5);
 		System.out.println(ex.arrayDiv(input));*/
 		
-		int[] out = ex.sortInt(new int[]{3, 1, 2});
+		/*int[] out = ex.sortInt(new int[]{3, 1, 2});
 		for (int i = 0; i < out.length; i++) {
 			System.out.println(out[i]);
-		}
+		}*/
 		
 		double arrayLength = ex.getLength(new int[]{4,7,8});
+		
+		double sum = ex.foo(new int[]{0, 0, 0});
+		System.out.println("Check sum: " + sum);
 		
 	}
 }
