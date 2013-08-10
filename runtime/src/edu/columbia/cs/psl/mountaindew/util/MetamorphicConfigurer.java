@@ -38,6 +38,14 @@ public class MetamorphicConfigurer {
 	
 	private String propertyFilePath;
 	
+	public static String getCheckerFullName(String checkerName) {
+		return checkerPackage + dot + checkerName;
+	}
+	
+	public static String getTransformerFullName(String transformerName) {
+		return transformerPackage + dot + transformerName;
+	}
+	
 	public MetamorphicConfigurer(String propertyFilePath) {
 		this.propertyFilePath = propertyFilePath;
 		this.loadConfigProperties();
