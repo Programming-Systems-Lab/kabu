@@ -398,10 +398,12 @@ public class SimpleExample extends AbstractExample {
 			System.out.println(out[i]);
 		}*/
 		
-		double arrayLength = ex.getLength(new int[]{4,7,8});
+		//double arrayLength = ex.getLength(new int[]{4,7,8});
 		
-		double sum = ex.foo(new int[]{0, 0, 0});
+		double sum = ex.foo(new int[]{4, 5, 6});
 		System.out.println("Check sum: " + sum);
 		
+		sum = ex.foo(new int[]{0, 0, 0});
+		System.out.println("Check sum twice: " + sum);
 	}
 }

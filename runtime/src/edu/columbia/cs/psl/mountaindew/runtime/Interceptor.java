@@ -676,7 +676,7 @@ public class Interceptor extends AbstractInterceptor {
 		
 		private String methodName;
 		
-		private List<String[]> combinationList = new ArrayList<String[]>();
+		private List<Combination> combinationList = new ArrayList<Combination>();
 		
 		private HashSet<String> transformers = new HashSet<String>();
 		
@@ -689,23 +689,40 @@ public class Interceptor extends AbstractInterceptor {
 		}
 		
 		public void addCombination(String transformer, String checker) {
-			String[] combination = new String[2];
+			Combination comb = new Combination(transformer.replace("T:", ""), checker.replace("C:", ""));
 			
-			combination[0] = transformer.replace("T:", "");
-			combination[1] = checker.replace("C:", "");
-			
-			this.combinationList.add(combination);
+			if (this.combinationList.contains(comb)) {
+				int idx = this.combinationList.indexOf(comb);
+				this.combinationList.get(idx).increCount();
+			} else {
+				this.combinationList.add(comb);
+			}
 		}
-		
-		public List<String[]> getCombinationList() {
+				
+		public List<Combination> getCombinationList() {
 			return this.combinationList;
 		}
 		
 		public String getCombinationListString() {
+			int max = 0;
+			
+			for (Combination comb: this.combinationList) {
+				if (comb.getCount() > max) {
+					max = comb.getCount();
+				}
+			}
+			
+			List<Combination> selectedCombs = new ArrayList<Combination>();
+			for (Combination comb: this.combinationList) {
+				if (comb.getCount() == max) {
+					selectedCombs.add(comb);
+				}
+			}
+			
 			StringBuilder sb = new StringBuilder();
-			for (String[] tmpComb: this.combinationList) {
-				sb.append("{");
-				sb.append(tmpComb[0] + "+" + tmpComb[1] + "},");
+			for (Combination comb: selectedCombs) {
+				sb.append(comb.toString());
+				sb.append(",");
 			}
 			
 			sb.deleteCharAt(sb.length() - 1);
@@ -722,6 +739,54 @@ public class Interceptor extends AbstractInterceptor {
 		
 		public String getMethodName() {
 			return this. methodName;
+		}
+	}
+	
+	private static class Combination {
+		private String transformer;
+		
+		private String checker;
+		
+		private int count = 1;
+		
+		public Combination(String transformer, String checker) {
+			this.transformer = transformer;
+			this.checker = checker;
+		}
+		
+		public String getTransformer() {
+			return this.transformer;
+		}
+		
+		public String getChecker() {
+			return this.checker;
+		}
+		
+		public void increCount() {
+			this.count++;
+		}
+		
+		public int getCount() {
+			return this.count;
+		}
+		
+		public boolean equals(Object input) {
+			if (input == this)
+				return true;
+			
+			if (!(input instanceof Combination))
+				return false;
+			
+			Combination tmpInput = (Combination)input;
+			
+			if (tmpInput.getTransformer().equals(this.getTransformer()) && tmpInput.getChecker().equals(this.getChecker()))
+				return true;
+			else
+				return false;
+		}
+		
+		public String toString() {
+			return "{" + this.transformer + "+" + this.checker + "}";
 		}
 	}
 } 
