@@ -141,6 +141,7 @@ public class WekaAdapter extends AbstractAdapter{
 		for (int i = 0; i < transInput.length; i++) {
 			tmpInstance = new Instance(transInput[i].length);
 			tmpInstance.setMAttValues(transInput[i]);
+			//tmpInstance = new Instance(transInput[i].length, transInput[i]);
 			ret.add(tmpInstance);
 		}
 		

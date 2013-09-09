@@ -1,4 +1,3 @@
-Adapter=MahoutTextAdapter
-Transformers=AddNumericConstant,MultiplyByNumericConstant,Negate,PolynomialTransformer,Shuffle,Reverse
+Adapter=WekaClassifierAdapter
+Transformers=AddNumericConstant
 Checkers=ContentEqualer
-
