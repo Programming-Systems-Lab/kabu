@@ -3,6 +3,7 @@ package edu.columbia.cs.psl.mountaindew.adapter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 
 import weka.classifiers.Classifier;
@@ -196,7 +197,8 @@ public class WekaAdapter extends AbstractAdapter{
 	}*/
 	
 	@Override
-	public Object adaptOutput(Object outputModel, Object...testingData) {
+	public Object adaptOutput(HashMap<String, Object> stateRecorder, Object outputModel, Object...testingData) {
+		recordState(stateRecorder, outputModel);
 		
 		Instances finalData;
 		if (Classifier.class.isAssignableFrom(outputModel.getClass())) {
@@ -215,13 +217,27 @@ public class WekaAdapter extends AbstractAdapter{
 			try {
 				Evaluation e = new Evaluation(finalData);
 				e.evaluateModel(c, finalData);
-				return adaptOutput(e);
+				return adaptOutput(stateRecorder, e);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else if (Evaluation.class.isAssignableFrom(outputModel.getClass())) {
 			Evaluation e = (Evaluation)outputModel;
 			System.out.println("Check confusion matrix");
+			
+			Object tmpObj;
+			for (String tmpKey: stateRecorder.keySet()) {
+				System.out.println("Check tmpKey: " + tmpKey);
+				tmpObj = stateRecorder.get(tmpKey);
+				double[][] tmpMatrix = (double[][])tmpObj;
+				
+				for (int i = 0; i < tmpMatrix.length; i++) {
+					for (int j = 0;j < tmpMatrix[i].length; j++) {
+						System.out.println("Tmp content " + i + " " + j + " " + tmpMatrix[i][j]);
+					}	
+				}
+			}
+			
 			double[][] confusionMatrix = e.confusionMatrix();
 			for (int i = 0; i < confusionMatrix.length; i++) {
 				for (int j = 0;j < confusionMatrix[i].length; j++) {

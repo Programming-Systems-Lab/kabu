@@ -231,11 +231,11 @@ public class WekaClassifierExample {
 		}
 		wcEx.evalModel(net, data);*/
 		
-		NaiveBayes nb = wcEx.trainNaiveBayesModel(data);
+		/*NaiveBayes nb = wcEx.trainNaiveBayesModel(data);
 		if (nb == null) {
 			System.err.println("Fail to train Naive Bayes");
 		}
-		wcEx.evalModel(nb, data);
+		wcEx.evalModel(nb, data);*/
 		
 		/*Logistic log = wcEx.trainLogistic(data);
 		if (log == null) {

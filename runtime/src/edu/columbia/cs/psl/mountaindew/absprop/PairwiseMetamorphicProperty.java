@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.HashMap;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty.PropertyResult.Result;
@@ -44,10 +45,41 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								//It's adapter developer's responsibility to provide correct data in adaptOut of adapter.
 								this.targetAdapter.setData(o1, i.returnValue, o2, j.returnValue);
 								this.targetAdapter.setDefaultTestingData(o1);
-								Object adaptRt1 = this.targetAdapter.adaptOutput(i.returnValue, o1);
-								Object adaptRt2 = this.targetAdapter.adaptOutput(j.returnValue, o2);
-								//if(returnValuesApply(o1, i.returnValue, o2, j.returnValue))
-								if (returnValuesApply(o1, adaptRt1, o2, adaptRt2))
+								
+								HashMap<String, Object> recorder1 = new HashMap<String, Object>();
+								HashMap<String, Object> recorder2 = new HashMap<String, Object>();
+								
+								Object adaptRt1 = this.targetAdapter.adaptOutput(recorder1, i.returnValue, o1);
+								Object adaptRt2 = this.targetAdapter.adaptOutput(recorder2, j.returnValue, o2);
+								
+								Object tmpObj1 = null;
+								Object tmpObj2 = null;
+								for (String tmpKey: recorder1.keySet()) {
+									tmpObj1 = recorder1.get(tmpKey);
+									tmpObj2 = recorder2.get(tmpKey);
+									
+									result.stateItem = tmpKey;
+									
+									if (returnValuesApply(o1, tmpObj1, o2, tmpObj2)) {
+										//Property may hold
+										result.result = Result.HOLDS;
+										result.holds = true;
+										result.supportingSize++;
+										result.supportingInvocations.add(new MethodInvocation[]{i, j});
+										result.combinedProperty = j.getFrontend() + "=>" + j.getBackend();
+										this.mProfiler.addHoldMethodProfile(i, j, result);
+									} else {
+										//Property definitely does not hold
+										result.result = Result.DOES_NOT_HOLD;
+										result.holds = false;
+										result.antiSupportingSize++;
+										result.antiSupportingInvocations.add(new MethodInvocation[]{i, j});
+										result.combinedProperty = j.getFrontend() + "=>" + j.getBackend();
+									}
+									propertyList.add(result);
+								}
+								
+								/*if (returnValuesApply(o1, adaptRt1, o2, adaptRt2))
 								{
 									//Property may hold
 									result.result=Result.HOLDS;
@@ -66,7 +98,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 									result.antiSupportingInvocations.add(new MethodInvocation[] {i, j});
 									result.combinedProperty = j.getFrontend() + "=>" + j.getBackend();
 								}
-								propertyList.add(result);
+								propertyList.add(result);*/
 							}
 						}
 					}
@@ -76,7 +108,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 		return propertyList;
 		
 	}
-
+	
 
 	@Override
 	public final PropertyResult propertyHolds() {		

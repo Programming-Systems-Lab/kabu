@@ -71,8 +71,9 @@ public class MahoutAdapter extends  AbstractAdapter{
 	}
 
 	@Override
-	public Object adaptOutput(Object outputModel, Object... testingData) {
+	public Object adaptOutput(HashMap<String, Object>stateRecorder, Object outputModel, Object... testingData) {
 		// TODO Auto-generated method stub
+		recordState(stateRecorder, outputModel);
 		if (ConfusionMatrix.class.isAssignableFrom(outputModel.getClass())) {
 			ConfusionMatrix cMatrix = (ConfusionMatrix) outputModel;
 			Matrix outputMatrix = cMatrix.getMatrix();

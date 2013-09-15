@@ -1,3 +1,4 @@
-Adapter=WekaClassifierAdapter
+Adapter=WekaAdapter
 Transformers=AddNumericConstant
 Checkers=ContentEqualer
+States=m_ConfusionMatrix

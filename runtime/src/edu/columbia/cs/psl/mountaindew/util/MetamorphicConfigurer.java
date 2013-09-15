@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import edu.columbia.cs.psl.mountaindew.struct.MConfig;
+
 public class MetamorphicConfigurer {
 
 	private static String adapterKey = "Adapter";
@@ -36,7 +38,9 @@ public class MetamorphicConfigurer {
 	
 	private List<String> checkerNames = new ArrayList<String>();
 	
-	private String propertyFilePath;
+	private List<MConfig.StateItem> stateItems = new ArrayList<MConfig.StateItem>();
+	
+	private String jsonFilePath;
 	
 	public static String getCheckerFullName(String checkerName) {
 		return checkerPackage + dot + checkerName;
@@ -46,12 +50,24 @@ public class MetamorphicConfigurer {
 		return transformerPackage + dot + transformerName;
 	}
 	
-	public MetamorphicConfigurer(String propertyFilePath) {
-		this.propertyFilePath = propertyFilePath;
-		this.loadConfigProperties();
+	public MetamorphicConfigurer(String jsonFilePath) {
+		this.jsonFilePath = jsonFilePath;
+		//this.loadConfigProperties();
+		this.loadConfiguration();
 	}
 	
-	public void loadConfigProperties() {
+	public void loadConfiguration() {
+		MConfig mconfig = new MConfig(this.jsonFilePath);
+		mconfig.loadJsonFile();
+		
+		this.adapterName = mconfig.getAdapter();
+		this.adapterClassName = adapterPackage + dot + this.adapterName;
+		this.transformerNames = packageClass(mconfig.getTransformers(), transformerPackage);
+		this.checkerNames = packageClass(mconfig.getCheckers(), checkerPackage);
+		this.stateItems = mconfig.getStates();
+	}
+	
+	/*public void loadConfigProperties() {
 		File propertyFile  = new File(propertyFilePath);
 		
 		if (!propertyFile.exists()) {
@@ -64,13 +80,20 @@ public class MetamorphicConfigurer {
 		try {
 			prop.load(new FileInputStream(propertyFile.getAbsolutePath()));
 			this.adapterName = this.prop.getProperty(adapterKey);
-			//this.adapterClassName = adapterPackage + dot +  this.prop.getProperty(adapterKey);
 			this.adapterClassName = adapterPackage + dot + this.adapterName;
 			this.transformerNames = parseProperty(this.prop.getProperty(transformKey), transformerPackage);
 			this.checkerNames = parseProperty(this.prop.getProperty(checkerKey), checkerPackage);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}*/
+	
+	public List<String> packageClass(List<String>rawNames, String packageName) {
+		List<String> tokenList = new ArrayList<String>();
+		for (String tmp: rawNames) {
+			tokenList.add(packageName + dot + tmp);
+		}
+		return tokenList;
 	}
 	
 	public List<String> parseProperty(String rawInput, String packageName) {
@@ -97,5 +120,9 @@ public class MetamorphicConfigurer {
 	
 	public List<String> getCheckerNames() {
 		return this.checkerNames;
+	}
+	
+	public List<MConfig.StateItem> getStates() {
+		return this.stateItems;
 	}
 }

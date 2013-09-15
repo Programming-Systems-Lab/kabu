@@ -20,7 +20,8 @@
 	<classpathentry kind="lib" path="/mtndew-tester/lib/java-cup.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/JFlex.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/junit.jar"/>
-	<classpathentry kind="lib" path="/mtndew-tester/lib/weka_modified.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/in-vivo-expreval"/>
+	<classpathentry kind="lib" path="/mtndew-tester/lib/weka_modified.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -215,7 +215,8 @@ public class MahoutTextAdapter extends AbstractAdapter{
 	}
 
 	@Override
-	public Object adaptOutput(Object outputModel, Object... testingData) {
+	public Object adaptOutput(HashMap<String, Object> stateRecorder, Object outputModel, Object... testingData) {
+		recordState(stateRecorder, outputModel);
 		if (Collection.class.isAssignableFrom(outputModel.getClass())) {
 			List outputList = new ArrayList((Collection)outputModel);
 			

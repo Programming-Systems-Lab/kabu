@@ -59,6 +59,7 @@ public abstract class MetamorphicProperty {
 	}
 
 	public static class PropertyResult {
+		public String stateItem;
 		public boolean holds;
 		public int supportingSize;
 		public double probability;
@@ -96,7 +97,7 @@ public abstract class MetamorphicProperty {
 					+ antiSupportingSize + ", supportingInvocations=" + supportingInvocationsString + ", antiSupportingInvocations="
 					+ antiSupportingInvocationsString + ", result=" + result + ", property=" + property + ", combinedProperty=" + combinedProperty + "]";*/
 			
-			return "PropertyResult [holds=" + holds + ", supportingSize=" + supportingSize + ", probability=" + probability + ", antiSupportingSize="
+			return "PropertyResult [state item=" + stateItem + ", holds=" + holds + ", supportingSize=" + supportingSize + ", probability=" + probability + ", antiSupportingSize="
 			+ antiSupportingSize + ", supportingInvocations=" + supportingInvocationsString + ", antiSupportingInvocations="
 			+ antiSupportingInvocationsString + ", result=" + result + ", combinedProperty=" + combinedProperty + "]";
 		}
@@ -129,6 +130,10 @@ public abstract class MetamorphicProperty {
 			System.err.println("Loading target adapter fails. Use the defult adapter");
 			this.targetAdapter = new DefaultAdapter();
 		}
+	}
+	
+	public AbstractAdapter getTargetAdapter() {
+		return this.targetAdapter;
 	}
 	
 	public void loadInputProcessors() {
@@ -313,6 +318,7 @@ public abstract class MetamorphicProperty {
 		}
 
 	}
+	
 	private boolean[] appendElement(boolean[] ar, boolean v)
 	{
 		boolean[] ret = new boolean[ar.length + 1];
@@ -323,6 +329,7 @@ public abstract class MetamorphicProperty {
 		ret[ar.length] = v;
 		return ret;
 	}
+	
 	private boolean[] removeFirstElement(boolean[] ar)
 	{
 		boolean[] ret = new boolean[ar.length -1];
@@ -332,6 +339,7 @@ public abstract class MetamorphicProperty {
 		}
 		return ret;
 	}
+	
 	private ArrayList<boolean[]> prependToEach(boolean[] prefix, ArrayList<boolean[]> vals) {
 		ArrayList<boolean[]> ret = new ArrayList<boolean[]>();
 		for (boolean[] o : vals) {

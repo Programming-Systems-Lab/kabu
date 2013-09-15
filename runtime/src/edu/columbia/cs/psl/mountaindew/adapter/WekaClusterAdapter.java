@@ -113,7 +113,8 @@ public class WekaClusterAdapter extends AbstractAdapter{
 	}
 	
 	@Override
-	public Object adaptOutput(Object outputModel, Object...testingData) {
+	public Object adaptOutput(HashMap<String, Object>stateRecorder, Object outputModel, Object...testingData) {
+		recordState(stateRecorder, outputModel);
 		
 		Instances finalData;
 		if (Clusterer.class.isAssignableFrom(outputModel.getClass())) {
@@ -133,7 +134,7 @@ public class WekaClusterAdapter extends AbstractAdapter{
 				ClusterEvaluation e = new ClusterEvaluation();
 				e.setClusterer(c);
 				e.evaluateClusterer(finalData);
-				return adaptOutput(e);
+				return adaptOutput(stateRecorder, e);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

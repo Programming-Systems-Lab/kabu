@@ -1,6 +1,7 @@
 package edu.columbia.cs.psl.mountaindew.adapter;
 
 import java.util.List;
+import java.util.HashMap;
 
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 
@@ -13,7 +14,7 @@ public class DefaultAdapter extends AbstractAdapter{
 	}
 	
 	@Override
-	public Object adaptOutput(Object outputModel, Object...testingData) {
+	public Object adaptOutput(HashMap<String, Object>stateRecorder, Object outputModel, Object...testingData) {
 		return outputModel;
 	}
 	

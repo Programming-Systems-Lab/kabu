@@ -1,0 +1,6 @@
+{"mconfig": {
+	"Adapter":"WekaAdapter",
+	"Transformers":["AddNumericConstant"],
+	"Checkers":["ContentEqualer"],
+	"States":[{"ClassName":"weka.classifiers.Evaluation", "FieldNames":["m_ConfusionMatrix"]}]	
+}}

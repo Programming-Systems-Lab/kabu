@@ -1,7 +1,10 @@
 package edu.columbia.cs.psl.mountaindew.adapter;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.HashMap;
 
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 
@@ -20,13 +23,22 @@ public abstract class AbstractAdapter {
 	private List<Object>skipList;
 	
 	private double[][] complementMap;
-			
+	
+	//Key: Class name, Val: Set of field names
+	protected HashMap<String, HashSet<String>> stateDefinition;
+				
 	public abstract Object unboxInput(Object input);
 	
 	public abstract Object adaptInput(Object transInput);
 	
-	public abstract Object adaptOutput(Object outputModel, Object...testingData);
+	public abstract Object adaptOutput(HashMap<String, Object> stateRecorder, Object outputModel, Object...testingData);
 	
+	protected void recordState(HashMap<String, Object> stateRecorder, Object outputModel) {
+		if (stateDefinition.containsKey(outputModel.getClass().getName())) {
+			this.registerInterestedFieldValues(outputModel, stateRecorder);
+		}
+	}
+		
 	public void setData(Object oriInput, Object oriOutput, Object transInput, Object transOutput) {
 		this.oriInput = oriInput;
 		this.oriOutput = oriOutput;
@@ -88,6 +100,33 @@ public abstract class AbstractAdapter {
 			}
 		}
 	}
+		
+	public void setStateDefinition(HashMap<String, HashSet<String>> stateDefinition) {
+		this.stateDefinition = stateDefinition;
+	}
 	
+	public HashMap<String, HashSet<String>> getStateDefinition() {
+		return this.stateDefinition;
+	}
 	
+	private void registerInterestedFieldValues(Object outputObj, HashMap<String, Object>stateRecorder) {
+		Class outputClass = outputObj.getClass();
+		String outputClassName = outputClass.getName();
+		
+		Field tmpField;
+		String classFieldCombo;
+		
+		try {
+			for (String fieldName: this.stateDefinition.get(outputClassName)) {
+				//tmpField = outputClass.getField(fieldName);
+				tmpField = outputClass.getDeclaredField(fieldName);
+				tmpField.setAccessible(true);
+				
+				classFieldCombo = outputClassName + ":" + fieldName;
+				stateRecorder.put(classFieldCombo, tmpField.get(outputObj));
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 }
