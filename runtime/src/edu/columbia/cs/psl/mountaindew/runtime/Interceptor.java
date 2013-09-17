@@ -30,12 +30,12 @@ import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty.PropertyResult;
 import edu.columbia.cs.psl.mountaindew.adapter.AbstractAdapter;
 import edu.columbia.cs.psl.mountaindew.adapter.AdapterLoader;
+import edu.columbia.cs.psl.mountaindew.state.State;
 import edu.columbia.cs.psl.mountaindew.stats.Correlationer;
 import edu.columbia.cs.psl.mountaindew.struct.MConfig;
 import edu.columbia.cs.psl.mountaindew.struct.MethodProfile;
 import edu.columbia.cs.psl.mountaindew.struct.MConfig.StateItem;
 import edu.columbia.cs.psl.mountaindew.util.MetamorphicConfigurer;
-import edu.columbia.cs.psl.moutaindew.state.State;
 
 
 /**
