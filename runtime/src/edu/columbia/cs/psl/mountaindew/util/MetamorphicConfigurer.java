@@ -34,13 +34,13 @@ public class MetamorphicConfigurer {
 	
 	private String adapterName;
 	
-	private List<String> transformerNames = new ArrayList<String>();
+	private List<String> transformerNames = null;
 	
-	private List<String> checkerNames = new ArrayList<String>();
+	private List<String> checkerNames = null;
 	
-	private List<MConfig.StateItem> stateItems = new ArrayList<MConfig.StateItem>();
+	private List<MConfig.StateItem> stateItems = null;
 	
-	private String jsonFilePath;
+	private List<MConfig.MethodStateItem> mStateItems = null;
 	
 	public static String getCheckerFullName(String checkerName) {
 		return checkerPackage + dot + checkerName;
@@ -49,22 +49,42 @@ public class MetamorphicConfigurer {
 	public static String getTransformerFullName(String transformerName) {
 		return transformerPackage + dot + transformerName;
 	}
-	
-	public MetamorphicConfigurer(String jsonFilePath) {
-		this.jsonFilePath = jsonFilePath;
-		//this.loadConfigProperties();
-		this.loadConfiguration();
-	}
-	
-	public void loadConfiguration() {
-		MConfig mconfig = new MConfig(this.jsonFilePath);
-		mconfig.loadJsonFile();
+		
+	public void loadGlobalConfiguration(String jsonFilePath) {
+		MConfig mconfig = new MConfig();
+		mconfig.loadJsonFile(jsonFilePath);
 		
 		this.adapterName = mconfig.getAdapter();
 		this.adapterClassName = adapterPackage + dot + this.adapterName;
 		this.transformerNames = packageClass(mconfig.getTransformers(), transformerPackage);
 		this.checkerNames = packageClass(mconfig.getCheckers(), checkerPackage);
 		this.stateItems = mconfig.getStates();
+	}
+	
+	public void loadMethodConfiguration(String mJsonFilePath) {
+		MConfig mconfig = new MConfig();
+		mconfig.loadJsonFile(mJsonFilePath);
+		
+		this.adapterName = mconfig.getAdapter();
+		this.adapterClassName = adapterPackage + dot + this.adapterName;
+		this.mStateItems = mconfig.getMethodStates();
+		
+		List<String> potentialTransformers = new ArrayList<String>();
+		List<String> potentialCheckers = new ArrayList<String>();
+		
+		for (MConfig.MethodStateItem ms: this.mStateItems) {
+			potentialTransformers.add(ms.getTransformer());
+
+		}
+	}
+	
+	public void cleanConfigurationSetup() {
+		this.adapterName = null;
+		this.adapterClassName = null;
+		this.transformerNames = null;
+		this.checkerNames = null;
+		this.stateItems = null;
+		this.mStateItems = null;
 	}
 	
 	/*public void loadConfigProperties() {

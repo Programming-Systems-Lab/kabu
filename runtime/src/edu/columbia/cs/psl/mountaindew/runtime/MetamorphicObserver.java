@@ -77,7 +77,8 @@ public class MetamorphicObserver {
 			System.out.println("");
 			
 			tmp.exportMethodProfile();
-			tmp.exportHoldMethodProfile();
+			//tmp.exportHoldMethodProfile();
+			tmp.exportHoldStates();
 			i.remove();
 			
 		}

@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import com.google.gson.stream.JsonWriter;
 import com.rits.cloning.Cloner;
 
 import edu.columbia.cs.psl.invivo.runtime.AbstractInterceptor;
@@ -30,7 +31,9 @@ import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty.PropertyResul
 import edu.columbia.cs.psl.mountaindew.adapter.AbstractAdapter;
 import edu.columbia.cs.psl.mountaindew.adapter.AdapterLoader;
 import edu.columbia.cs.psl.mountaindew.stats.Correlationer;
+import edu.columbia.cs.psl.mountaindew.struct.MConfig;
 import edu.columbia.cs.psl.mountaindew.struct.MethodProfile;
+import edu.columbia.cs.psl.mountaindew.struct.MConfig.StateItem;
 import edu.columbia.cs.psl.mountaindew.util.MetamorphicConfigurer;
 import edu.columbia.cs.psl.moutaindew.state.State;
 
@@ -57,7 +60,7 @@ public class Interceptor extends AbstractInterceptor {
 	private static String metaJson = "config/mconfig.json";
 	private static SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSS");
 	//private MetamorphicConfigurer mConfigurer = new MetamorphicConfigurer(metaConfigString);
-	private MetamorphicConfigurer mConfigurer = new MetamorphicConfigurer(metaJson);
+	private MetamorphicConfigurer mConfigurer = new MetamorphicConfigurer();
 	private HashMap<Method, HashSet<MetamorphicProperty>> properties = new HashMap<Method, HashSet<MetamorphicProperty>>();
 	private HashMap<Method, State> stateMap = new HashMap<Method, State>();
 	private HashSet<Class<? extends MetamorphicProperty>> propertyPrototypes;
@@ -87,6 +90,7 @@ public class Interceptor extends AbstractInterceptor {
 		System.out.println("Interceptor created");
 		//propertyPrototypes = MetamorphicObserver.getInstance().registerInterceptor(this);
 		//processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
+		mConfigurer.loadGlobalConfiguration(metaJson);
 		propertyPrototypes = this.filterCheckers(this.mConfigurer, MetamorphicObserver.getInstance().registerInterceptor(this));
 		processorPrototypes = this.filterTransformers(this.mConfigurer, MetamorphicInputProcessorGroup.getInstance().getProcessors());
 		nonValueChangeProcessorPrototypes = MetamorphicInputProcessorGroup.getInstance().getNonValueChangeProcessors();
@@ -545,6 +549,143 @@ public class Interceptor extends AbstractInterceptor {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
+	}
+	
+	public void exportHoldStates() {
+		HashMap<String, HashSet<MConfig.MethodStateItem>> records = this.collectMethodStates();
+		
+		JsonWriter jw = null;
+		
+		try {
+			for (String methodName: records.keySet()) {
+				HashSet<MConfig.MethodStateItem> mStateSet = records.get(methodName);
+				
+				String outputPath = this.configRoot + "/" + methodName + ".json";
+				
+				jw = new JsonWriter(new FileWriter(outputPath));
+				jw.setIndent("	");
+				jw.beginObject();
+				jw.name("methodConfig");
+				
+				jw.beginObject();
+				jw.name("Adapter").value(this.mConfigurer.getAdapterName());
+				jw.name("HoldStates");
+				
+				jw.beginArray();
+				for (MConfig.MethodStateItem tmpItem: mStateSet) {
+					jw.beginObject();
+					jw.name("Checker").value(tmpItem.getChecker());
+					jw.name("Transformer").value(tmpItem.getTransformer());
+					jw.name("ClassSpec");
+					
+					jw.beginArray();
+					for (StateItem tmpSI: tmpItem.getStateItems()) {
+						jw.beginObject();
+						jw.name("ClassName").value(tmpSI.getClassName());
+						jw.name("FieldNames");
+						
+						jw.beginArray();
+						for (String tmpField: tmpSI.getFieldNames()) {
+							jw.value(tmpField);
+						}
+						jw.endArray();
+						
+						jw.endObject();
+					}
+					jw.endArray();
+					
+					jw.endObject();
+				}
+				jw.endArray();
+				jw.endObject();
+				
+				jw.endObject();
+				
+				jw.close();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public HashMap<String, HashSet<MConfig.MethodStateItem>> collectMethodStates() {
+		HashMap<String, HashSet<MConfig.MethodStateItem>> records = 
+				new HashMap<String, HashSet<MConfig.MethodStateItem>>();
+		for (MethodProfiler mProfiler: this.profilerList) {			
+			for (MethodProfile mProfile: mProfiler.getHoldMethodProfiles()) {
+				String methodName = mProfile.getOri().getMethod().getName();
+				
+				String checker = mProfile.getBackend();
+				String transformer = mProfile.getFrontend();
+				String stateItem = mProfile.getResult().stateItem;
+				
+				StringTokenizer st = new StringTokenizer(stateItem, ":");
+				String className = null;
+				String fieldName = null;
+				int count = 0;
+				while(st.hasMoreTokens()) {
+					if (count == 0) {
+						className = st.nextToken();
+						count++;
+					} else if (count == 1) {
+						fieldName = st.nextToken();
+						count = 0;
+					}
+				}
+				
+				if (records.keySet().contains(methodName)) {
+					boolean foundMS = false;
+					for (MConfig.MethodStateItem ms: records.get(methodName)) {
+						if (ms.getChecker().equalsIgnoreCase(checker) && ms.getTransformer().equalsIgnoreCase(transformer)) {
+							boolean foundSI = false;
+							for (StateItem tmpSI: ms.getStateItems()) {
+								if (tmpSI.getClassName().equalsIgnoreCase(className)) {
+									tmpSI.addFieldName(fieldName);
+									foundSI = true;
+								}
+							}
+							
+							if (!foundSI) {
+								StateItem si = new StateItem();
+								si.setClassName(className);
+								si.addFieldName(fieldName);
+								ms.addStateItem(si);
+							}
+							foundMS = true;
+						}
+					}
+					
+					if (!foundMS) {
+						MConfig.MethodStateItem ms = new MConfig.MethodStateItem();
+						ms.setChecker(checker);
+						ms.setTransformer(transformer);
+						
+						StateItem si = new StateItem();
+						si.setClassName(className);
+						si.addFieldName(fieldName);
+						ms.addStateItem(si);
+						
+						records.get(methodName).add(ms);
+					}
+					
+				} else {
+					MConfig.MethodStateItem ms = new MConfig.MethodStateItem();
+					ms.setChecker(checker);
+					ms.setTransformer(transformer);
+					
+					StateItem si = new StateItem();
+					si.setClassName(className);
+					si.addFieldName(fieldName);
+					ms.addStateItem(si);
+					
+					HashSet<MConfig.MethodStateItem> tmpSet = new HashSet<MConfig.MethodStateItem>();
+					tmpSet.add(ms);
+					
+					records.put(methodName, tmpSet);
+				}
+			}
+		}
+		return records;
 	}
 	
 	public void exportHoldMethodProfile() {

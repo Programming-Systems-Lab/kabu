@@ -88,38 +88,6 @@ public class MethodProfile {
 		this.result = result;
 	}
 	
-	/*public void setOriInOriOut(double correlation) {
-		this.oriInOriOut = correlation;
-	}
-	
-	public double getOriInOriOut() {
-		return this.oriInOriOut;
-	}
-	
-	public void setTransInTransOut(double correlation) {
-		this.transInTransOut = correlation;
-	}
-	
-	public double getTransInTransOut() {
-		return this.transInTransOut;
-	}
-	
-	public void setOriInTransIn(double correlation) {
-		this.oriInTransIn = correlation;
-	}
-	
-	public double getOriInTransIn() {
-		return this.oriInTransIn;
-	}
-	
-	public void setOriOutTransOut(double correlation) {
-		this.oriOutTransOut = correlation;
-	}
-	
-	public double getOriOutTransOut() {
-		return this.oriOutTransOut;
-	}*/
-	
 	public MethodInvocation getOri() {
 		return this.ori;
 	}

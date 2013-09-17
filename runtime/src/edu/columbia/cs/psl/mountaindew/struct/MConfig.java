@@ -10,24 +10,34 @@ import java.util.List;
 
 import com.google.gson.stream.JsonReader;
 
+import edu.columbia.psl.invivoexpreval.Java.ThisReference;
+
 public class MConfig {
 		
-	private static String configName = "mconfig";
+	private static String globalConf = "globalConfig";
+	
+	private static String methodConf = "methodConfig";
 	
 	private static String aKey = "Adapter";
 	
-	private static String tKey = "Transformers";
+	private static String tKeys = "Transformers";
 	
-	private static String cKey = "Checkers";
+	private static String tKey = "Transformer";
+	
+	private static String cKeys = "Checkers";
+	
+	private static String cKey = "Checker";
 	
 	private static String sKeys = "States";
+	
+	private static String hKey = "HoldStates";
+	
+	private static String classKey = "ClassSpecs";
 		
 	private static String cMemName = "ClassName";
 	
-	private static String fMemName = "FieldNames";
-	
-	private String jsonPath;
-	
+	private static String fMemNames = "FieldNames";
+		
 	private String adapter;
 	
 	private List<String> transformers = new ArrayList<String>();
@@ -36,10 +46,8 @@ public class MConfig {
 	
 	private List<StateItem> states = new ArrayList<StateItem>();
 	
-	public MConfig(String jsonPath) {
-		this.jsonPath = jsonPath;
-	}
-	
+	private List<MethodStateItem> mStates = new ArrayList<MethodStateItem>();
+		
 	public String getAdapter() {
 		return this.adapter;
 	}
@@ -56,7 +64,11 @@ public class MConfig {
 		return this.states;
 	}
 	
-	public void loadJsonFile() {
+	public List<MethodStateItem> getMethodStates() {
+		return this.mStates; 
+	}
+	
+	public void loadJsonFile(String jsonPath) {
 		File jsonFile = new File(jsonPath);
 		
 		if (!jsonFile.exists()) {
@@ -72,8 +84,10 @@ public class MConfig {
 			while(jsonReader.hasNext()) {
 				String tmpName = jsonReader.nextName();
 				
-				if (tmpName.equalsIgnoreCase(configName)) {
+				if (tmpName.equalsIgnoreCase(globalConf)) {
 					this.setupValue(jsonReader);
+				} else if (tmpName.equalsIgnoreCase(methodConf)) {
+					this.setupMethodValue(jsonReader);
 				}
 			}
 		} catch (Exception ex) {
@@ -90,7 +104,7 @@ public class MConfig {
 			
 			if (tmpName.equalsIgnoreCase(aKey)) {
 				this.adapter = reader.nextString();
-			} else if (tmpName.equalsIgnoreCase(tKey)) {
+			} else if (tmpName.equalsIgnoreCase(tKeys)) {
 				reader.beginArray();
 				
 				while (reader.hasNext()) {
@@ -98,7 +112,7 @@ public class MConfig {
 				}
 				
 				reader.endArray();
-			} else if (tmpName.equalsIgnoreCase(cKey)) {
+			} else if (tmpName.equalsIgnoreCase(cKeys)) {
 				reader.beginArray();
 				
 				while (reader.hasNext()) {
@@ -119,7 +133,7 @@ public class MConfig {
 						
 						if (memberName.equalsIgnoreCase(cMemName)) {
 							si.setClassName(reader.nextString());
-						} else if (memberName.equalsIgnoreCase(fMemName)) {
+						} else if (memberName.equalsIgnoreCase(fMemNames)) {
 							reader.beginArray();
 							
 							while (reader.hasNext()) {
@@ -140,6 +154,67 @@ public class MConfig {
 		reader.endObject();
 	}
 	
+	public void setupMethodValue(JsonReader reader) throws IOException {
+		reader.beginObject();
+		
+		String tmpName;
+		while(reader.hasNext()) {
+			tmpName = reader.nextName();
+			
+			if (tmpName.equalsIgnoreCase(aKey)) {
+				this.adapter = reader.nextString();
+			} else if (tmpName.equalsIgnoreCase(hKey)) {
+				reader.beginArray();
+				
+				while (reader.hasNext()) {
+					reader.beginObject();
+					
+					MethodStateItem ms = new MethodStateItem();
+					
+					String innerTmp;
+					while(reader.hasNext()) {
+						innerTmp = reader.nextName();
+						
+						if (innerTmp.equalsIgnoreCase(cKey)) {
+							ms.setChecker(reader.nextString());
+						} else if (innerTmp.equalsIgnoreCase(tKey)) {
+							ms.setTransformer(reader.nextString());
+						} else if (innerTmp.equalsIgnoreCase(classKey)) {
+							reader.beginObject();
+							
+							StateItem si = new StateItem();
+							
+							String nestTmp;
+							while(reader.hasNext()) {
+								nestTmp = reader.nextString();
+								
+								if (nestTmp.equalsIgnoreCase(cMemName)) {
+									si.setClassName(reader.nextString());
+								} else if (nestTmp.equalsIgnoreCase(fMemNames)) {
+									reader.beginArray();
+									
+									while(reader.hasNext()) {
+										si.addFieldName(reader.nextString());
+									}
+									
+									reader.endArray();
+								}
+							}
+							ms.addStateItem(si);
+							
+							reader.endObject();
+						} 
+					}
+					
+					this.mStates.add(ms);
+					reader.endObject();
+				}
+			}
+		}
+		
+		reader.endObject();
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -151,7 +226,7 @@ public class MConfig {
 		return sb.toString();
 	}
 	
-	public class StateItem {
+	public static class StateItem {
 		private String className;
 		
 		private HashSet<String> fieldNames = new HashSet<String>();
@@ -191,6 +266,57 @@ public class MConfig {
 				return false;
 			
 			if (!(tmp.getFieldNames() == this.getFieldNames()))
+				return false;
+			
+			return true;
+		}
+	}
+	
+	public static class MethodStateItem {
+		
+		private String transformer;
+		
+		private String checker;
+		
+		private List<StateItem> mStateItems = new ArrayList<StateItem>();
+				
+		public void setTransformer(String transformer) {
+			this.transformer = transformer;
+		}
+		
+		public String getTransformer() {
+			return this.transformer;
+		}
+		
+		public void setChecker(String checker) {
+			this.checker = checker;
+		}
+		
+		public String getChecker() {
+			return this.checker;
+		}
+		
+		public void addStateItem(StateItem si) {
+			this.mStateItems.add(si);
+		}
+		
+		public List<StateItem> getStateItems() {
+			return this.mStateItems;
+		}
+		
+		@Override
+		public boolean equals(Object tmp) {
+			if (!(tmp instanceof MethodStateItem))
+				return false;
+			
+			MethodStateItem tmpItem  = (MethodStateItem)tmp;
+			if (!tmpItem.getChecker().equals(this.checker))
+				return false;
+			
+			if (!tmpItem.getChecker().equals(this.checker))
+				return false;
+			
+			if (!tmpItem.getTransformer().equals(this.transformer))
 				return false;
 			
 			return true;

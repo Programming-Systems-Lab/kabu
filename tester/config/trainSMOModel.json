@@ -1,0 +1,19 @@
+{
+	"methodConfig": {
+		"Adapter": "WekaAdapter",
+		"HoldStates": [
+			{
+				"Checker": "C:ContentEqualer",
+				"Transformer": "T:AddNumericConstant",
+				"ClassSpec": [
+					{
+						"ClassName": "weka.classifiers.Evaluation",
+						"FieldNames": [
+							"m_ConfusionMatrix"
+						]
+					}
+				]
+			}
+		]
+	}
+}

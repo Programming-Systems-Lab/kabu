@@ -1,4 +1,4 @@
-{"mconfig": {
+{"globalConfig": {
 	"Adapter":"WekaAdapter",
 	"Transformers":["AddNumericConstant"],
 	"Checkers":["ContentEqualer"],
