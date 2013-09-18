@@ -34,6 +34,8 @@ public abstract class AbstractAdapter {
 	public abstract Object adaptOutput(HashMap<String, Object> stateRecorder, Object outputModel, Object...testingData);
 	
 	protected void recordState(HashMap<String, Object> stateRecorder, Object outputModel) {
+		System.out.println("Check stateDefinition: " + stateDefinition);
+		System.out.println("Check outputModel name: " + outputModel.getClass().getName());
 		if (stateDefinition.containsKey(outputModel.getClass().getName())) {
 			this.registerInterestedFieldValues(outputModel, stateRecorder);
 		}
@@ -103,6 +105,8 @@ public abstract class AbstractAdapter {
 		
 	public void setStateDefinition(HashMap<String, HashSet<String>> stateDefinition) {
 		this.stateDefinition = stateDefinition;
+		
+		System.out.println("Adapter get new state definition: " + this.stateDefinition);
 	}
 	
 	public HashMap<String, HashSet<String>> getStateDefinition() {

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.HashMap;
 
 import edu.columbia.cs.psl.mountaindew.struct.MConfig;
 
@@ -42,6 +43,8 @@ public class MetamorphicConfigurer {
 	
 	private List<MConfig.MethodStateItem> mStateItems = null;
 	
+	private HashMap<String, HashMap<String, List<MConfig.StateItem>>> configMap;
+	
 	public static String getCheckerFullName(String checkerName) {
 		return checkerPackage + dot + checkerName;
 	}
@@ -50,33 +53,31 @@ public class MetamorphicConfigurer {
 		return transformerPackage + dot + transformerName;
 	}
 		
-	public void loadGlobalConfiguration(String jsonFilePath) {
+	public void loadConfiguration(String jsonFilePath) {
 		MConfig mconfig = new MConfig();
 		mconfig.loadJsonFile(jsonFilePath);
 		
 		this.adapterName = mconfig.getAdapter();
 		this.adapterClassName = adapterPackage + dot + this.adapterName;
-		this.transformerNames = packageClass(mconfig.getTransformers(), transformerPackage);
+		//Add package name to checker and transformer
+		this.packageConfigMap(mconfig.getConfigMap());
+		/*this.transformerNames = packageClass(mconfig.getTransformers(), transformerPackage);
 		this.checkerNames = packageClass(mconfig.getCheckers(), checkerPackage);
-		this.stateItems = mconfig.getStates();
+		this.stateItems = mconfig.getStates();*/
 	}
 	
-	public void loadMethodConfiguration(String mJsonFilePath) {
+	public HashMap<String, HashMap<String, List<MConfig.StateItem>>> getConfigMap() {
+		return this.configMap;
+	}
+	
+	/*public void loadMethodConfiguration(String mJsonFilePath) {
 		MConfig mconfig = new MConfig();
 		mconfig.loadJsonFile(mJsonFilePath);
 		
 		this.adapterName = mconfig.getAdapter();
 		this.adapterClassName = adapterPackage + dot + this.adapterName;
 		this.mStateItems = mconfig.getMethodStates();
-		
-		List<String> potentialTransformers = new ArrayList<String>();
-		List<String> potentialCheckers = new ArrayList<String>();
-		
-		for (MConfig.MethodStateItem ms: this.mStateItems) {
-			potentialTransformers.add(ms.getTransformer());
-
-		}
-	}
+	}*/
 	
 	public void cleanConfigurationSetup() {
 		this.adapterName = null;
@@ -108,6 +109,27 @@ public class MetamorphicConfigurer {
 		}
 	}*/
 	
+	public void packageConfigMap(HashMap<String, HashMap<String, List<MConfig.StateItem>>> rawConfigMap) {
+		this.configMap = new HashMap<String, HashMap<String, List<MConfig.StateItem>>>();
+		
+		String completeChecker;
+		HashMap<String, List<MConfig.StateItem>> tmpTransMap;
+		for (String tmpChecker: rawConfigMap.keySet()) {
+			completeChecker = getCheckerFullName(tmpChecker);
+			
+			tmpTransMap = rawConfigMap.get(tmpChecker);
+			
+			String  completeTrans;
+			HashMap<String, List<MConfig.StateItem>> completeTransMap = new HashMap<String, List<MConfig.StateItem>>();
+			for (String tmpTrans: tmpTransMap.keySet()) {
+				completeTrans = getTransformerFullName(tmpTrans);
+				completeTransMap.put(completeTrans, tmpTransMap.get(tmpTrans));
+			}
+			
+			this.configMap.put(completeChecker, completeTransMap);
+		}
+	}
+		
 	public List<String> packageClass(List<String>rawNames, String packageName) {
 		List<String> tokenList = new ArrayList<String>();
 		for (String tmp: rawNames) {

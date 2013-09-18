@@ -32,7 +32,7 @@ public class MConfig {
 	
 	private static String hKey = "HoldStates";
 	
-	private static String classKey = "ClassSpecs";
+	private static String classKey = "ClassSpec";
 		
 	private static String cMemName = "ClassName";
 	
@@ -47,6 +47,10 @@ public class MConfig {
 	private List<StateItem> states = new ArrayList<StateItem>();
 	
 	private List<MethodStateItem> mStates = new ArrayList<MethodStateItem>();
+	
+	//Key checker, Val: Map<transformer, List of class with fields>
+	private HashMap<String, HashMap<String, List<StateItem>>> configMap = 
+			new HashMap<String, HashMap<String, List<StateItem>>>();
 		
 	public String getAdapter() {
 		return this.adapter;
@@ -68,6 +72,10 @@ public class MConfig {
 		return this.mStates; 
 	}
 	
+	public HashMap<String, HashMap<String, List<StateItem>>> getConfigMap() {
+		return this.configMap;
+	}
+	
 	public void loadJsonFile(String jsonPath) {
 		File jsonFile = new File(jsonPath);
 		
@@ -86,8 +94,10 @@ public class MConfig {
 				
 				if (tmpName.equalsIgnoreCase(globalConf)) {
 					this.setupValue(jsonReader);
+					this.loadGlobalMap();
 				} else if (tmpName.equalsIgnoreCase(methodConf)) {
 					this.setupMethodValue(jsonReader);
+					this.loadMethodMap();
 				}
 			}
 		} catch (Exception ex) {
@@ -154,7 +164,45 @@ public class MConfig {
 		reader.endObject();
 	}
 	
-	public void setupMethodValue(JsonReader reader) throws IOException {
+	private void loadGlobalMap() {
+		for (String tmpChecker: this.checkers) {
+			HashMap<String, List<StateItem>> tsMap = new HashMap<String, List<StateItem>>();
+			
+			for (String tmpTransformer: this.transformers) {
+				tsMap.put(tmpTransformer, this.states);
+			}
+			this.configMap.put(tmpChecker, tsMap);
+		}
+	}
+	
+	private void loadMethodMap() {
+		String checker;
+		String transformer;
+		List<StateItem> stateItems;
+		
+		for (MethodStateItem msi: this.mStates) {
+			checker = msi.getChecker();
+			transformer = msi.getTransformer();
+			stateItems = msi.getStateItems();
+			
+			if (!this.configMap.keySet().contains(checker)) {
+				HashMap<String, List<StateItem>> tsMap = new HashMap<String, List<StateItem>>();
+				tsMap.put(transformer, stateItems);
+				
+				this.configMap.put(checker, tsMap);
+			} else {
+				HashMap<String, List<StateItem>> tsMap = this.configMap.get(checker);
+				
+				if (!tsMap.keySet().contains(transformer)) {
+					tsMap.put(transformer, stateItems);
+				} else {
+					tsMap.get(transformer).addAll(stateItems);
+				}
+			}
+		} 
+	}
+	
+	private void setupMethodValue(JsonReader reader) throws IOException {
 		reader.beginObject();
 		
 		String tmpName;
@@ -180,35 +228,41 @@ public class MConfig {
 						} else if (innerTmp.equalsIgnoreCase(tKey)) {
 							ms.setTransformer(reader.nextString());
 						} else if (innerTmp.equalsIgnoreCase(classKey)) {
-							reader.beginObject();
+							reader.beginArray();
 							
-							StateItem si = new StateItem();
-							
-							String nestTmp;
-							while(reader.hasNext()) {
-								nestTmp = reader.nextString();
+							while (reader.hasNext()) {
+								reader.beginObject();
 								
-								if (nestTmp.equalsIgnoreCase(cMemName)) {
-									si.setClassName(reader.nextString());
-								} else if (nestTmp.equalsIgnoreCase(fMemNames)) {
-									reader.beginArray();
+								StateItem si = new StateItem();
+								while (reader.hasNext()) {
+									String iitmp = reader.nextName();
 									
-									while(reader.hasNext()) {
-										si.addFieldName(reader.nextString());
+									if (iitmp.equalsIgnoreCase(cMemName)) {
+										si.setClassName(reader.nextString());
+									} else if (iitmp.equalsIgnoreCase(fMemNames)) {
+										reader.beginArray();
+										
+										while(reader.hasNext()) {
+											si.addFieldName(reader.nextString());
+										}
+										
+										reader.endArray();
 									}
-									
-									reader.endArray();
 								}
+								
+								ms.addStateItem(si);
+								reader.endObject();
 							}
-							ms.addStateItem(si);
 							
-							reader.endObject();
-						} 
+							reader.endArray();
+						}
 					}
 					
 					this.mStates.add(ms);
 					reader.endObject();
 				}
+				
+				reader.endArray();
 			}
 		}
 		
@@ -310,9 +364,6 @@ public class MConfig {
 				return false;
 			
 			MethodStateItem tmpItem  = (MethodStateItem)tmp;
-			if (!tmpItem.getChecker().equals(this.checker))
-				return false;
-			
 			if (!tmpItem.getChecker().equals(this.checker))
 				return false;
 			

@@ -2,5 +2,5 @@
 	"Adapter":"WekaAdapter",
 	"Transformers":["AddNumericConstant"],
 	"Checkers":["ContentEqualer"],
-	"States":[{"ClassName":"weka.classifiers.Evaluation", "FieldNames":["m_ConfusionMatrix"]}]	
+	"States":[{"ClassName":"weka.classifiers.Evaluation", "FieldNames":["m_ConfusionMatrix"]}, {"ClassName":"weka.classifiers.functions.SMO", "FieldNames":["m_numFolds"]}]	
 }}

@@ -3,6 +3,7 @@ package edu.columbia.cs.psl.mountaindew.absprop;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -149,6 +150,10 @@ public abstract class MetamorphicProperty {
 		}
 	}
 	
+	public List<MetamorphicInputProcessor> getInputProcessors() {
+		return this.processors;
+	}
+	
 	/*private void loadTargetAdapter() {
 		String className = this.mConfigurer.getAdapterClassName();
 		try {
@@ -170,6 +175,7 @@ public abstract class MetamorphicProperty {
 		
 		for (MetamorphicInputProcessor processor: this.processors) {			
 			boolean[] paramFlipping = new boolean[inv.params.length];
+			HashMap<String, HashSet<String>> classMap = processor.getClassMap();
 			
 			ArrayList<boolean[]> combis = computeCombinations(paramFlipping);		
 			for (Object[] propertyParams: processor.getBoundaryDefaultParameters()) {
@@ -181,6 +187,7 @@ public abstract class MetamorphicProperty {
 					child.propertyParams = new Object[pset.length][];
 					child.setFrontend(processor.getName());
 					child.setBackendC(this.getName());
+					child.setClassMap(classMap);
 					boolean atLeastOneTrue = false;
 					for (int i = 0; i < pset.length; i++) {
 						atLeastOneTrue = atLeastOneTrue || pset[i];

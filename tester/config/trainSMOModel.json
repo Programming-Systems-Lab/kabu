@@ -3,9 +3,15 @@
 		"Adapter": "WekaAdapter",
 		"HoldStates": [
 			{
-				"Checker": "C:ContentEqualer",
-				"Transformer": "T:AddNumericConstant",
+				"Checker": "ContentEqualer",
+				"Transformer": "AddNumericConstant",
 				"ClassSpec": [
+					{
+						"ClassName": "weka.classifiers.functions.SMO",
+						"FieldNames": [
+							"m_numFolds"
+						]
+					},
 					{
 						"ClassName": "weka.classifiers.Evaluation",
 						"FieldNames": [

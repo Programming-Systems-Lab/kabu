@@ -42,7 +42,7 @@ public class State {
 	}
 	
 	public void addChecker(MetamorphicProperty checker) {
-		checker.getTargetAdapter().setStateDefinition(this.stateDefinition);
+		//checker.getTargetAdapter().setStateDefinition(this.stateDefinition);
 		this.checkers.add(checker);
 	}
 	

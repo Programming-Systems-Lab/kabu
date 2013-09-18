@@ -9,7 +9,6 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/columbus2-runtime"/>
 	<classpathentry kind="lib" path="lib/commons-math3-3.2.jar"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/invivo.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mahout_dep"/>
@@ -23,5 +22,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/in-vivo-expreval"/>
 	<classpathentry kind="lib" path="/mtndew-tester/lib/weka_modified.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.2.4.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/columbus2-runtime"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

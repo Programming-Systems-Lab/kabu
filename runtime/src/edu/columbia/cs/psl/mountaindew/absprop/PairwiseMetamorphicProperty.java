@@ -35,12 +35,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 							Object o2 = j.params[k];
 							
 							if(propertyApplies(i, j, k))
-							{
-								PropertyResult result = new PropertyResult();
-								result.result = Result.UNKNOWN;
-								
-								this.mProfiler.addMethodProfile(i, j, result);
-								
+							{								
 								//By default, we use original data as testing data.
 								//It's adapter developer's responsibility to provide correct data in adaptOut of adapter.
 								this.targetAdapter.setData(o1, i.returnValue, o2, j.returnValue);
@@ -49,14 +44,26 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								HashMap<String, Object> recorder1 = new HashMap<String, Object>();
 								HashMap<String, Object> recorder2 = new HashMap<String, Object>();
 								
+								//Get the classmap from child
+								this.targetAdapter.setStateDefinition(j.getClassMap());
+								
 								Object adaptRt1 = this.targetAdapter.adaptOutput(recorder1, i.returnValue, o1);
 								Object adaptRt2 = this.targetAdapter.adaptOutput(recorder2, j.returnValue, o2);
 								
 								Object tmpObj1 = null;
 								Object tmpObj2 = null;
+								
+								System.out.println("Check recorder1: " + recorder1);
+								System.out.println("Check recorder2: " + recorder2);
+								
 								for (String tmpKey: recorder1.keySet()) {
 									tmpObj1 = recorder1.get(tmpKey);
 									tmpObj2 = recorder2.get(tmpKey);
+									
+									PropertyResult result = new PropertyResult();
+									result.result = Result.UNKNOWN;
+									
+									this.mProfiler.addMethodProfile(i, j, result);
 									
 									result.stateItem = tmpKey;
 									

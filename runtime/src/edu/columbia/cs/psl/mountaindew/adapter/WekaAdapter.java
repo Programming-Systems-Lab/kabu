@@ -223,20 +223,6 @@ public class WekaAdapter extends AbstractAdapter{
 			}
 		} else if (Evaluation.class.isAssignableFrom(outputModel.getClass())) {
 			Evaluation e = (Evaluation)outputModel;
-			System.out.println("Check confusion matrix");
-			
-			Object tmpObj;
-			for (String tmpKey: stateRecorder.keySet()) {
-				System.out.println("Check tmpKey: " + tmpKey);
-				tmpObj = stateRecorder.get(tmpKey);
-				double[][] tmpMatrix = (double[][])tmpObj;
-				
-				for (int i = 0; i < tmpMatrix.length; i++) {
-					for (int j = 0;j < tmpMatrix[i].length; j++) {
-						System.out.println("Tmp content " + i + " " + j + " " + tmpMatrix[i][j]);
-					}	
-				}
-			}
 			
 			double[][] confusionMatrix = e.confusionMatrix();
 			for (int i = 0; i < confusionMatrix.length; i++) {
