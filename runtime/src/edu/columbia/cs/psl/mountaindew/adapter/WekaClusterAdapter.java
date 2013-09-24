@@ -2,15 +2,19 @@ package edu.columbia.cs.psl.mountaindew.adapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.Clusterer;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
+import weka.core.InstanceComparator;
 import weka.core.Instances;
 
 public class WekaClusterAdapter extends AbstractAdapter{
@@ -69,7 +73,7 @@ public class WekaClusterAdapter extends AbstractAdapter{
 				tmpAttribute = inputInstances.attribute(i);
 				attrVector.addElement(tmpAttribute);
 			}
-
+		
 			Enumeration e = inputInstances.enumerateInstances();
 			Object tmpObj;
 			Instance tmpInstance;
@@ -144,21 +148,56 @@ public class WekaClusterAdapter extends AbstractAdapter{
 			System.out.println("Check cluster assignment");
 			double[] clusterAssignment = e.getClusterAssignments();
 			
-			//Construct cluster array with data number
-			int[] clusterWDataNumber = new int[e.getNumClusters()];
+			System.out.println("For testing purpose:");
 			for (int i = 0; i < clusterAssignment.length; i++) {
-				System.out.println("Cluster assignment: " + i + " " + clusterAssignment[i]);
-				clusterWDataNumber[(int)clusterAssignment[i]]++;
+				System.out.println(clusterAssignment[i]);
 			}
 			
-			//Sort or the cluster idx might change
-			Arrays.sort(clusterWDataNumber);
-			System.out.println("Check data number in cluster in incremental sequence");
-			for (int i = 0; i < clusterWDataNumber.length; i++) {
-				System.out.println(clusterWDataNumber[i]);
+			//Construct a map to record which cluster contains which data
+			HashMap<Integer, ArrayList<Integer>> clusterMap = new HashMap<Integer, ArrayList<Integer>>();
+			
+			int tmpClusterAssignment;
+			for (int i = 0; i < clusterAssignment.length; i++) {
+				tmpClusterAssignment = (int)clusterAssignment[i];
+				if (!clusterMap.keySet().contains(tmpClusterAssignment)) {
+					ArrayList<Integer> tmpClusterList = new ArrayList<Integer>();
+					tmpClusterList.add(i);
+					
+					clusterMap.put(tmpClusterAssignment, tmpClusterList);
+				} else {
+					clusterMap.get(tmpClusterAssignment).add(i);
+				}
 			}
 			
-			return clusterWDataNumber;
+			//Sort the list in clusterMap by data number in the list
+			ArrayList<ArrayList<Integer>> clusterRankList = new ArrayList<ArrayList<Integer>>();
+			for (Integer tmpKey: clusterMap.keySet()) {
+				clusterRankList.add(clusterMap.get(tmpKey));
+			}
+			
+			Collections.sort(clusterRankList, new Comparator<ArrayList<Integer>>() {
+				@Override
+				public int compare(ArrayList<Integer> o1, ArrayList<Integer>o2) {
+					if (o1.size() < o2.size())
+						return -1;
+					else if (o1.size() == o2.size())
+						return 0;
+					else
+						return 0;
+				}
+			});
+			
+			System.out.println("Check cluster rank list: " + clusterRankList);
+			
+			ArrayList<Integer> clusterNumList = new ArrayList<Integer>();
+			for (ArrayList<Integer>tmpList: clusterRankList) {
+				clusterNumList.add(tmpList.size());
+			}
+			
+			//Add the artifact into State
+			this.expandStateDefinition("ClusterSummary", clusterNumList, stateRecorder);
+			
+			return clusterNumList;
 		}
 		return null;
 	}

@@ -1,6 +1,6 @@
 {"globalConfig": {
 	"Adapter":"WekaAdapter",
-	"Transformers":["AddNumericConstant"],
+	"Transformers":["AddNumericConstant","MultiplyByNumericConstant","Reverse","Shuffle","Negate","PolynomialTransformer"],
 	"Checkers":["ContentEqualer"],
 	"States":[{"ClassName":"weka.classifiers.Evaluation", "FieldNames":["m_ConfusionMatrix"]}, {"ClassName":"weka.classifiers.functions.SMO", "FieldNames":["m_numFolds"]}]	
 }}

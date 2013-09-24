@@ -23,5 +23,6 @@
 	<classpathentry kind="lib" path="/mtndew-tester/lib/weka_modified.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.2.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/columbus2-runtime"/>
+	<classpathentry kind="lib" path="lib/javassist.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

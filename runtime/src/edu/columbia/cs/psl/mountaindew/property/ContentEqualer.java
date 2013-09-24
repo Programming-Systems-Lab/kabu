@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +47,7 @@ public class ContentEqualer extends EqualerAbstract{
 	}
 
 	@Override
-	protected boolean checkEquivalence(Object c1, Object c2) {
+	protected boolean checkEquivalence(Object c1, Object c2) {		
 		if (c1.equals(c2))
 			return true;
 		
@@ -107,6 +108,8 @@ public class ContentEqualer extends EqualerAbstract{
 			int count = 0;
 			
 			for (int i = 0; i < c1Length; i++) {
+				System.out.println("Check c1 element: " + Array.get(c1, i));
+				System.out.println("Check c2 element: " + Array.get(c2, i));
 				if (this.checkEquivalence(Array.get(c1, i), Array.get(c2, i)))
 					count++;
 			}
