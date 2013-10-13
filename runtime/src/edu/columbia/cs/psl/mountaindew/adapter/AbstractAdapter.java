@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -138,25 +140,30 @@ public abstract class AbstractAdapter {
 		return this.stateDefinition;
 	}
 	
-	public void expandStateDefinition(String newFieldName, Object newObj, HashMap<String, Object>stateRecorder) {
+	public void expandStateDefinition(Map<String, Object>newFieldMap, HashMap<String, Object>stateRecorder) {
 		if (this.forUserArtifact == null) {
-			this.generateUserArtifactClass(newFieldName, newObj);
+			this.generateUserArtifactClass(newFieldMap);
 		} else {
-			this.updateStateDefinition(this.forUserArtifact.getName(), newFieldName);
+			for (String newFieldName: newFieldMap.keySet()) {
+				this.updateStateDefinition(this.forUserArtifact.getName(), newFieldName);
+			}
 		}
 		
 		try {
 			Object newInstance = this.forUserArtifact.newInstance();
-			Field targetField = this.forUserArtifact.getField(newFieldName);
-			targetField.set(newInstance, newObj);
 			
-			this.registerInterestedFieldValues(newInstance, stateRecorder);
+			for (String newFieldName: newFieldMap.keySet()) {
+				Field targetField = this.forUserArtifact.getField(newFieldName);
+				targetField.set(newInstance, newFieldMap.get(newFieldName));
+				
+				this.registerInterestedFieldValues(newInstance, stateRecorder);
+			}
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 	
-	private void generateUserArtifactClass(String newFieldName, Object newObj) {
+	private void generateUserArtifactClass(Map<String, Object> newFieldMap) {
 		try {
 			ClassPool classPool = ClassPool.getDefault();
 			String newClassName = virtualPackage + ".UserArtifact";
@@ -169,17 +176,20 @@ public abstract class AbstractAdapter {
 				mArtifactClass = classPool.get(newClassName);
 			}
 			
-			CtField newField = null;
-			for (CtField tmpField: mArtifactClass.getDeclaredFields()) {
-				if (tmpField.getName().equalsIgnoreCase(newFieldName)) {
-					newField = tmpField;
+			for (String newFieldName: newFieldMap.keySet()) {
+				CtField newField = null;
+				
+				for (CtField tmpField: mArtifactClass.getDeclaredFields()) {
+					if (tmpField.getName().equalsIgnoreCase(newFieldName)) {
+						newField = tmpField;
+					}
 				}
-			}
-						
-			if (newField == null) {
-				newField = CtField.make("public " + newObj.getClass().getName() 
-						+ " " + newFieldName + ";", mArtifactClass);
-				mArtifactClass.addField(newField);
+				
+				if (newField == null) {
+					newField = CtField.make("public " + newFieldMap.get(newFieldName).getClass().getName() 
+							+ " " + newFieldName + ";", mArtifactClass);
+					mArtifactClass.addField(newField);
+				}
 			}
 
 			this.forUserArtifact = mArtifactClass.toClass();
@@ -191,16 +201,22 @@ public abstract class AbstractAdapter {
 			}
 			
 			//Update stateMap
-			this.updateStateDefinition(newClassName, newFieldName);
+			for (String newFieldName: newFieldMap.keySet()) {
+				this.updateStateDefinition(newClassName, newFieldName);
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 	
 	private void updateStateDefinition(String newClassName, String newFieldName) {
-		HashSet<String> fieldSet = new HashSet<String>();
-		fieldSet.add(newFieldName);
-		this.stateDefinition.put(newClassName, fieldSet);
+		if (!this.stateDefinition.keySet().contains(newClassName)) {
+			HashSet<String> fieldSet = new HashSet<String>();
+			fieldSet.add(newFieldName);
+			this.stateDefinition.put(newClassName, fieldSet);
+		} else {
+			this.stateDefinition.get(newClassName).add(newFieldName);
+		}
 	}
 	
 	private void registerInterestedFieldValues(Object outputObj, HashMap<String, Object>stateRecorder) {

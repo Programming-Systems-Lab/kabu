@@ -1,6 +1,7 @@
 package edu.columbia.cs.psl.mountaindew.absprop;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,7 +15,6 @@ import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 	
 	private MethodProfiler mProfiler = new MethodProfiler();
-	
 	
 	@Override
 	public final List<PropertyResult> propertiesHolds() {
@@ -47,6 +47,53 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								//Get the classmap from child
 								this.targetAdapter.setStateDefinition(j.getClassMap());
 								
+								//Traverse instance vairable
+								Object calleei = i.getCallee();
+								Object calleej = j.getCallee();
+								Class iClass = calleei.getClass();
+								Class jClass = calleej.getClass();
+								
+								try {
+									String fieldName = null;
+									Object tmpVal = null;
+									String iClassName =  iClass.getName();
+									for (Field field: iClass.getDeclaredFields()) {
+										field.setAccessible(true);
+										fieldName = field.getName();
+										System.out.println("Check value in calleei: " + fieldName + " " + field.get(calleei));
+										
+										if (fieldName.contains("__invivoCloned") || 
+												fieldName.contains("___interceptor__by_mountaindew") ||
+												fieldName.contains("__metamorphicChildCount"))
+											continue;
+										
+										tmpVal = field.get(calleei);
+										
+										if (tmpVal == null)
+											continue;
+										
+										recorder1.put(iClassName + ":" + fieldName, tmpVal);
+									}
+									
+									String jClassName = jClass.getName();
+									for (Field field: jClass.getDeclaredFields()) {
+										field.setAccessible(true);
+										fieldName = field.getName();
+										System.out.println("Check value in calleej: " + field.getName() + " " + field.get(calleej));
+										
+										if (fieldName.contains("__invivoCloned") || 
+												fieldName.contains("___interceptor__by_mountaindew") ||
+												fieldName.contains("__metamorphicChildCount"))
+											continue;
+										
+										tmpVal = field.get(calleej);
+										
+										recorder2.put(jClassName + ":" + fieldName, field.get(calleej));
+									}
+								} catch (Exception ex) {
+									ex.printStackTrace();
+								}
+															
 								Object adaptRt1 = this.targetAdapter.adaptOutput(recorder1, i.returnValue, o1);
 								Object adaptRt2 = this.targetAdapter.adaptOutput(recorder2, j.returnValue, o2);
 								

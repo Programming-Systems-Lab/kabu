@@ -6,7 +6,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import weka.clusterers.ClusterEvaluation;
@@ -195,7 +198,9 @@ public class WekaClusterAdapter extends AbstractAdapter{
 			}
 			
 			//Add the artifact into State
-			this.expandStateDefinition("ClusterSummary", clusterNumList, stateRecorder);
+			Map<String, Object> newFieldMap = new HashMap<String, Object>();
+			newFieldMap.put("ClusterSummary", clusterNumList);
+			this.expandStateDefinition(newFieldMap, stateRecorder);
 			
 			return clusterNumList;
 		}

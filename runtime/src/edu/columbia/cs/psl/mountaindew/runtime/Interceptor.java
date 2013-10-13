@@ -382,7 +382,7 @@ public class Interceptor extends AbstractInterceptor {
 		int namePos = this.calleeName.lastIndexOf(".");
 		this.calleeName = this.calleeName.substring(namePos+1, calleeName.length());
 		
-		/*ArrayList<MethodInvocation> children = new ArrayList<MethodInvocation>();
+		ArrayList<MethodInvocation> children = new ArrayList<MethodInvocation>();
 		for(MetamorphicProperty p : properties.get(inv.method))
 		{
 			for(MethodInvocation child : p.createChildren(inv))
@@ -402,16 +402,12 @@ public class Interceptor extends AbstractInterceptor {
 		}
 		inv.children = new MethodInvocation[children.size()];
 		inv.children = children.toArray(inv.children);
-
-		this.calleeName = callee.getClass().getName();
-		int namePos = this.calleeName.lastIndexOf(".");
-		this.calleeName = this.calleeName.substring(namePos+1, calleeName.length());
 		
 		System.out.println("Method name " + inv.getMethod().getName());
 		System.out.println("Children size: " + inv.children.length);
 		System.out.println("Callee: " + callee.getClass().getName());
 		
-		this.reportTransformerChecker();*/
+		this.reportTransformerChecker();
 		return retId;
 	}
 	
@@ -422,7 +418,7 @@ public class Interceptor extends AbstractInterceptor {
 		MethodInvocation inv = invocations.remove(id);
 		inv.returnValue = val;
 		
-		ArrayList<MethodInvocation> children = new ArrayList<MethodInvocation>();
+		/*ArrayList<MethodInvocation> children = new ArrayList<MethodInvocation>();
 		for (MetamorphicProperty p: properties.get(inv.method)) {
 			for (MethodInvocation child: p.createChildren(inv)) {
 				child.callee = deepClone(inv.callee);
@@ -438,23 +434,6 @@ public class Interceptor extends AbstractInterceptor {
 			}
 		} 
 		
-		/*for(MetamorphicProperty p : properties.get(inv.method))
-		{
-			for(MethodInvocation child : p.createChildren(inv))
-			{
-				child.callee = deepClone(inv.callee);
-				child.method = inv.method;
-				children.add(child);
-				child.thread = createChildThread(child);
-				child.thread.start();
-				try {
-					child.thread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}*/
-		
 		inv.children = new MethodInvocation[children.size()];
 		inv.children = children.toArray(inv.children);
 		
@@ -462,7 +441,7 @@ public class Interceptor extends AbstractInterceptor {
 		System.out.println("Children size: " + inv.children.length);
 		System.out.println("Callee: " + this.calleeName);
 		
-		this.reportTransformerChecker();
+		this.reportTransformerChecker();*/
 		
 		for (MethodInvocation inv2: inv.children) {
 			try {

@@ -1,6 +1,6 @@
 {"globalConfig": {
-	"Adapter":"WekaAdapter",
-	"Transformers":["AddNumericConstant","MultiplyByNumericConstant","Reverse","Shuffle","Negate","PolynomialTransformer"],
+	"Adapter":"DefaultAdapter",
+	"Transformers":["Negate"],
 	"Checkers":["ContentEqualer"],
-	"States":[{"ClassName":"weka.classifiers.Evaluation", "FieldNames":["m_ConfusionMatrix"]}, {"ClassName":"weka.classifiers.functions.SMO", "FieldNames":["m_numFolds"]}]	
+	"States":[{"ClassName":"edu.columbia.cs.psl.mountaindew.example.MyObject", "FieldNames":["myArray"]}]	
 }}
