@@ -120,8 +120,7 @@ public class WekaClusterAdapter extends AbstractAdapter{
 	}
 	
 	@Override
-	public Object adaptOutput(HashMap<String, Object>stateRecorder, Object outputModel, Object...testingData) {
-		recordState(stateRecorder, outputModel);
+	public Object adaptOutput(Object outputModel, Object...testingData) {
 		
 		Instances finalData;
 		if (Clusterer.class.isAssignableFrom(outputModel.getClass())) {
@@ -141,7 +140,7 @@ public class WekaClusterAdapter extends AbstractAdapter{
 				ClusterEvaluation e = new ClusterEvaluation();
 				e.setClusterer(c);
 				e.evaluateClusterer(finalData);
-				return adaptOutput(stateRecorder, e);
+				return adaptOutput(e);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -200,7 +199,7 @@ public class WekaClusterAdapter extends AbstractAdapter{
 			//Add the artifact into State
 			Map<String, Object> newFieldMap = new HashMap<String, Object>();
 			newFieldMap.put("ClusterSummary", clusterNumList);
-			this.expandStateDefinition(newFieldMap, stateRecorder);
+			//this.expandStateDefinition(newFieldMap, stateRecorder);
 			
 			return clusterNumList;
 		}

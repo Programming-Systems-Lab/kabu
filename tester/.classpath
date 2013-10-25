@@ -25,7 +25,7 @@
 	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/ajt-1.20.jar"/>
 	<classpathentry kind="lib" path="lib/Jama-1.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/javaml-0.1.5.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.2.4.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JavaML17"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

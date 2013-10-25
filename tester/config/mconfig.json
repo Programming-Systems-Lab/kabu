@@ -1,6 +1,6 @@
 {"globalConfig": {
-	"Adapter":"DefaultAdapter",
-	"Transformers":["Negate"],
+	"Adapter":"JMLClassifierAdapter",
+	"Transformers":["MultiplyByNumericConstant"],
 	"Checkers":["ContentEqualer"],
 	"States":[{"ClassName":"edu.columbia.cs.psl.mountaindew.example.MyObject", "FieldNames":["myArray"]}]	
 }}

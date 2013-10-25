@@ -41,7 +41,9 @@ public abstract class AbstractAdapter {
 	
 	public abstract Object adaptInput(Object transInput);
 	
-	public abstract Object adaptOutput(HashMap<String, Object> stateRecorder, Object outputModel, Object...testingData);
+	//public abstract Object adaptOutput(HashMap<String, Object> stateRecorder, Object outputModel, Object...testingData);
+	
+	public abstract Object adaptOutput(Object outputModel, Object...testingData);
 	
 	protected void recordState(HashMap<String, Object> stateRecorder, Object outputModel) {
 		System.out.println("Check stateDefinition: " + stateDefinition);

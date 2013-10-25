@@ -41,7 +41,7 @@ public class JMLClassifierExample {
 	public static void main(String args[]) {
 		JMLClassifierExample ml = new JMLClassifierExample();
 		
-		String dataPath = "data/iris.data";
+		String dataPath = "data/iris_short.data";
 		Dataset data = ml.loadData(dataPath);
 		System.out.println(data);
 		

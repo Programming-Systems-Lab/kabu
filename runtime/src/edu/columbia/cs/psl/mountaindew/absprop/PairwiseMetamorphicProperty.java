@@ -5,14 +5,25 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Set;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
+import edu.columbia.cs.psl.metamorphic.runtime.annotation.LogState;
+import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty.PropertyResult.Result;
 import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
+import edu.columbia.cs.psl.mountaindew.util.ClassChecker;
 
 public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
+	
+	private static String outputKey = "__metamorphicOutput";
+	
+	private static String uninitialized = "unintitialized";
+	
+	private static String localMap = "stateStorage";
 	
 	private MethodProfiler mProfiler = new MethodProfiler();
 	
@@ -47,55 +58,32 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								//Get the classmap from child
 								this.targetAdapter.setStateDefinition(j.getClassMap());
 								
-								//Traverse instance vairable
+								//Record state of Method object
 								Object calleei = i.getCallee();
 								Object calleej = j.getCallee();
-								Class iClass = calleei.getClass();
-								Class jClass = calleej.getClass();
 								
-								try {
-									String fieldName = null;
-									Object tmpVal = null;
-									String iClassName =  iClass.getName();
-									for (Field field: iClass.getDeclaredFields()) {
-										field.setAccessible(true);
-										fieldName = field.getName();
-										System.out.println("Check value in calleei: " + fieldName + " " + field.get(calleei));
-										
-										if (fieldName.contains("__invivoCloned") || 
-												fieldName.contains("___interceptor__by_mountaindew") ||
-												fieldName.contains("__metamorphicChildCount"))
-											continue;
-										
-										tmpVal = field.get(calleei);
-										
-										if (tmpVal == null)
-											continue;
-										
-										recorder1.put(iClassName + ":" + fieldName, tmpVal);
-									}
-									
-									String jClassName = jClass.getName();
-									for (Field field: jClass.getDeclaredFields()) {
-										field.setAccessible(true);
-										fieldName = field.getName();
-										System.out.println("Check value in calleej: " + field.getName() + " " + field.get(calleej));
-										
-										if (fieldName.contains("__invivoCloned") || 
-												fieldName.contains("___interceptor__by_mountaindew") ||
-												fieldName.contains("__metamorphicChildCount"))
-											continue;
-										
-										tmpVal = field.get(calleej);
-										
-										recorder2.put(jClassName + ":" + fieldName, field.get(calleej));
-									}
-								} catch (Exception ex) {
-									ex.printStackTrace();
+								this.recursiveRecordState(recorder1, calleei);
+								this.recursiveRecordState(recorder2, calleej);
+						
+								Object adaptRt1 = this.targetAdapter.adaptOutput(i.returnValue, o1);
+								Object adaptRt2 = this.targetAdapter.adaptOutput(j.returnValue, o2);
+								
+								//Include output into comparison
+								if (adaptRt1 != null) {
+									recorder1.put(outputKey, adaptRt1);
+								} else {
+									recorder1.put(outputKey, "void");
 								}
-															
-								Object adaptRt1 = this.targetAdapter.adaptOutput(recorder1, i.returnValue, o1);
-								Object adaptRt2 = this.targetAdapter.adaptOutput(recorder2, j.returnValue, o2);
+								
+								if (adaptRt2 != null) {
+									recorder2.put(outputKey, adaptRt2);
+								} else {
+									recorder2.put(outputKey, "void");
+								}
+								
+								//Recursively check if field in output object is metamorphic
+								this.recursiveRecordState(recorder1, i.returnValue);
+								this.recursiveRecordState(recorder2, j.returnValue);
 								
 								Object tmpObj1 = null;
 								Object tmpObj2 = null;
@@ -161,6 +149,56 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 		
 		return propertyList;
 		
+	}
+	
+	private void recursiveRecordState(HashMap<String, Object> recorder, Object obj) {
+		if (obj == null)
+			return ;
+		
+		if (obj.getClass().getAnnotation(LogState.class) == null)
+			return ;
+		
+		try {			
+			String fieldName;
+			Object fieldValue;
+			
+			//Get all Fields in this obj and its parent
+			Set<Field> myFields = new HashSet(Arrays.asList(obj.getClass().getDeclaredFields()));
+			Set<Field> parentFields = new HashSet(Arrays.asList(obj.getClass().getFields()));
+			
+			Set<Field> combinedFields = new HashSet();
+			combinedFields.addAll(myFields);
+			combinedFields.addAll(parentFields);
+			
+			for(Field field: combinedFields) {
+				fieldName = field.getName();
+				
+				if (fieldName.contains("__invivoCloned") || 
+						fieldName.contains("___interceptor__by_mountaindew") ||
+						fieldName.contains("__metamorphicChildCount"))
+					continue;
+				
+				System.out.println("Field name: " + fieldName);
+				
+				field.setAccessible(true);
+				fieldValue = field.get(obj);
+				
+				if (fieldName.equals(localMap)) {
+					fieldValue = ClassChecker.comparableClasses(fieldValue);
+				}
+				
+				if (!ClassChecker.comparableClass(fieldValue))
+					continue;
+				
+				if (fieldValue != null) 
+					recorder.put(obj.getClass().getName() + ":" + fieldName, fieldValue);
+				else
+					recorder.put(obj.getClass().getName() + ":" + fieldName, uninitialized);
+				recursiveRecordState(recorder, fieldValue);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 
@@ -271,7 +309,6 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 
 	protected abstract boolean returnValuesApply(Object p1, Object returnValue1, Object p2, Object returnValue2);
 	protected abstract boolean propertyApplies(MethodInvocation i1, MethodInvocation i2, int interestedVariable);
-
 	protected abstract int[] getInterestedVariableIndices();
 
 }

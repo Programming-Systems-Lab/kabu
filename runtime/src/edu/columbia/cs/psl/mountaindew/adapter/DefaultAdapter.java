@@ -14,7 +14,7 @@ public class DefaultAdapter extends AbstractAdapter{
 	}
 	
 	@Override
-	public Object adaptOutput(HashMap<String, Object>stateRecorder, Object outputModel, Object...testingData) {
+	public Object adaptOutput(Object outputModel, Object...testingData) {
 		return outputModel;
 	}
 	

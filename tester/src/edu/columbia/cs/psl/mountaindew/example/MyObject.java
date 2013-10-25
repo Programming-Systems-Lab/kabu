@@ -34,7 +34,7 @@ public class MyObject {
 	}
 	
 	@Metamorphic
-	public int sumUp(int test) {
+	public FakeInnerObj sumUp(int test) {
 		String dummy1 = "Please get me once";
 		String dummy2 = "Pleae get me twice";
 		
@@ -48,7 +48,10 @@ public class MyObject {
 		this.myString = "Test 456";
 		this.myArray[3] = 8;
 		
-		return sum;
+		FakeInnerObj ret = new FakeInnerObj();
+		ret.buildClassifier(2);
+		
+		return ret;
 	}
 	
 	public int dummyReturn() {

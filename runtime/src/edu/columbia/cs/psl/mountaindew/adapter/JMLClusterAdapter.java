@@ -64,10 +64,7 @@ public class JMLClusterAdapter extends AbstractAdapter{
 	}
 	
 	@Override
-	public Object adaptOutput(HashMap<String, Object> stateRecorder,
-			Object outputModel, Object... testingData) {
-		recordState(stateRecorder, outputModel);
-		
+	public Object adaptOutput(Object outputModel, Object... testingData) {
 		if (Clusterer.class.isAssignableFrom(outputModel.getClass())) {
 			Clusterer clusterer = (Clusterer)outputModel;
 			
@@ -81,7 +78,7 @@ public class JMLClusterAdapter extends AbstractAdapter{
 			
 			Dataset[] clusterResult = clusterer.cluster(finalData);
 			
-			return this.adaptOutput(stateRecorder, clusterResult);
+			return this.adaptOutput(clusterResult);
 		} else if (outputModel.getClass().isArray()) {
 			Object tmpObj = Array.get(outputModel, 0);
 			
@@ -105,9 +102,9 @@ public class JMLClusterAdapter extends AbstractAdapter{
 				newFieldMap.put("ClusterSummary", clusterNumList);
 				newFieldMap.put("EvaluationResult", evalResult);
 				
-				this.expandStateDefinition(newFieldMap, stateRecorder);
+				//this.expandStateDefinition(newFieldMap, stateRecorder);
 
-				return evalResult;
+				return newFieldMap;
 			}
 		}
 		

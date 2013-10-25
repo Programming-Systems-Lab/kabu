@@ -65,10 +65,7 @@ public class JMLClassifierAdapter extends AbstractAdapter{
 	}
 
 	@Override
-	public Object adaptOutput(HashMap<String, Object> stateRecorder,
-			Object outputModel, Object... testingData) {
-		recordState(stateRecorder, outputModel);
-		
+	public Object adaptOutput(Object outputModel, Object... testingData) {
 		if (Classifier.class.isAssignableFrom(outputModel.getClass())) {
 			Classifier outputClassifier = (Classifier)outputModel;
 			Object tmpObj = null;
@@ -83,7 +80,7 @@ public class JMLClassifierAdapter extends AbstractAdapter{
 			else
 				finalData = (Dataset)this.getDefaultTestingData();
 			
-			return adaptOutput(stateRecorder, EvaluateDataset.testDataset(outputClassifier, finalData));
+			return adaptOutput(EvaluateDataset.testDataset(outputClassifier, finalData));
 		} else if (Map.class.isAssignableFrom(outputModel.getClass())) {
 			Map resultMap = (Map)outputModel;
 			Entry tmpEntry = (Entry)resultMap.entrySet().iterator().next();
@@ -103,7 +100,6 @@ public class JMLClassifierAdapter extends AbstractAdapter{
 			Set<String> newFieldNames = new HashSet<String>();
 			Map<String, Object> newFieldMap = new HashMap<String, Object>();
 			newFieldMap.put("ConfusionStringMap", confusionStringMap);
-			this.expandStateDefinition(newFieldMap, stateRecorder);
 			
 			return confusionStringMap;
 		}

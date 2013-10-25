@@ -197,9 +197,7 @@ public class WekaAdapter extends AbstractAdapter{
 	}*/
 	
 	@Override
-	public Object adaptOutput(HashMap<String, Object> stateRecorder, Object outputModel, Object...testingData) {
-		recordState(stateRecorder, outputModel);
-		
+	public Object adaptOutput(Object outputModel, Object...testingData) {		
 		Instances finalData;
 		if (Classifier.class.isAssignableFrom(outputModel.getClass())) {
 			Classifier c = (Classifier)outputModel;
@@ -217,7 +215,7 @@ public class WekaAdapter extends AbstractAdapter{
 			try {
 				Evaluation e = new Evaluation(finalData);
 				e.evaluateModel(c, finalData);
-				return adaptOutput(stateRecorder, e);
+				return adaptOutput(e);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

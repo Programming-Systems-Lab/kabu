@@ -136,9 +136,7 @@ public class PythonScikitAdapter extends AbstractAdapter{
 	}
 
 	@Override
-	public Object adaptOutput(HashMap<String, Object> stateRecorder,
-			Object outputModel, Object... testingData) {
-		recordState(stateRecorder, outputModel);
+	public Object adaptOutput(Object outputModel, Object... testingData) {
 		
 		if (Collection.class.isAssignableFrom(outputModel.getClass())) {
 			ArrayList tmpList = (ArrayList)outputModel;
@@ -151,7 +149,8 @@ public class PythonScikitAdapter extends AbstractAdapter{
 				
 				System.out.println("Check python result: " + newFieldMap);
 				
-				this.expandStateDefinition(newFieldMap, stateRecorder);
+				//this.expandStateDefinition(newFieldMap, stateRecorder);
+				return tableList;
 			}
 		}
 		

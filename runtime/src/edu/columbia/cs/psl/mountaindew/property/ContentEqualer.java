@@ -72,9 +72,6 @@ public class ContentEqualer extends EqualerAbstract{
 				c2List = this.selectTopWords((List<Word>)c2List, topK);
 			}
 			
-			System.out.println("Check c1List: " + c1List);
-			System.out.println("Check c2List: " + c2List);
-			
 			if (c1List.size() != c2List.size())
 				return false;
 			

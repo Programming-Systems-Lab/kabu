@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import edu.columbia.cs.psl.invivo.runtime.AbstractConfiguration;
 import edu.columbia.cs.psl.invivo.runtime.AbstractInterceptor;
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
+import edu.columbia.cs.psl.metamorphic.runtime.annotation.LogState;
 
 public class Configuration extends AbstractConfiguration{
 
@@ -17,5 +18,9 @@ public class Configuration extends AbstractConfiguration{
 	public Class<? extends Annotation> getAnnotationClass() {
 		return Metamorphic.class;
 	}
-
+	
+	@Override
+	public Class<? extends Annotation> getLogStateAnnotationClass() {
+		return LogState.class;
+	}
 }
