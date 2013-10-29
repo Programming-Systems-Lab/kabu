@@ -28,6 +28,8 @@ public class ClassChecker {
 		HashMap filterResult = new HashMap();
 		HashMap realMap = (HashMap)oriMap;
 		
+		System.out.println("Check map: " + realMap);
+		
 		Object val;
 		Class valClass;
 		for (Object key: realMap.keySet()) {
@@ -41,8 +43,10 @@ public class ClassChecker {
 				filterResult.put(key, val);
 			} else {
 				try {
-					if (comparableClass(val)) 
+					if (comparableClass(val, "equals", Object.class)) 
 						filterResult.put(key, val);
+					else if (comparableClass(val, "toString"))
+						filterResult.put(key, val.toString());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -52,10 +56,24 @@ public class ClassChecker {
 		return filterResult;
 	}
 	
-	public static boolean comparableClass(Object oriObj) {
+	public static boolean comparableClass(Object oriObj, String methodName, Class...params) {
+		if (oriObj == null)
+			return false;
+		
 		Class objClass = oriObj.getClass();
 		try {
-			Class eMethodClass = objClass.getMethod("equals", Object.class).getDeclaringClass();
+			Class eMethodClass = null;
+			
+			if (params.length != 0)
+				eMethodClass = objClass.getMethod(methodName, params[0]).getDeclaringClass();
+			else
+				eMethodClass = objClass.getMethod(methodName).getDeclaringClass();
+			
+			if (objClass.getName().equals("weka.core.Instances")) {
+				System.out.println("Got Instances");
+				System.out.println("Super class: " + objClass.getSuperclass().getName());
+				System.out.println("eMethodClass: " + eMethodClass.getName());
+			}
 			
 			if (!eMethodClass.getName().equals("java.lang.Object"))
 				return true;

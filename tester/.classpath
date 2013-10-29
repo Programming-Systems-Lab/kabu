@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/mtndew-runtime"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/mountaindew.jar"/>
 	<classpathentry kind="lib" path="lib/asm-all-4.0.jar"/>
@@ -19,7 +18,6 @@
 	<classpathentry kind="lib" path="lib/mahout-core-0.7.jar"/>
 	<classpathentry kind="lib" path="lib/mahout-integration-0.7.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop-core-0.20.204.0.jar"/>
-	<classpathentry kind="lib" path="lib/weka_modified.jar"/>
 	<classpathentry kind="lib" path="lib/java-cup.jar"/>
 	<classpathentry kind="lib" path="lib/JFlex.jar"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
@@ -27,5 +25,6 @@
 	<classpathentry kind="lib" path="lib/Jama-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.2.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JavaML17"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/weka368"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

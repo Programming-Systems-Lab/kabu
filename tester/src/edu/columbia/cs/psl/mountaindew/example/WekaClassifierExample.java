@@ -18,6 +18,7 @@ import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.VotedPerceptron;
 import weka.classifiers.lazy.IBk;
+import weka.classifiers.meta.LogitBoost;
 import weka.classifiers.rules.DecisionTable;
 import weka.classifiers.trees.J48;
 import weka.core.Instance;
@@ -56,6 +57,20 @@ public class WekaClassifierExample {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		return null;
+	}
+	
+	@Metamorphic
+	public LogitBoost trainLB(Instances data) {
+		LogitBoost lb = new LogitBoost();
+		try {
+			lb.setUseResampling(true);
+			lb.buildClassifier(data);
+			return lb;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
 		return null;
 	}
 	
@@ -212,12 +227,18 @@ public class WekaClassifierExample {
 			return ;
 		}
 		
-		SMO smo = wcEx.trainSMOModel(data);
+		/*SMO smo = wcEx.trainSMOModel(data);
 		if (smo == null) {
 			System.err.println("Fail to train smo model");
 			return ;
 		}
-		wcEx.evalModel(smo, data);
+		wcEx.evalModel(smo, data);*/
+		
+		LogitBoost lb = wcEx.trainLB(data);
+		if (lb == null) {
+			System.err.println("Fail to train LogitBoost");
+		}
+		wcEx.evalModel(lb, data);
 		
 		/*J48 tree = wcEx.trainJ48Model(data);
 		if (tree == null) {

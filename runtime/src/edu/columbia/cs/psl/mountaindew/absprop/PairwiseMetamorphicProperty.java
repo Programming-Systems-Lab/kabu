@@ -1,5 +1,6 @@
 package edu.columbia.cs.psl.mountaindew.absprop;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -64,21 +65,24 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								
 								this.recursiveRecordState(recorder1, calleei);
 								this.recursiveRecordState(recorder2, calleej);
+								
+								System.out.println("Check callee: " + calleei.getClass().getName());
 						
 								Object adaptRt1 = this.targetAdapter.adaptOutput(i.returnValue, o1);
 								Object adaptRt2 = this.targetAdapter.adaptOutput(j.returnValue, o2);
 								
 								//Include output into comparison
+								String outputFullName = i.returnValue.getClass().getName() + ":" + outputKey;
 								if (adaptRt1 != null) {
-									recorder1.put(outputKey, adaptRt1);
+									recorder1.put(outputFullName, adaptRt1);
 								} else {
-									recorder1.put(outputKey, "void");
+									recorder1.put(outputFullName, "void");
 								}
 								
 								if (adaptRt2 != null) {
-									recorder2.put(outputKey, adaptRt2);
+									recorder2.put(outputFullName, adaptRt2);
 								} else {
-									recorder2.put(outputKey, "void");
+									recorder2.put(outputFullName, "void");
 								}
 								
 								//Recursively check if field in output object is metamorphic
@@ -178,8 +182,6 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 						fieldName.contains("__metamorphicChildCount"))
 					continue;
 				
-				System.out.println("Field name: " + fieldName);
-				
 				field.setAccessible(true);
 				fieldValue = field.get(obj);
 				
@@ -187,7 +189,8 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 					fieldValue = ClassChecker.comparableClasses(fieldValue);
 				}
 				
-				if (!ClassChecker.comparableClass(fieldValue))
+				if (!ClassChecker.comparableClass(fieldValue, "equals", Object.class) &&
+						!ClassChecker.comparableClass(fieldValue, "toString"))
 					continue;
 				
 				if (fieldValue != null) 
