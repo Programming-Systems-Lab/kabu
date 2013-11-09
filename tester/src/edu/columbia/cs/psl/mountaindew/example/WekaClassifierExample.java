@@ -10,15 +10,16 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.bayes.NaiveBayes;
-import weka.classifiers.functions.GaussianProcesses;
+//import weka.classifiers.functions.GaussianProcesses;
 import weka.classifiers.functions.LeastMedSq;
-import weka.classifiers.functions.LibSVM;
+//import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.VotedPerceptron;
 import weka.classifiers.lazy.IBk;
-import weka.classifiers.meta.Dagging;
+import weka.classifiers.meta.Bagging;
+//import weka.classifiers.meta.Dagging;
 import weka.classifiers.meta.Decorate;
 import weka.classifiers.meta.LogitBoost;
 import weka.classifiers.rules.DecisionTable;
@@ -137,7 +138,7 @@ public class WekaClassifierExample {
 		return null;
 	}
 	
-	@Metamorphic
+	/*@Metamorphic
 	public LibSVM trainSVM(Instances data) {
 		LibSVM svm = new LibSVM();
 		//String[] options = new String[]{"-t"};
@@ -149,7 +150,7 @@ public class WekaClassifierExample {
 			ex.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 	
 	@Metamorphic
 	public Logistic trainLogistic(Instances data) {
@@ -207,7 +208,7 @@ public class WekaClassifierExample {
 		return null;
 	}
 	
-	@Metamorphic
+	/*@Metamorphic
 	public Dagging trainDagging(Instances data) {
 		Dagging dagging = new Dagging();
 		try {
@@ -218,6 +219,19 @@ public class WekaClassifierExample {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		return null;
+	}*/
+	
+	@Metamorphic
+	public Bagging trainBagging(Instances data) {
+		Bagging bagDriver = new Bagging();
+		try {
+			bagDriver.setCalcOutOfBag(true);
+			bagDriver.buildClassifier(data);
+			return bagDriver;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}	
 		return null;
 	}
 	
@@ -256,11 +270,18 @@ public class WekaClassifierExample {
 			return ;
 		}
 		
-		LibSVM libsvm = wcEx.trainSVM(data);
+		/*Bagging bag = wcEx.trainBagging(data);
+		if (bag == null) {
+			System.err.println("Fail to train bag");
+		}
+		wcEx.evalModel(bag, data);
+		System.out.println(bag.toString());*/
+		
+		/*LibSVM libsvm = wcEx.trainSVM(data);
 		if (libsvm == null) {
 			System.out.println("Fail to train SVM");
 		}
-		wcEx.evalModel(libsvm, data);
+		wcEx.evalModel(libsvm, data);*/
 		
 		/*Decorate decorate = wcEx.trainDecorate(data);
 		if (decorate == null) {
@@ -281,11 +302,11 @@ public class WekaClassifierExample {
 		}
 		wcEx.evalModel(smo, data);*/
 		
-		/*LogitBoost lb = wcEx.trainLB(data);
+		LogitBoost lb = wcEx.trainLB(data);
 		if (lb == null) {
 			System.err.println("Fail to train LogitBoost");
 		}
-		wcEx.evalModel(lb, data);*/
+		wcEx.evalModel(lb, data);
 		
 		/*J48 tree = wcEx.trainJ48Model(data);
 		if (tree == null) {

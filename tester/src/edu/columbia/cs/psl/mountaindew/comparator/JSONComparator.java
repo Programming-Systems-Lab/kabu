@@ -13,33 +13,30 @@ import java.util.Set;
 import com.google.gson.stream.JsonReader;
 
 public class JSONComparator {
-			
-	public static void main(String args[]) {
-		String firstJson = args[0];
-		String secondJson = args[1];
-		
+	
+	public static Set<StateObject> getStateSet(String jsonPath) {
+		File jsonFile = new File(jsonPath);
 		try {
-			File firstFile = new File(firstJson);
-			File secondFile = new File(secondJson);
+			if (!jsonFile.exists()) {
+				throw new Exception(jsonFile.getCanonicalPath() + " does not exist");
+			}
 			
-			if (!firstFile.exists() || !secondFile.exists())
-				throw new Exception("One or multiple json file does not exist");
+			System.out.println("Confirm json file path: " + jsonFile.getCanonicalPath());
+			ReaderThread fReader = new ReaderThread(jsonFile);
 			
-			System.out.println("Confirm first file path: " + firstFile.getCanonicalPath());
-			System.out.println("Confirm second file path: " + secondFile.getCanonicalPath());
+			fReader.start();
+			fReader.join();
 			
-			ReaderThread f1Reader = new ReaderThread(firstFile);
-			ReaderThread f2Reader = new ReaderThread(secondFile);
+			return fReader.getStates();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return null;
+	}
 			
-			f1Reader.start();
-			f2Reader.start();
-			
-			f1Reader.join();
-			f2Reader.join();
-			
-			Set<StateObject>f1States = f1Reader.getStates();
-			Set<StateObject>f2States = f2Reader.getStates();
-			
+	/*public static void compareJson(Set<StateObject> f1States, Set<StateObject> f2States) {
+		try {			
 			Set<StateObject> f1BasedDiff = diffStates(f1States, f2States);
 			
 			System.out.println("Check " + firstFile.getName() + " based diff");
@@ -55,7 +52,7 @@ public class JSONComparator {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-	}
+	}*/
 	
 	public static Set<StateObject> diffStates(Set<StateObject> target, Set<StateObject> compare) {
 		Set<StateObject> ret = new HashSet<StateObject>();
@@ -123,8 +120,6 @@ public class JSONComparator {
 	}
 
 }
-
-
 
 class ReaderThread extends Thread{
 	private static String configName = "methodConfig";
@@ -363,7 +358,7 @@ class ClassSpec {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Class name: " + this.className + "\n");
-		sb.append("Filed names: " + this.fieldNames.toString() + "\n");
+		sb.append("Field names: " + this.fieldNames.toString() + "\n");
 		return sb.toString();
 	}
 	
