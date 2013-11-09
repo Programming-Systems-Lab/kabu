@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
@@ -185,17 +186,24 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 				field.setAccessible(true);
 				fieldValue = field.get(obj);
 				
-				if (fieldName.equals(localMap)) {
-					fieldValue = ClassChecker.comparableClasses(fieldValue);
-				}
+				boolean comparable = ClassChecker.comparableClass(fieldValue, "equals", Object.class);
+				boolean stringable = ClassChecker.comparableClass(fieldValue, "toString");
 				
-				if (!ClassChecker.comparableClass(fieldValue, "equals", Object.class) &&
-						!ClassChecker.comparableClass(fieldValue, "toString"))
+				if (!comparable && !stringable)
 					continue;
 				
-				if (fieldValue != null) 
-					recorder.put(obj.getClass().getName() + ":" + fieldName, fieldValue);
-				else
+				if (fieldName.equals(localMap)) {
+					//Flatten local variable map
+					Map tmpMap = (HashMap)ClassChecker.comparableClasses(fieldValue);
+					for (Object key: tmpMap.keySet()) {
+						recorder.put(obj.getClass().getName() + ":" + fieldName + key, tmpMap.get(key));
+					}
+				} else if (fieldValue != null) {
+					if (comparable)
+						recorder.put(obj.getClass().getName() + ":" + fieldName, fieldValue);
+					else
+						recorder.put(obj.getClass().getName() + ":" + fieldName, fieldValue.toString());
+				} else
 					recorder.put(obj.getClass().getName() + ":" + fieldName, uninitialized);
 				recursiveRecordState(recorder, fieldValue);
 			}

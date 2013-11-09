@@ -196,11 +196,6 @@ public class WekaClusterAdapter extends AbstractAdapter{
 				clusterNumList.add(tmpList.size());
 			}
 			
-			//Add the artifact into State
-			Map<String, Object> newFieldMap = new HashMap<String, Object>();
-			newFieldMap.put("ClusterSummary", clusterNumList);
-			//this.expandStateDefinition(newFieldMap, stateRecorder);
-			
 			return clusterNumList;
 		}
 		return null;

@@ -34,7 +34,14 @@ public class ClassChecker {
 		Class valClass;
 		for (Object key: realMap.keySet()) {
 			val = realMap.get(key);
-			valClass = val.getClass();
+			
+			//Avoid val is null
+			if (val != null) {
+				valClass = val.getClass();
+			} else {
+				continue;
+			}
+
 			if (valClass.isPrimitive() || 
 					valClass.isArray() || 
 					Number.class.isAssignableFrom(valClass) ||
@@ -68,12 +75,6 @@ public class ClassChecker {
 				eMethodClass = objClass.getMethod(methodName, params[0]).getDeclaringClass();
 			else
 				eMethodClass = objClass.getMethod(methodName).getDeclaringClass();
-			
-			if (objClass.getName().equals("weka.core.Instances")) {
-				System.out.println("Got Instances");
-				System.out.println("Super class: " + objClass.getSuperclass().getName());
-				System.out.println("eMethodClass: " + eMethodClass.getName());
-			}
 			
 			if (!eMethodClass.getName().equals("java.lang.Object"))
 				return true;
