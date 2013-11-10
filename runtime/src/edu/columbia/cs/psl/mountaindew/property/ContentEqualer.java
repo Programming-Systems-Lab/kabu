@@ -22,9 +22,9 @@ public class ContentEqualer extends EqualerAbstract{
 	@Override
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
 			Object p2, Object returnValue2) {
-		System.out.println("In the return value apply");
-		//System.out.println("RT1: " + returnValue1.getClass().getName());
-		//System.out.println("RT2: " + returnValue2.getClass().getName());
+		/*System.out.println("In the return value apply");
+		System.out.println("RT1: " + returnValue1.getClass().getName());
+		System.out.println("RT2: " + returnValue2.getClass().getName());*/
 		return this.checkEquivalence(returnValue1, returnValue2);
 	}
 
@@ -47,7 +47,13 @@ public class ContentEqualer extends EqualerAbstract{
 	}
 
 	@Override
-	protected boolean checkEquivalence(Object c1, Object c2) {		
+	protected boolean checkEquivalence(Object c1, Object c2) {
+		if (c1 == null && c2 == null)
+			return true;
+		
+		if (c1 == null || c2 == null)
+			return false;
+		
 		if (c1.equals(c2))
 			return true;
 		
@@ -62,15 +68,6 @@ public class ContentEqualer extends EqualerAbstract{
 						
 			List c1List = new ArrayList((Collection)c1);
 			List c2List = new ArrayList((Collection)c2);
-			
-			int topK = (int)(0.2 * c1List.size());
-			
-			//System.out.println("Select top " + topK + " words");
-			
-			if (Word.class.isAssignableFrom(sentinel.getClass())) {
-				c1List = this.selectTopWords((List<Word>)c1List, topK);
-				c2List = this.selectTopWords((List<Word>)c2List, topK);
-			}
 			
 			if (c1List.size() != c2List.size())
 				return false;

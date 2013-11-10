@@ -42,11 +42,7 @@ public class ClassChecker {
 				continue;
 			}
 
-			if (valClass.isPrimitive() || 
-					valClass.isArray() || 
-					Number.class.isAssignableFrom(valClass) ||
-					Collection.class.isAssignableFrom(valClass) ||
-					Map.class.isAssignableFrom(valClass)) {
+			if (basicClass(valClass)) {
 				filterResult.put(key, val);
 			} else {
 				try {
@@ -63,11 +59,29 @@ public class ClassChecker {
 		return filterResult;
 	}
 	
-	public static boolean comparableClass(Object oriObj, String methodName, Class...params) {
-		if (oriObj == null)
+	public static boolean basicClass(Object objValue) {
+		if (objValue == null)
 			return false;
 		
-		Class objClass = oriObj.getClass();
+		Class objClass = objValue.getClass();
+		
+		if (objClass.isPrimitive() || 
+				objClass.isArray() || 
+				Number.class.isAssignableFrom(objClass) ||
+				Collection.class.isAssignableFrom(objClass) ||
+				Map.class.isAssignableFrom(objClass) ||
+				String.class.isAssignableFrom(objClass))
+			return true;
+		else
+			return false;
+	}
+	
+	public static boolean comparableClass(Object objValue, String methodName, Class...params) {
+		if (objValue == null)
+			return false;
+		
+		Class objClass = objValue.getClass();
+		
 		try {
 			Class eMethodClass = null;
 			
@@ -83,5 +97,4 @@ public class ClassChecker {
 		}
 		return false;
 	}
-
 }

@@ -1,5 +1,5 @@
 {"globalConfig": {
-	"Adapter":"WekaAdapter",
+	"Adapter":"WekaClusterAdapter",
 	"Transformers":["MultiplyByNumericConstant", "AddNumericConstant", "Negate", "Shuffle", "Reverse"],
 	"Checkers":["ContentEqualer"],
 	"States":[{"ClassName":"edu.columbia.cs.psl.mountaindew.example.MyObject", "FieldNames":["myArray"]}]	

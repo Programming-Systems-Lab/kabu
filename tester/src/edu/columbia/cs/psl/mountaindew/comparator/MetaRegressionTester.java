@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.File;
 import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.TreeMap;
@@ -47,22 +48,28 @@ public class MetaRegressionTester {
 			cleanJSONFile(methodName, version);
 		}
 		
-		for (String key: stateMap.keySet()) {
-			Set<StateObject> curSet = stateMap.get(key);
-			String nextKey = stateMap.higherKey(key);
-			
-			if (nextKey == null) {
-				break;
+		if (stateMap.keySet().size() == 1) {
+			Entry<String, Set<StateObject>> first = stateMap.firstEntry();
+			System.out.println(first.getKey());
+			System.out.println(first.getValue());
+		} else {
+			for (String key: stateMap.keySet()) {
+				Set<StateObject> curSet = stateMap.get(key);
+				String nextKey = stateMap.higherKey(key);
+				
+				if (nextKey == null) {
+					break;
+				}
+				Set<StateObject> nextSet = stateMap.get(nextKey);
+				
+				System.out.println(key + " vs. " + nextKey);
+				Set<StateObject> diffSet = JSONComparator.diffStates(curSet, nextSet);
+				System.out.println(diffSet);
+				
+				System.out.println(nextKey + " vs. " + key);
+				diffSet = JSONComparator.diffStates(nextSet, curSet);
+				System.out.println(diffSet);
 			}
-			Set<StateObject> nextSet = stateMap.get(nextKey);
-			
-			System.out.println(key + " vs. " + nextKey);
-			Set<StateObject> diffSet = JSONComparator.diffStates(curSet, nextSet);
-			System.out.println(diffSet);
-			
-			System.out.println(nextKey + " vs. " + key);
-			diffSet = JSONComparator.diffStates(nextSet, curSet);
-			System.out.println(diffSet);
 		}
 	}
 	

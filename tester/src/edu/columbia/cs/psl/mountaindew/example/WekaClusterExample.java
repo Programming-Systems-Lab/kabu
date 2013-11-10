@@ -5,14 +5,15 @@ import java.util.Arrays;
 
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 
-import weka.clusterers.CLOPE;
+//import weka.clusterers.CLOPE;
 import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.Clusterer;
 import weka.clusterers.Cobweb;
 import weka.clusterers.EM;
+import weka.clusterers.MakeDensityBasedClusterer;
 /*import weka.clusterers.HierarchicalClusterer;*/
 import weka.clusterers.SimpleKMeans;
-import weka.clusterers.XMeans;
+//import weka.clusterers.XMeans;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
 import weka.filters.Filter;
@@ -55,7 +56,7 @@ public class WekaClusterExample {
 		return null;
 	}
 	
-	@Metamorphic
+	/*@Metamorphic
 	public Cobweb trainCobweb(Instances data) {
 		Cobweb cw = new Cobweb();
 		try {
@@ -66,7 +67,7 @@ public class WekaClusterExample {
 			ex.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 	
 	@Metamorphic
 	public EM trainEM(Instances data) {
@@ -81,7 +82,7 @@ public class WekaClusterExample {
 		return null;
 	}
 	
-	@Metamorphic
+	/*@Metamorphic
 	public CLOPE trainCLOPE(Instances data) {
 		CLOPE clope = new CLOPE();
 		try {
@@ -91,7 +92,7 @@ public class WekaClusterExample {
 			ex.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 	
 	/*@Metamorphic
 	public HierarchicalClusterer trainHC(Instances data) {
@@ -106,12 +107,25 @@ public class WekaClusterExample {
 		return null;
 	}*/
 	
-	public XMeans trainXMeans(Instances data) {
+	/*public XMeans trainXMeans(Instances data) {
 		XMeans xmeans = new XMeans();
 		try {
 			xmeans.setMinNumClusters(3);
 			xmeans.buildClusterer(data);
 			return xmeans;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}*/
+	
+	@Metamorphic
+	public MakeDensityBasedClusterer trainMDB(Instances data) {
+		MakeDensityBasedClusterer mdb = new MakeDensityBasedClusterer();
+		try {
+			mdb.setNumClusters(3);
+			mdb.buildClusterer(data);
+			return mdb;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -126,7 +140,7 @@ public class WekaClusterExample {
 			
 			eval.evaluateClusterer(data);
 			
-			System.out.println("Check cluster number: " + clusterer.numberOfClusters());
+			//System.out.println("Check cluster number: " + clusterer.numberOfClusters());
 			
 			for (double tmp: eval.getClusterAssignments()) {
 				System.out.println("" + tmp);
@@ -145,6 +159,12 @@ public class WekaClusterExample {
 		// TODO Auto-generated method stub
 		WekaClusterExample wce = new WekaClusterExample();
 		Instances data = wce.loadData("data/iris.arff");
+		
+		/*MakeDensityBasedClusterer mdb = wce.trainMDB(data);
+		if (mdb == null) {
+			System.out.println("Fail to create mdb");
+		}
+		wce.evalClusterer(mdb, data);*/
 		
 		/*SimpleKMeans sk = wce.trainKMeans(data);
 		if (sk == null) {

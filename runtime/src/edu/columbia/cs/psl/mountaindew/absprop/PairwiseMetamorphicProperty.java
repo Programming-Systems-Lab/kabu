@@ -97,6 +97,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								System.out.println("Check recorder2: " + recorder2);
 								
 								for (String tmpKey: recorder1.keySet()) {
+									System.out.println("Check key: " + tmpKey);
 									tmpObj1 = recorder1.get(tmpKey);
 									tmpObj2 = recorder2.get(tmpKey);
 									
@@ -186,11 +187,21 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 				field.setAccessible(true);
 				fieldValue = field.get(obj);
 				
+				boolean basic = ClassChecker.basicClass(fieldValue);
 				boolean comparable = ClassChecker.comparableClass(fieldValue, "equals", Object.class);
 				boolean stringable = ClassChecker.comparableClass(fieldValue, "toString");
 				
-				if (!comparable && !stringable)
+				if (!basic && !comparable && !stringable)
 					continue;
+				
+				if (fieldName.equals("m_squaredErrors")) {
+					System.out.println("Check squaredErrors");
+					double[] tmpArray = (double[])fieldValue;
+					
+					for (double d: tmpArray) {
+						System.out.println(d);
+					}
+				}
 				
 				if (fieldName.equals(localMap)) {
 					//Flatten local variable map
@@ -199,7 +210,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 						recorder.put(obj.getClass().getName() + ":" + fieldName + key, tmpMap.get(key));
 					}
 				} else if (fieldValue != null) {
-					if (comparable)
+					if (comparable || basic)
 						recorder.put(obj.getClass().getName() + ":" + fieldName, fieldValue);
 					else
 						recorder.put(obj.getClass().getName() + ":" + fieldName, fieldValue.toString());
