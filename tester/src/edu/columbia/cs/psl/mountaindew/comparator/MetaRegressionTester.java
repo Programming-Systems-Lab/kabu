@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.File;
 import java.util.HashSet;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.HashMap;
@@ -17,8 +18,17 @@ public class MetaRegressionTester {
 			"lib/asm-all-4.0.jar:lib/java-cup.jar:" +
 			"lib/log4j-1.2.16.jar:lib/objenesis-1.2.jar:" +
 			"lib/gson-2.2.4.jar:bin/:";
+		
+	public static String wekabase = "/Users/mikefhsu/Mike/Research/Wekas/";
 	
-	private static String wekabase = "/Users/mikefhsu/Mike/Research/Wekas/";
+	public static String ejmlbase = "/Users/mikefhsu/Mike/Research/ejml/";
+	
+	private static Map<String,String> possibleBases = new HashMap<String, String>();
+	
+	static {
+		possibleBases.put("weka", wekabase);
+		possibleBases.put("ejml", ejmlbase);
+	}
 	
 	private static String injector = "edu.columbia.cs.psl.mountaindew.runtime.MetamorphicInjector";
 	
@@ -42,10 +52,11 @@ public class MetaRegressionTester {
 		System.out.println("Confirm driver class: " + driver);
 		System.out.println("Confirm versions for Metamorphic Regression Testing: " + versions);
 		
+		String libBase = possibleBases.get(args[0]);
 		for (String version: versions) {
-			executeMetaTesting(driver, version);
+			executeMetaTesting(driver, version, libBase);
 			stateMap.put(version, JSONComparator.getStateSet(configBase + methodName + ".json"));
-			cleanJSONFile(methodName, version);
+			cleanJSONFile(methodName, version, libBase);
 		}
 		
 		if (stateMap.keySet().size() == 1) {
@@ -73,8 +84,8 @@ public class MetaRegressionTester {
 		}
 	}
 	
-	public static void executeMetaTesting(String driver, String version) {
-		ArrayList<String> commands = constructCommands(driver, version);
+	public static void executeMetaTesting(String driver, String version, String libBase) {
+		ArrayList<String> commands = constructCommands(driver, version, libBase);
 		
 		try {
 			ProcessBuilder pb = new ProcessBuilder(commands);
@@ -101,15 +112,15 @@ public class MetaRegressionTester {
 		}
 	}
 	
-	public static ArrayList<String> constructCommands(String driver, String version) {
+	public static ArrayList<String> constructCommands(String driver, String version, String libBase) {
 		ArrayList<String> commands = new ArrayList<String>();
 		commands.add("java");
 		commands.add("-Xmx6000m");
 		commands.add("-javaagent:lib/mountaindew.jar");
 		commands.add("-cp");
 		
-		String basebin = wekabase + version + "/bin";
-		String baselib = "\"" + wekabase + version + "/lib/*\""; 
+		String basebin = libBase + version + "/bin";
+		String baselib = "\"" + libBase + version + "/lib/*\"";
 		
 		String libs = basicLibs + basebin + ":" + baselib + ":" + "/Users/mikefhsu/researchws/WekaTester35X/lib/libsvm.jar";
 		
@@ -139,7 +150,7 @@ public class MetaRegressionTester {
 		return sb.toString();
 	}
 	
-	public static void cleanJSONFile(String methodName,String version) {
+	public static void cleanJSONFile(String methodName,String version, String libBase) {
 		File jsonFile = new File(configBase + methodName + ".json");
 		
 		try {
@@ -149,7 +160,7 @@ public class MetaRegressionTester {
 			}
 			
 			//Move json to record base
-			if (!moveJSONFile(jsonFile, methodName, version))
+			if (!moveJSONFile(jsonFile, methodName, version, libBase))
 				System.err.println("The move of " + jsonFile.getCanonicalPath() + "fails");
 			
 			jsonFile.delete();
@@ -159,13 +170,25 @@ public class MetaRegressionTester {
 		
 	}
 	
-	public static boolean moveJSONFile(File oriFile, String methodName, String version) {
-		File destFile = new File(recordBase + methodName + version + ".json");
+	public static boolean moveJSONFile(File oriFile, String methodName, String version, String libBase) {
+		File dir = new File(libBase + "Record/");
 		
-		if (destFile.exists())
-			destFile.delete();
+		if (!dir.exists())
+			dir.mkdir();
 		
-		return oriFile.renameTo(destFile);
+		try {
+			File destFile = new File(dir.getCanonicalPath() + "/" + methodName + version + ".json");
+			System.out.println("Check record path: " + destFile.getCanonicalPath());
+			
+			if (destFile.exists())
+				destFile.delete();
+			
+			return oriFile.renameTo(destFile);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return false;
 	}
 
 }
