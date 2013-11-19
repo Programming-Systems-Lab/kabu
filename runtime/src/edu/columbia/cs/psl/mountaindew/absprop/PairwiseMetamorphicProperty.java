@@ -97,7 +97,6 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								System.out.println("Check recorder2: " + recorder2);
 								
 								for (String tmpKey: recorder1.keySet()) {
-									System.out.println("Check key: " + tmpKey);
 									tmpObj1 = recorder1.get(tmpKey);
 									tmpObj2 = recorder2.get(tmpKey);
 									
@@ -193,16 +192,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 				
 				if (!basic && !comparable && !stringable)
 					continue;
-				
-				if (fieldName.equals("m_squaredErrors")) {
-					System.out.println("Check squaredErrors");
-					double[] tmpArray = (double[])fieldValue;
 					
-					for (double d: tmpArray) {
-						System.out.println(d);
-					}
-				}
-				
 				if (fieldName.equals(localMap)) {
 					//Flatten local variable map
 					Map tmpMap = (HashMap)ClassChecker.comparableClasses(fieldValue);

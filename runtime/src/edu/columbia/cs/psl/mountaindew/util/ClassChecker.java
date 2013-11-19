@@ -36,13 +36,11 @@ public class ClassChecker {
 			val = realMap.get(key);
 			
 			//Avoid val is null
-			if (val != null) {
-				valClass = val.getClass();
-			} else {
+			if (val == null) {
 				continue;
 			}
 
-			if (basicClass(valClass)) {
+			if (basicClass(val)) {
 				filterResult.put(key, val);
 			} else {
 				try {
@@ -55,6 +53,8 @@ public class ClassChecker {
 				}
 			}
 		}
+		
+		System.out.println("Check filtered map: " + filterResult);
 		
 		return filterResult;
 	}

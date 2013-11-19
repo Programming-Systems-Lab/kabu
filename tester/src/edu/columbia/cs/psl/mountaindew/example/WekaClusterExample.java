@@ -160,11 +160,11 @@ public class WekaClusterExample {
 		WekaClusterExample wce = new WekaClusterExample();
 		Instances data = wce.loadData("data/iris.arff");
 		
-		/*MakeDensityBasedClusterer mdb = wce.trainMDB(data);
+		MakeDensityBasedClusterer mdb = wce.trainMDB(data);
 		if (mdb == null) {
 			System.out.println("Fail to create mdb");
 		}
-		wce.evalClusterer(mdb, data);*/
+		wce.evalClusterer(mdb, data);
 		
 		/*SimpleKMeans sk = wce.trainKMeans(data);
 		if (sk == null) {
@@ -178,11 +178,11 @@ public class WekaClusterExample {
 		}
 		wce.evalClusterer(cw, data);*/
 		
-		EM em = wce.trainEM(data);
+		/*EM em = wce.trainEM(data);
 		if (em == null) {
 			System.out.println("Fail to create EM");
 		}
-		wce.evalClusterer(em, data);
+		wce.evalClusterer(em, data);*/
 		
 		/*CLOPE clope = wce.trainCLOPE(data);
 		if (clope == null) {

@@ -1,6 +1,6 @@
 {"globalConfig": {
-	"Adapter":"EJMLAdapter",
-	"Transformers":["MultiplyByNumericConstant"],
+	"Adapter":"WekaAdapter",
+	"Transformers":["MultiplyByNumericConstant","AddNumericConstant","Negate","Reverse","Shuffle"],
 	"Checkers":["ContentEqualer"],
 	"States":[{"ClassName":"edu.columbia.cs.psl.mountaindew.example.MyObject", "FieldNames":["myArray"]}]	
 }}
