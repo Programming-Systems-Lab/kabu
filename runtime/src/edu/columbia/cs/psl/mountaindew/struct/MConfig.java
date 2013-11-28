@@ -40,7 +40,7 @@ public class MConfig {
 		
 	private String adapter;
 	
-	private List<String> transformers = new ArrayList<String>();
+	private List<TransTuple> transformers = new ArrayList<TransTuple>();
 	
 	private List<String> checkers = new ArrayList<String>();
 	
@@ -49,14 +49,14 @@ public class MConfig {
 	private List<MethodStateItem> mStates = new ArrayList<MethodStateItem>();
 	
 	//Key checker, Val: Map<transformer, List of class with fields>
-	private HashMap<String, HashMap<String, List<StateItem>>> configMap = 
-			new HashMap<String, HashMap<String, List<StateItem>>>();
+	private HashMap<String, HashMap<TransTuple, List<StateItem>>> configMap = 
+			new HashMap<String, HashMap<TransTuple, List<StateItem>>>();
 		
 	public String getAdapter() {
 		return this.adapter;
 	}
 	
-	public List<String> getTransformers() {
+	public List<TransTuple> getTransformers() {
 		return this.transformers;
 	}
 	
@@ -72,7 +72,7 @@ public class MConfig {
 		return this.mStates; 
 	}
 	
-	public HashMap<String, HashMap<String, List<StateItem>>> getConfigMap() {
+	public HashMap<String, HashMap<TransTuple, List<StateItem>>> getConfigMap() {
 		return this.configMap;
 	}
 	
@@ -118,7 +118,20 @@ public class MConfig {
 				reader.beginArray();
 				
 				while (reader.hasNext()) {
-					this.transformers.add(reader.nextString());
+					reader.beginObject();
+					
+					String trans = reader.nextName();
+					List<Number> times = new ArrayList<Number>();
+					
+					reader.beginArray();
+					while(reader.hasNext()) {
+						times.add(reader.nextInt());
+					}
+					reader.endArray();
+					
+					this.transformers.add(new TransTuple(trans, times));
+					
+					reader.endObject();
 				}
 				
 				reader.endArray();
@@ -130,35 +143,7 @@ public class MConfig {
 				}
 				
 				reader.endArray();
-			} else if (tmpName.equalsIgnoreCase(sKeys)){
-				reader.beginArray();
-				
-				while (reader.hasNext()) {
-					reader.beginObject();
-					
-					StateItem si = new StateItem();
-					
-					while(reader.hasNext()) {
-						String memberName = reader.nextName();
-						
-						if (memberName.equalsIgnoreCase(cMemName)) {
-							si.setClassName(reader.nextString());
-						} else if (memberName.equalsIgnoreCase(fMemNames)) {
-							reader.beginArray();
-							
-							while (reader.hasNext()) {
-								si.addFieldName(reader.nextString());
-							}
-							
-							reader.endArray();
-						}
-					}	
-					this.states.add(si);
-					reader.endObject();
-				}
-				
-				reader.endArray();
-			}
+			} 
 		}
 		
 		reader.endObject();
@@ -166,10 +151,11 @@ public class MConfig {
 	
 	private void loadGlobalMap() {
 		for (String tmpChecker: this.checkers) {
-			HashMap<String, List<StateItem>> tsMap = new HashMap<String, List<StateItem>>();
+			HashMap<TransTuple, List<StateItem>> tsMap = 
+					new HashMap<TransTuple, List<StateItem>>();
 			
-			for (String tmpTransformer: this.transformers) {
-				tsMap.put(tmpTransformer, this.states);
+			for (TransTuple tmpTransformer: this.transformers) {
+				tsMap.put(tmpTransformer, null);
 			}
 			this.configMap.put(tmpChecker, tsMap);
 		}
@@ -177,7 +163,7 @@ public class MConfig {
 	
 	private void loadMethodMap() {
 		String checker;
-		String transformer;
+		TransTuple transformer;
 		List<StateItem> stateItems;
 		
 		for (MethodStateItem msi: this.mStates) {
@@ -186,12 +172,12 @@ public class MConfig {
 			stateItems = msi.getStateItems();
 			
 			if (!this.configMap.keySet().contains(checker)) {
-				HashMap<String, List<StateItem>> tsMap = new HashMap<String, List<StateItem>>();
+				HashMap<TransTuple, List<StateItem>> tsMap = new HashMap<TransTuple, List<StateItem>>();
 				tsMap.put(transformer, stateItems);
 				
 				this.configMap.put(checker, tsMap);
 			} else {
-				HashMap<String, List<StateItem>> tsMap = this.configMap.get(checker);
+				HashMap<TransTuple, List<StateItem>> tsMap = this.configMap.get(checker);
 				
 				if (!tsMap.keySet().contains(transformer)) {
 					tsMap.put(transformer, stateItems);
@@ -226,7 +212,18 @@ public class MConfig {
 						if (innerTmp.equalsIgnoreCase(cKey)) {
 							ms.setChecker(reader.nextString());
 						} else if (innerTmp.equalsIgnoreCase(tKey)) {
-							ms.setTransformer(reader.nextString());
+							reader.beginObject();
+							String transformer = reader.nextName();
+							ArrayList<Number> times = new ArrayList<Number>();
+							
+							reader.beginArray();
+							while(reader.hasNext()) {
+								times.add(reader.nextDouble());
+							}
+							reader.endArray();
+							
+							ms.setTransformer(new TransTuple(transformer, times));
+							reader.endObject();
 						} else if (innerTmp.equalsIgnoreCase(classKey)) {
 							reader.beginArray();
 							
@@ -280,6 +277,66 @@ public class MConfig {
 		return sb.toString();
 	}
 	
+	public static class TransTuple {
+		private String transformer;
+		
+		private List<Number> times = new ArrayList<Number>();
+		
+		public TransTuple(String transformer, List<Number>times) {
+			this.transformer = transformer;
+			this.times = times;
+		}
+		
+		public String getTransformer() {
+			return this.transformer;
+		}
+		
+		public List<Number> getTimes() {
+			return this.times;
+		}
+		
+		public void setTransformer(String transformer) {
+			this.transformer = transformer;
+		}
+		
+		public void setTimes(ArrayList<Number> times) {
+			this.times = times;
+		}
+		
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Transformer: " + this.transformer);
+			sb.append("Param: " + this.times);
+			return sb.toString();
+		}
+		
+		@Override
+		public boolean equals(Object tmp) {
+			if (!(tmp instanceof TransTuple))
+				return false;
+			
+			TransTuple tmpTuple = (TransTuple)tmp;
+			if (!tmpTuple.getTransformer().equals(this.transformer))
+				return false;
+			
+			if (!tmpTuple.getTimes().equals(this.times))
+				return false;
+			
+			return true;
+		}
+		
+		@Override
+		public int hashCode() {
+			StringBuilder sb = new StringBuilder();
+			sb.append(this.transformer);
+			for(Number tmp: this.times) {
+				sb.append(tmp);
+			}
+			return sb.toString().hashCode();
+		}
+	}
+	
 	public static class StateItem {
 		private String className;
 		
@@ -324,21 +381,33 @@ public class MConfig {
 			
 			return true;
 		}
+		
+		@Override
+		public int hashCode() {
+			StringBuilder sb = new StringBuilder();
+			sb.append(this.className);
+			
+			for (String tmp: this.fieldNames) {
+				sb.append(tmp);
+			}
+			
+			return sb.toString().hashCode();
+		}
 	}
 	
 	public static class MethodStateItem {
 		
-		private String transformer;
+		private TransTuple transformer;
 		
 		private String checker;
 		
 		private List<StateItem> mStateItems = new ArrayList<StateItem>();
 				
-		public void setTransformer(String transformer) {
+		public void setTransformer(TransTuple transformer) {
 			this.transformer = transformer;
 		}
 		
-		public String getTransformer() {
+		public TransTuple getTransformer() {
 			return this.transformer;
 		}
 		
@@ -371,6 +440,19 @@ public class MConfig {
 				return false;
 			
 			return true;
+		}
+		
+		@Override
+		public int hashCode() {
+			StringBuilder sb = new StringBuilder();
+			sb.append(this.transformer);
+			sb.append(this.checker);
+			
+			for (StateItem si: this.mStateItems) {
+				sb.append(si.toString());
+			}
+			
+			return sb.toString().hashCode();
 		}
 	}
 }

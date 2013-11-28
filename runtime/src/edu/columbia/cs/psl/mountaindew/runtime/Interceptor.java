@@ -33,8 +33,10 @@ import edu.columbia.cs.psl.mountaindew.adapter.AdapterLoader;
 import edu.columbia.cs.psl.mountaindew.state.State;
 import edu.columbia.cs.psl.mountaindew.stats.Correlationer;
 import edu.columbia.cs.psl.mountaindew.struct.MConfig;
+import edu.columbia.cs.psl.mountaindew.struct.MConfig.TransTuple;
 import edu.columbia.cs.psl.mountaindew.struct.MethodProfile;
 import edu.columbia.cs.psl.mountaindew.struct.MConfig.StateItem;
+import edu.columbia.cs.psl.mountaindew.struct.TransClassTuple;
 import edu.columbia.cs.psl.mountaindew.util.MetamorphicConfigurer;
 
 
@@ -59,17 +61,14 @@ public class Interceptor extends AbstractInterceptor {
 	private static String metaConfigString = "config/metamorphic.property";
 	private static String metaJson = "config/mconfig.json";
 	private static SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSS");
-	//private MetamorphicConfigurer mConfigurer = new MetamorphicConfigurer(metaConfigString);
 	private MetamorphicConfigurer mConfigurer = new MetamorphicConfigurer();
 	private HashMap<Method, HashSet<MetamorphicProperty>> properties = new HashMap<Method, HashSet<MetamorphicProperty>>();
 	private HashSet<Class<? extends MetamorphicProperty>> propertyPrototypes;
 	private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes;
 	private HashSet<Class<? extends MetamorphicInputProcessor>> nonValueChangeProcessorPrototypes;
-	private HashMap<String, HashMap<Class<? extends MetamorphicProperty>, HashSet<Class<? extends MetamorphicInputProcessor>>>> methodCombinations =
-			new HashMap<String, HashMap<Class<? extends MetamorphicProperty>, HashSet<Class<? extends MetamorphicInputProcessor>>>>();
-	private HashMap<String, HashMap<String, List<MConfig.StateItem>>> configMap;
-	//private HashSet<Class<? extends MetamorphicProperty>> finalPropertyPrototype;
-	//private HashSet<Class<? extends MetamorphicInputProcessor>> finalProcessorPrototype;
+	private HashMap<String, HashMap<Class<? extends MetamorphicProperty>, HashSet<TransClassTuple>>> methodCombinations =
+			new HashMap<String, HashMap<Class<? extends MetamorphicProperty>, HashSet<TransClassTuple>>>();
+	private HashMap<String, HashMap<MConfig.TransTuple, List<MConfig.StateItem>>> configMap;
 	private Class<? extends AbstractAdapter> targetAdapter;
 	private HashMap<Integer, MethodInvocation> invocations = new HashMap<Integer, MethodInvocation>();
 	private Integer invocationId = 0;
@@ -82,14 +81,11 @@ public class Interceptor extends AbstractInterceptor {
 	private String adapterKey = "Adapter";
 	private String stopKey = "Stop";
 	private String holdTag = "Holds";
-	
-//	private static int fileCount = 0;
+	private boolean isGlobal = true;
 	
 	public Interceptor(Object intercepted) {
 		super(intercepted);
 		System.out.println("Interceptor created");
-		//propertyPrototypes = MetamorphicObserver.getInstance().registerInterceptor(this);
-		//processorPrototypes = MetamorphicInputProcessorGroup.getInstance().getProcessors();
 		mConfigurer.loadConfiguration(metaJson);
 		configMap = mConfigurer.getConfigMap();
 		propertyPrototypes = MetamorphicObserver.getInstance().registerInterceptor(this);
@@ -114,13 +110,23 @@ public class Interceptor extends AbstractInterceptor {
 		return ret;
 	}
 	
-	private HashSet<Class<? extends MetamorphicInputProcessor>> filterTransformers(HashMap<String, List<StateItem>>tsMap) {
-		HashSet<Class<? extends MetamorphicInputProcessor>> ret = new HashSet<Class<? extends MetamorphicInputProcessor>>();
-		Set<String> selectedClasses = tsMap.keySet();
-		
+	private HashSet<TransClassTuple> filterTransformers(HashMap<MConfig.TransTuple, List<StateItem>>tsMap) {
+		HashSet<TransClassTuple> ret = new HashSet<TransClassTuple>();
+		/*Set<String> selectedClasses = tsMap.keySet();
+				
 		for (Class<? extends MetamorphicInputProcessor> tmpTrans: this.processorPrototypes) {
 			if (selectedClasses.contains(tmpTrans.getName())) {
 				ret.add(tmpTrans);
+			}
+		}*/
+		
+		TransClassTuple tct = null;
+		for (Class<? extends MetamorphicInputProcessor> tmpTrans: this.processorPrototypes) {
+			for (MConfig.TransTuple tt: tsMap.keySet()) {
+				if (tmpTrans.getName().equals(tt.getTransformer())) {
+					tct = new TransClassTuple(tmpTrans, tt.getTimes());
+					ret.add(tct);
+				}
 			}
 		}
 		
@@ -247,16 +253,17 @@ public class Interceptor extends AbstractInterceptor {
 		if (!properties.containsKey(method)) {			
 			properties.put(method, new HashSet<MetamorphicProperty>());
 			
-			HashMap<Class<? extends MetamorphicProperty>, HashSet<Class<? extends MetamorphicInputProcessor>>> checkerTransformerMap = null;
+			HashMap<Class<? extends MetamorphicProperty>, HashSet<TransClassTuple>> checkerTransformerMap = 
+					new HashMap<Class<? extends MetamorphicProperty>, HashSet<TransClassTuple>>();
 			
 			//String methodPFile = "config/" + method.getName() + ".property";
 			String methodJson = "config/" + method.getName() + ".json";
 			File tmpFile = new File(methodJson);
-			checkerTransformerMap = new HashMap<Class<? extends MetamorphicProperty>, HashSet<Class<? extends MetamorphicInputProcessor>>>();
 			
 			if (tmpFile.exists()) {
 				this.mConfigurer.loadConfiguration(methodJson);
 				this.configMap = this.mConfigurer.getConfigMap();
+				this.isGlobal = false;
 			}
 			
 			System.out.println("Confirm configuration: " + this.configMap);
@@ -265,27 +272,11 @@ public class Interceptor extends AbstractInterceptor {
 				checkerTransformerMap.put(tmpProperty, this.filterTransformers(this.configMap.get(tmpProperty.getName())));
 			}
 			
-			/*if (!tmpFile.exists()) {
-				for (Class<? extends MetamorphicProperty> tmpProperty: this.filterCheckers()) {
-					checkerTransformerMap.put(tmpProperty, this.filterTransformers(this.configMap.get(tmpProperty.getName())));
-				}
-			} else {
-				try {
-					Properties prop = new Properties();
-					prop.load(new FileInputStream(tmpFile));
-					
-					String rawCombinations = prop.getProperty(this.combKey);
-					
-					checkerTransformerMap = this.constructMethodSpecificConfiguration(rawCombinations);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}*/
 			this.methodCombinations.put(method.getName(), checkerTransformerMap);
-			
-			System.out.println("Check interceptor config map: " + this.configMap);
+
 			for (Class<? extends MetamorphicProperty> c: checkerTransformerMap.keySet()) {
-				HashMap<String, List<MConfig.StateItem>> tsMap = this.configMap.get(c.getName());
+				//HashMap<String, List<MConfig.StateItem>> tsMap = this.configMap.get(c.getName());
+				HashMap<MConfig.TransTuple, List<MConfig.StateItem>> tsMap = this.configMap.get(c.getName());
 				try {
 					MetamorphicProperty p = c.newInstance();
 					p.setMethod(method);
@@ -294,15 +285,29 @@ public class Interceptor extends AbstractInterceptor {
 					p.setNonValueChangeInputProcessors(this.nonValueChangeProcessorPrototypes);
 					p.loadInputProcessors();
 					
-					List<StateItem> tmpItemList;
-					for (MetamorphicInputProcessor tmpProcessor: p.getInputProcessors()) {
-						tmpItemList = tsMap.get(tmpProcessor.getClass().getName());
-						
-						HashMap<String, HashSet<String>> classMap = new HashMap<String, HashSet<String>>();
-						for (StateItem tmpItem: tmpItemList) {
-							classMap.put(tmpItem.getClassName(), tmpItem.getFieldNames());
+					if (!this.isGlobal) {
+						List<StateItem> tmpItemList;
+						for (MetamorphicInputProcessor tmpProcessor: p.getInputProcessors()) {
+							
+							//Find correct trans tuple
+							TransTuple targetTuple = null;
+							for (TransTuple tmp: tsMap.keySet()) {
+								if (tmp.getTransformer().equals(tmpProcessor.getClass().getName())) {
+									targetTuple = tmp;
+									break;
+								}
+							}
+							
+							//tmpItemList = tsMap.get(tmpProcessor.getClass().getName());
+							tmpItemList = tsMap.get(targetTuple);
+							
+							System.out.println("Check 304: " + tmpItemList);
+							HashMap<String, HashSet<String>> classMap = new HashMap<String, HashSet<String>>();
+							for (StateItem tmpItem: tmpItemList) {
+								classMap.put(tmpItem.getClassName(), tmpItem.getFieldNames());
+							}
+							tmpProcessor.setClassMap(classMap);
 						}
-						tmpProcessor.setClassMap(classMap);
 					}
 					
 					properties.get(method).add(p);
@@ -313,7 +318,7 @@ public class Interceptor extends AbstractInterceptor {
 				}
 			}
 			
-			MethodInvocation inv = new MethodInvocation();
+			/*MethodInvocation inv = new MethodInvocation();
 			inv.params = deepClone(params);
 			inv.method = method;
 			inv.callee = getInterceptedObject();
@@ -321,55 +326,9 @@ public class Interceptor extends AbstractInterceptor {
 			
 			this.calleeName = callee.getClass().getName();
 			int namePos = this.calleeName.lastIndexOf(".");
-			this.calleeName = this.calleeName.substring(namePos+1, calleeName.length());
+			this.calleeName = this.calleeName.substring(namePos+1, calleeName.length());*/
 		}
 		
-		/*if(!properties.containsKey(method))
-		{
-			properties.put(method, new HashSet<MetamorphicProperty>());
-			
-			HashMap<Class<? extends MetamorphicProperty>, HashSet<Class<? extends MetamorphicInputProcessor>>> checkerTransformerMap = null;
-			
-			String methodPFile = "config/" + method.getName() + ".property";
-			File tmpFile = new File(methodPFile);
-			if (!tmpFile.exists()) {
-				checkerTransformerMap = 
-						new HashMap<Class<? extends MetamorphicProperty>, HashSet<Class<? extends MetamorphicInputProcessor>>>();
-				
-				for (Class<? extends MetamorphicProperty> tmpProperty: this.propertyPrototypes) {
-					checkerTransformerMap.put(tmpProperty, this.processorPrototypes);
-				}
-			} else {				
-				try {
-					Properties prop = new Properties();
-					prop.load(new FileInputStream(tmpFile));
-					
-					String rawCombinations = prop.getProperty(this.combKey);
-					
-					checkerTransformerMap = this.constructMethodSpecificConfiguration(rawCombinations);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-			this.methodCombinations.put(method.getName(), checkerTransformerMap);
-			
-			for (Class<? extends MetamorphicProperty> c: checkerTransformerMap.keySet()) {
-				try {
-					MetamorphicProperty p = c.newInstance();
-					p.setMethod(method);
-					p.setInputProcessors(checkerTransformerMap.get(c));
-					p.setTargetAdapter(this.targetAdapter);
-					p.setNonValueChangeInputProcessors(this.nonValueChangeProcessorPrototypes);
-					p.loadInputProcessors();
-					properties.get(method).add(p);
-				} catch (InstantiationException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}			
-		}*/
-
 		MethodInvocation inv = new MethodInvocation();
 		//inv.params = params;
 		//In case the input param is also the output of the method
@@ -603,7 +562,18 @@ public class Interceptor extends AbstractInterceptor {
 				for (MConfig.MethodStateItem tmpItem: mStateSet) {
 					jw.beginObject();
 					jw.name("Checker").value(tmpItem.getChecker().replace("C:", ""));
-					jw.name("Transformer").value(tmpItem.getTransformer().replace("T:", ""));
+					//jw.name("Transformer").value(tmpItem.getTransformer().getTransformer().replace("T:", ""));
+					
+					jw.name("Transformer");
+					jw.beginObject();
+					jw.name(tmpItem.getTransformer().getTransformer().replace("T:", ""));
+					jw.beginArray();
+					for (Number num: tmpItem.getTransformer().getTimes()) {
+						jw.value(num);
+					}
+					jw.endArray();
+					jw.endObject();
+					
 					jw.name("ClassSpec");
 					
 					jw.beginArray();
@@ -639,7 +609,7 @@ public class Interceptor extends AbstractInterceptor {
 	public HashMap<String, HashSet<MConfig.MethodStateItem>> collectMethodStates() {
 		HashMap<String, HashSet<MConfig.MethodStateItem>> records = 
 				new HashMap<String, HashSet<MConfig.MethodStateItem>>();
-		for (MethodProfiler mProfiler: this.profilerList) {			
+		for (MethodProfiler mProfiler: this.profilerList) {		
 			for (MethodProfile mProfile: mProfiler.getHoldMethodProfiles()) {
 				String methodName = mProfile.getOri().getMethod().getName();
 				
@@ -664,7 +634,7 @@ public class Interceptor extends AbstractInterceptor {
 				if (records.keySet().contains(methodName)) {
 					boolean foundMS = false;
 					for (MConfig.MethodStateItem ms: records.get(methodName)) {
-						if (ms.getChecker().equalsIgnoreCase(checker) && ms.getTransformer().equalsIgnoreCase(transformer)) {
+						if (ms.getChecker().equalsIgnoreCase(checker) && ms.getTransformer().getTransformer().equalsIgnoreCase(transformer)) {
 							boolean foundSI = false;
 							for (StateItem tmpSI: ms.getStateItems()) {
 								if (tmpSI.getClassName().equalsIgnoreCase(className)) {
@@ -683,10 +653,14 @@ public class Interceptor extends AbstractInterceptor {
 						}
 					}
 					
+					TransTuple tmpTrans = null;
 					if (!foundMS) {
 						MConfig.MethodStateItem ms = new MConfig.MethodStateItem();
 						ms.setChecker(checker);
-						ms.setTransformer(transformer);
+						
+						//Empty list for users to fill in
+						tmpTrans = new TransTuple(transformer, new ArrayList<Number>());
+						ms.setTransformer(tmpTrans);
 						
 						StateItem si = new StateItem();
 						si.setClassName(className);
@@ -699,7 +673,9 @@ public class Interceptor extends AbstractInterceptor {
 				} else {
 					MConfig.MethodStateItem ms = new MConfig.MethodStateItem();
 					ms.setChecker(checker);
-					ms.setTransformer(transformer);
+					
+					TransTuple transTuple = new TransTuple(transformer, new ArrayList<Number>());
+					ms.setTransformer(transTuple);
 					
 					StateItem si = new StateItem();
 					si.setClassName(className);
@@ -865,13 +841,7 @@ public class Interceptor extends AbstractInterceptor {
 		}		
 	}
 	
-	private void reportTransformerChecker() {
-		/*System.out.println("Registered Transformers: ");
-		
-		for (Class<? extends MetamorphicInputProcessor> processorPrototype: this.finalProcessorPrototype) {
-			System.out.println(processorPrototype.getName());
-		}*/
-		
+	private void reportTransformerChecker() {		
 		System.out.println("");
 		
 		System.out.println("Registered Adapter: ");
@@ -880,24 +850,19 @@ public class Interceptor extends AbstractInterceptor {
 		System.out.println("");
 		
 		System.out.println("Method-specific Setting");
-		HashMap<Class<? extends MetamorphicProperty>, HashSet<Class<? extends MetamorphicInputProcessor>>> tmpCombineMap;
+		HashMap<Class<? extends MetamorphicProperty>, HashSet<TransClassTuple>> tmpCombineMap;
 		for (String tmpMethod: this.methodCombinations.keySet()) {
 			System.out.println("Method Name: " + tmpMethod);
 			System.out.println("Registered Combinations:");
 			
 			tmpCombineMap = this.methodCombinations.get(tmpMethod);
 			for (Class<? extends MetamorphicProperty> tmpChecker: tmpCombineMap.keySet()) {
-				for (Class<? extends MetamorphicInputProcessor> tmpProcessor: tmpCombineMap.get(tmpChecker)) {
-					System.out.println(tmpProcessor.getName() + " => " + tmpChecker);
+				for (TransClassTuple tmp: tmpCombineMap.get(tmpChecker)) {
+					System.out.println(tmp.getTransClass() + " => " + tmpChecker);
+					System.out.println("Parameter setting: " + tmp.getTimes());
 				}
 			}
 		}
-		
-		/*System.out.println("Registered Checkers: ");
-		
-		for (Class<? extends MetamorphicProperty> checkerPrototype: this.finalPropertyPrototype) {
-			System.out.println(checkerPrototype.getName());
-		}*/
 	}
 	
 	private static class MethodProp {

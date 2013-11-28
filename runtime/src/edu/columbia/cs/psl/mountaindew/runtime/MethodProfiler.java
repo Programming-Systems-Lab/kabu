@@ -14,16 +14,11 @@ public class MethodProfiler {
 	private ArrayList<MethodProfile> profiles = new ArrayList<MethodProfile>();
 	
 	private ArrayList<MethodProfile> holdProfiles = new ArrayList<MethodProfile>();
+	
+	private HashMap<String, Boolean> holdMap = new HashMap<String, Boolean>();
 		
 	public void addMethodProfile(MethodInvocation ori, MethodInvocation trans, PropertyResult result) {
 		MethodProfile mProfile = new MethodProfile(ori, trans, result);
-		
-		//Target on single input and single output first
-		/*mProfile.setOriInOriOut(Correlationer.calCorrelation(ori.getParams(), ori.getReturnValue())[0]);
-		mProfile.setTransInTransOut(Correlationer.calCorrelation(trans.getParams(), trans.getReturnValue())[0]);
-		mProfile.setOriInTransIn(Correlationer.calCorrelation(ori.getParams(), trans.getParams())[0]);
-		mProfile.setOriOutTransOut(Correlationer.calCorrelation(ori.getReturnValue(), trans.getReturnValue())[0]);*/
-		
 		this.profiles.add(mProfile);
 	}
 	
@@ -40,6 +35,32 @@ public class MethodProfiler {
 	}
 	
 	public ArrayList<MethodProfile> getHoldMethodProfiles() {
-		return this.holdProfiles;
+		//return this.holdProfiles;
+		this.summarizeProfilers();
+		
+		System.out.println("Check hold map: " + this.holdMap);
+		ArrayList<MethodProfile> ret = new ArrayList<MethodProfile>();
+		String identifier = null;
+		for (MethodProfile mp: this.profiles) {
+			identifier = mp.getFrontend() + mp.getBackend() + mp.getResult().stateItem;
+			
+			if (this.holdMap.get(identifier)) {
+				ret.add(mp);
+			}
+		}
+		return ret;
+	}
+	
+	private void summarizeProfilers() {
+		String identifier = null;
+		for (MethodProfile tmp: this.profiles) {
+			identifier = tmp.getFrontend() + tmp.getBackend() + tmp.getResult().stateItem;
+
+			if (!holdMap.keySet().contains(identifier)) {
+				holdMap.put(identifier, tmp.getResult().holds);
+			} else {
+				holdMap.put(identifier, holdMap.get(identifier) && tmp.getResult().holds);
+			}
+		}
 	}
 }

@@ -43,7 +43,7 @@ public class MetamorphicConfigurer {
 	
 	private List<MConfig.MethodStateItem> mStateItems = null;
 	
-	private HashMap<String, HashMap<String, List<MConfig.StateItem>>> configMap;
+	private HashMap<String, HashMap<MConfig.TransTuple, List<MConfig.StateItem>>> configMap;
 	
 	public static String getCheckerFullName(String checkerName) {
 		return checkerPackage + dot + checkerName;
@@ -59,14 +59,15 @@ public class MetamorphicConfigurer {
 		
 		this.adapterName = mconfig.getAdapter();
 		this.adapterClassName = adapterPackage + dot + this.adapterName;
+		
+		System.out.println("Check raw config map in Meta Configu: " + mconfig.getConfigMap());
+		
 		//Add package name to checker and transformer
 		this.packageConfigMap(mconfig.getConfigMap());
-		/*this.transformerNames = packageClass(mconfig.getTransformers(), transformerPackage);
-		this.checkerNames = packageClass(mconfig.getCheckers(), checkerPackage);
-		this.stateItems = mconfig.getStates();*/
+		System.out.println("Check pack map: " + this.configMap);
 	}
 	
-	public HashMap<String, HashMap<String, List<MConfig.StateItem>>> getConfigMap() {
+	public HashMap<String, HashMap<MConfig.TransTuple, List<MConfig.StateItem>>> getConfigMap() {
 		return this.configMap;
 	}
 	
@@ -109,21 +110,22 @@ public class MetamorphicConfigurer {
 		}
 	}*/
 	
-	public void packageConfigMap(HashMap<String, HashMap<String, List<MConfig.StateItem>>> rawConfigMap) {
-		this.configMap = new HashMap<String, HashMap<String, List<MConfig.StateItem>>>();
+	public void packageConfigMap(HashMap<String, HashMap<MConfig.TransTuple, List<MConfig.StateItem>>> rawConfigMap) {
+		this.configMap = new HashMap<String, HashMap<MConfig.TransTuple, List<MConfig.StateItem>>>();
 		
 		String completeChecker;
-		HashMap<String, List<MConfig.StateItem>> tmpTransMap;
+		HashMap<MConfig.TransTuple, List<MConfig.StateItem>> tmpTransMap;
 		for (String tmpChecker: rawConfigMap.keySet()) {
 			completeChecker = getCheckerFullName(tmpChecker);
 			
 			tmpTransMap = rawConfigMap.get(tmpChecker);
 			
-			String  completeTrans;
-			HashMap<String, List<MConfig.StateItem>> completeTransMap = new HashMap<String, List<MConfig.StateItem>>();
-			for (String tmpTrans: tmpTransMap.keySet()) {
-				completeTrans = getTransformerFullName(tmpTrans);
-				completeTransMap.put(completeTrans, tmpTransMap.get(tmpTrans));
+			HashMap<MConfig.TransTuple, List<MConfig.StateItem>> completeTransMap = new HashMap<MConfig.TransTuple, List<MConfig.StateItem>>();
+			MConfig.TransTuple tmpNew;
+			for (MConfig.TransTuple tmpTrans: tmpTransMap.keySet()) {
+				//completeTrans = getTransformerFullName(tmpTrans);
+				tmpNew = new MConfig.TransTuple(getTransformerFullName(tmpTrans.getTransformer()), tmpTrans.getTimes());
+				completeTransMap.put(tmpNew, tmpTransMap.get(tmpTrans));
 			}
 			
 			this.configMap.put(completeChecker, completeTransMap);

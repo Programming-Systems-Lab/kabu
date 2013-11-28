@@ -20,6 +20,7 @@ import edu.columbia.cs.psl.mountaindew.adapter.AdapterLoader;
 import edu.columbia.cs.psl.mountaindew.adapter.DefaultAdapter;
 import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 import edu.columbia.cs.psl.mountaindew.struct.PossiblyMetamorphicMethodInvocation;
+import edu.columbia.cs.psl.mountaindew.struct.TransClassTuple;
 import edu.columbia.cs.psl.mountaindew.util.MetamorphicConfigurer;
 
 public abstract class MetamorphicProperty {
@@ -37,7 +38,9 @@ public abstract class MetamorphicProperty {
 	
 	//private HashSet<Class<? extends MetamorphicInputProcessor>> nonValueChangeProcessors = MetamorphicInputProcessorGroup.getInstance().getNonValueChangeProcessors();
 	
-	private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes;
+	//private HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes;
+	
+	private HashSet<TransClassTuple> processorPrototypes;
 	
 	private HashSet<Class<? extends MetamorphicInputProcessor>> nonValueChangeProcessors;
 	
@@ -115,7 +118,11 @@ public abstract class MetamorphicProperty {
 		this.method = method;
 	}
 	
-	public void setInputProcessors (HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes) {
+	/*public void setInputProcessors (HashSet<Class<? extends MetamorphicInputProcessor>> processorPrototypes) {
+		this.processorPrototypes = processorPrototypes;
+	}*/
+	
+	public void setInputProcessors(HashSet<TransClassTuple> processorPrototypes) {
 		this.processorPrototypes = processorPrototypes;
 	}
 	
@@ -138,9 +145,21 @@ public abstract class MetamorphicProperty {
 	}
 	
 	public void loadInputProcessors() {
-		for (Class<? extends MetamorphicInputProcessor> processorClass: this.processorPrototypes) {
+		/*for (Class<? extends MetamorphicInputProcessor> processorClass: this.processorPrototypes) {
 			try {
 				MetamorphicInputProcessor inputProcessor = processorClass.newInstance();
+				this.processors.add(inputProcessor);
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}*/
+		
+		for (TransClassTuple tuple: this.processorPrototypes) {
+			try {
+				MetamorphicInputProcessor inputProcessor = tuple.getTransClass().newInstance();
+				inputProcessor.addBoundaryDefaultParameters(tuple.getTimes());
 				this.processors.add(inputProcessor);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
