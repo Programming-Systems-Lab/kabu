@@ -26,6 +26,6 @@
 	<classpathentry kind="lib" path="lib/gson-2.2.4.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JavaML17"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ejml23"/>
-	<classpathentry kind="lib" path="lib/weka_modified.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/weka369"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

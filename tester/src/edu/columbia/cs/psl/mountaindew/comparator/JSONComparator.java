@@ -192,7 +192,15 @@ class ReaderThread extends Thread{
 				if (tmp2.equals(ReaderThread.cName)) {
 					so.setChecker(reader.nextString());
 				} else if (tmp2.equals(ReaderThread.tName)) {
-					so.setTransformer(reader.nextString());
+					reader.beginObject();
+					so.setTransformer(reader.nextName());
+					//Do nothing for array now
+					reader.beginArray();
+					while(reader.hasNext()) {
+						reader.nextDouble();
+					}
+					reader.endArray();
+					reader.endObject();
 				} else if (tmp2.equals(ReaderThread.csName)) {
 					reader.beginArray();
 					

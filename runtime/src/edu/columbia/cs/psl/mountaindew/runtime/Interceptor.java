@@ -300,8 +300,6 @@ public class Interceptor extends AbstractInterceptor {
 							
 							//tmpItemList = tsMap.get(tmpProcessor.getClass().getName());
 							tmpItemList = tsMap.get(targetTuple);
-							
-							System.out.println("Check 304: " + tmpItemList);
 							HashMap<String, HashSet<String>> classMap = new HashMap<String, HashSet<String>>();
 							for (StateItem tmpItem: tmpItemList) {
 								classMap.put(tmpItem.getClassName(), tmpItem.getFieldNames());

@@ -9,6 +9,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.Comparator;
+
+import edu.columbia.cs.psl.mountaindew.util.MRExporter;
+import edu.columbia.cs.psl.mountaindew.versionsorter.WekaVersionSorter;
 
 public class MetaRegressionTester {
 	
@@ -42,7 +46,10 @@ public class MetaRegressionTester {
 		String methodName = args[2];
 		HashSet<String> versions = new HashSet<String>();
 		
-		TreeMap<String, Set<StateObject>> stateMap = new TreeMap<String, Set<StateObject>>();
+		//Make compartor configurable
+		Comparator<String> vSorter = new WekaVersionSorter();
+		TreeMap<String, Set<StateObject>> stateMap = 
+				new TreeMap<String, Set<StateObject>>(vSorter);
 		
 		for (int i = 3; i < args.length; i++) {
 			//versions.add(libSpecificName(libName, args[i]));
@@ -59,10 +66,13 @@ public class MetaRegressionTester {
 			cleanJSONFile(methodName, version, libBase);
 		}
 		
+		StringBuilder sb = new StringBuilder();
 		if (stateMap.keySet().size() == 1) {
 			Entry<String, Set<StateObject>> first = stateMap.firstEntry();
 			System.out.println(first.getKey());
+			sb.append(first.getKey() + "\n");
 			System.out.println(first.getValue());
+			sb.append(first.getValue() + "\n");
 		} else {
 			for (String key: stateMap.keySet()) {
 				Set<StateObject> curSet = stateMap.get(key);
@@ -73,15 +83,22 @@ public class MetaRegressionTester {
 				}
 				Set<StateObject> nextSet = stateMap.get(nextKey);
 				
-				System.out.println(key + " vs. " + nextKey);
+				String kn = key + "vs." + nextKey;
+				System.out.println(kn);
+				sb.append(kn + "\n");
 				Set<StateObject> diffSet = JSONComparator.diffStates(curSet, nextSet);
 				System.out.println(diffSet);
+				sb.append(diffSet + "\n");
 				
-				System.out.println(nextKey + " vs. " + key);
+				String nk = nextKey + "vs." + key;
+				System.out.println(nk);
+				sb.append(nk + "\n");
 				diffSet = JSONComparator.diffStates(nextSet, curSet);
 				System.out.println(diffSet);
+				sb.append(diffSet + "\n");
 			}
 		}
+		MRExporter.exportMetaResult(methodName, sb.toString());
 	}
 	
 	public static void executeMetaTesting(String driver, String version, String libBase) {
