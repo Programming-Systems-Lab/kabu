@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.simple.SimpleMatrix;
+import org.ejml.factory.LinearSolver;
 
 public class EJMLAdapter extends AbstractAdapter{
 	
@@ -65,8 +66,28 @@ public class EJMLAdapter extends AbstractAdapter{
 
 	@Override
 	public Object adaptOutput(Object outputModel, Object... testingData) {
-		double[][] ret;
-		if (outputModel.getClass() == SimpleMatrix.class) {
+		double[][] ret = null;
+		
+		if (LinearSolver.class.isAssignableFrom(outputModel.getClass())) {
+			LinearSolver solver = (LinearSolver)outputModel;
+			
+			Object tmpObj = testingData[0];
+			
+			if (SimpleMatrix.class.isAssignableFrom(tmpObj.getClass())) {
+				SimpleMatrix all = (SimpleMatrix)tmpObj;
+				
+				SimpleMatrix xdata = all.extractMatrix(0, all.numRows(), 0, all.numCols() - 1);
+				SimpleMatrix ydata = all.extractMatrix(0, all.numRows(), all.numCols() - 1, all.numCols());
+				
+		        DenseMatrix64F x = new DenseMatrix64F(xdata.numCols(), 1);
+
+		        solver.solve(ydata.getMatrix(),x);
+		        
+		        SimpleMatrix theta = new SimpleMatrix(x);
+		        
+		        return adaptOutput(theta);
+			}
+		} else if (outputModel.getClass() == SimpleMatrix.class) {
 			SimpleMatrix outputMatrix = (SimpleMatrix)outputModel;
 			
 			ret = new double[outputMatrix.numRows()][outputMatrix.numCols()];

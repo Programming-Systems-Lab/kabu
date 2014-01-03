@@ -86,7 +86,7 @@ public class EJMLExample {
 	}
 	
 	@Metamorphic
-	public SimpleMatrix solveAll(SimpleMatrix all) {
+	public LinearSolver createSolver(SimpleMatrix all) {
 		SimpleMatrix xdata = all.extractMatrix(0, all.numRows(), 0, all.numCols() - 1);
 		SimpleMatrix ydata = all.extractMatrix(0, all.numRows(), all.numCols() - 1, all.numCols());
 		
@@ -99,12 +99,17 @@ public class EJMLExample {
         if( !solver.setA(xdata.getMatrix()) )
             throw new RuntimeException("Matrix cannot be solved");
         
-        DenseMatrix64F x = new DenseMatrix64F(xdata.numCols(), 1);
-
+        return solver;
+        /*DenseMatrix64F x = new DenseMatrix64F(xdata.numCols(), 1);
         solver.solve(ydata.getMatrix(),x);	
-		//SimpleMatrix theta = xdata.solve(ydata);
         SimpleMatrix theta = new SimpleMatrix(x);
-		
+		return theta;*/
+	}
+	
+	public SimpleMatrix solveAll(LinearSolver solver, SimpleMatrix ydata, int row, int column) {
+		DenseMatrix64F x = new DenseMatrix64F(row, column);
+		solver.solve(ydata.getMatrix(), x);
+		SimpleMatrix theta = new SimpleMatrix(x);
 		return theta;
 	}
 	
@@ -136,7 +141,7 @@ public class EJMLExample {
 	}
 	
 	public static void main(String args[]) {
-		DenseMatrix64F a = new DenseMatrix64F(3, 3);
+		/*DenseMatrix64F a = new DenseMatrix64F(3, 3);
 		DenseMatrix64F x = new DenseMatrix64F(3, 1);
 		DenseMatrix64F b = new DenseMatrix64F(3, 1);
 		
@@ -155,14 +160,14 @@ public class EJMLExample {
 		}
 		
 		System.out.println("Check a: " + a);
-		System.out.println("Check b: " + b);
+		System.out.println("Check b: " + b);*/
 		
 		try {
-			if (!CommonOps.solve(a, b, x)) {
+			/*if (!CommonOps.solve(a, b, x)) {
 				System.err.println("Cannot solve");
 			} else {
 				System.out.println("Solution: " + x);
-			}
+			}*/
 			
 			//SimpleMatrix sm = new SimpleMatrix(a);
 			//sm.saveToFileCSV("data/simple.csv");
@@ -195,9 +200,9 @@ public class EJMLExample {
 			SimpleMatrix allMatrix = xtMatrix.combine(0, SimpleMatrix.END, ytMatrix);
 			System.out.println("Check all matrix: " + allMatrix);
 			
-			ex.solveAll(allMatrix);
+			LinearSolver solver = ex.createSolver(allMatrix);
 			
-			SimpleMatrix theta = ex.solveAll(allMatrix);
+			SimpleMatrix theta = ex.solveAll(solver, ytMatrix, xtMatrix.numCols(), 1);
 			System.out.println("Check solve all: " + theta);
 			
 			SimpleMatrix hypOnTrain = ex.applyModelOnTestdata(xtMatrix, theta);

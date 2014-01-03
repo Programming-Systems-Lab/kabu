@@ -56,18 +56,18 @@ public class WekaClusterExample {
 		return null;
 	}
 	
-	/*@Metamorphic
+	@Metamorphic
 	public Cobweb trainCobweb(Instances data) {
 		Cobweb cw = new Cobweb();
 		try {
-			cw.setSeed(3);
+			cw.setOptions(new String[]{"-S", "-5"});
 			cw.buildClusterer(data);
 			return cw;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		return null;
-	}*/
+	}
 	
 	@Metamorphic
 	public EM trainEM(Instances data) {

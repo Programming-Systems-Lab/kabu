@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.Comparator;
 
 import edu.columbia.cs.psl.mountaindew.util.MRExporter;
+import edu.columbia.cs.psl.mountaindew.versionsorter.EJMLVersionSorter;
 import edu.columbia.cs.psl.mountaindew.versionsorter.WekaVersionSorter;
 
 public class MetaRegressionTester {
@@ -47,7 +48,8 @@ public class MetaRegressionTester {
 		HashSet<String> versions = new HashSet<String>();
 		
 		//Make compartor configurable
-		Comparator<String> vSorter = new WekaVersionSorter();
+		//Comparator<String> vSorter = new WekaVersionSorter();
+		Comparator<String> vSorter = new EJMLVersionSorter();
 		TreeMap<String, Set<StateObject>> stateMap = 
 				new TreeMap<String, Set<StateObject>>(vSorter);
 		

@@ -50,7 +50,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 							if(propertyApplies(i, j, k))
 							{								
 								//By default, we use original data as testing data.
-								//It's adapter developer's responsibility to provide correct data in adaptOut of adapter.
+								//Its adapter developer's responsibility to provide correct data in adaptOut of adapter.
 								this.targetAdapter.setData(o1, i.returnValue, o2, j.returnValue);
 								this.targetAdapter.setDefaultTestingData(o1);
 								
@@ -163,7 +163,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 		if (obj.getClass().getAnnotation(LogState.class) == null)
 			return ;
 		
-		try {			
+		try {
 			String fieldName;
 			Object fieldValue;
 			
@@ -189,8 +189,10 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 				boolean basic = ClassChecker.basicClass(fieldValue);
 				boolean comparable = ClassChecker.comparableClass(fieldValue, "equals", Object.class);
 				boolean stringable = ClassChecker.comparableClass(fieldValue, "toString");
+				boolean annotable = (fieldValue == null)? false: 
+					(fieldValue.getClass().getAnnotation(LogState.class) == null?false: true);
 				
-				if (!basic && !comparable && !stringable)
+				if (!basic && !comparable && !stringable && !annotable)
 					continue;
 					
 				if (fieldName.equals(localMap)) {
@@ -204,8 +206,10 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 						recorder.put(obj.getClass().getName() + ":" + fieldName, fieldValue);
 					else
 						recorder.put(obj.getClass().getName() + ":" + fieldName, fieldValue.toString());
-				} else
+				} else {
 					recorder.put(obj.getClass().getName() + ":" + fieldName, uninitialized);
+				}
+				
 				recursiveRecordState(recorder, fieldValue);
 			}
 		} catch (Exception ex) {

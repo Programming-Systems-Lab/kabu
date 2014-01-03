@@ -274,8 +274,7 @@ public class WekaClassifierExample {
 		if (bag == null) {
 			System.err.println("Fail to train bag");
 		}
-		wcEx.evalModel(bag, data);
-		System.out.println(bag.toString());*/
+		wcEx.evalModel(bag, data);*/
 		
 		/*LibSVM libsvm = wcEx.trainSVM(data);
 		if (libsvm == null) {
@@ -283,11 +282,11 @@ public class WekaClassifierExample {
 		}
 		wcEx.evalModel(libsvm, data);*/
 		
-		Decorate decorate = wcEx.trainDecorate(data);
+		/*Decorate decorate = wcEx.trainDecorate(data);
 		if (decorate == null) {
 			System.err.println("Fail to train decorate");
 		}
-		wcEx.evalModel(decorate, data);
+		wcEx.evalModel(decorate, data);*/
 		
 		/*Dagging dagging = wcEx.trainDagging(data);
 		if (dagging == null) {
@@ -302,11 +301,11 @@ public class WekaClassifierExample {
 		}
 		wcEx.evalModel(smo, data);*/
 		
-		/*LogitBoost lb = wcEx.trainLB(data);
+		LogitBoost lb = wcEx.trainLB(data);
 		if (lb == null) {
 			System.err.println("Fail to train LogitBoost");
 		}
-		wcEx.evalModel(lb, data);*/
+		wcEx.evalModel(lb, data);
 		
 		/*J48 tree = wcEx.trainJ48Model(data);
 		if (tree == null) {
