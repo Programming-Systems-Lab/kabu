@@ -342,8 +342,14 @@ public class MConfig {
 		
 		private HashSet<String> fieldNames = new HashSet<String>();
 		
+		private HashSet<String> allFields = new HashSet<String>();
+		
 		public void addFieldName(String fieldName) {
 			this.fieldNames.add(fieldName);
+		}
+		
+		public void addAllFieldName(String fieldName) {
+			this.allFields.add(fieldName);
 		}
 		
 		public void setClassName(String className) {
@@ -358,11 +364,16 @@ public class MConfig {
 			return this.fieldNames;
 		}
 		
+		public HashSet<String> getAllFields() {
+			return this.allFields;
+		}
+		
 		@Override
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
 			sb.append("ClassName: " + this.className + "\n");
 			sb.append("FieldNames: " + this.fieldNames + "\n");
+			sb.append("AllFields: " + this.allFields + "\n");
 			return sb.toString();
 		}
 		
@@ -378,6 +389,10 @@ public class MConfig {
 			
 			if (!(tmp.getFieldNames() == this.getFieldNames()))
 				return false;
+			
+			if (!(tmp.getAllFields() == this.getAllFields())) {
+				return false;
+			}
 			
 			return true;
 		}

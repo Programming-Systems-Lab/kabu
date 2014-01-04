@@ -1,5 +1,5 @@
 {"globalConfig": {
-	"Adapter":"EJMLAdapter",
-	"Transformers":[{"MultiplyByNumericConstant":[10, 100]}, {"AddNumericConstant":[5, 100]}, {"Negate":[2]}, {"Shuffle":[4]}, {"Reverse":[2]}],
+	"Adapter":"WekaAdapter",
+	"Transformers":[{"MultiplyByNumericConstant":[]}],
 	"Checkers":["ContentEqualer"]
 }}

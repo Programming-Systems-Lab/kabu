@@ -1,5 +1,10 @@
 package edu.columbia.cs.psl.mountaindew.absprop;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -26,6 +31,10 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 	private static String uninitialized = "unintitialized";
 	
 	private static String localMap = "stateStorage";
+	
+	private static String localSuffix = "_local";
+	
+	private static String fieldSuffix = "_field";
 	
 	private MethodProfiler mProfiler = new MethodProfiler();
 	
@@ -54,8 +63,12 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								this.targetAdapter.setData(o1, i.returnValue, o2, j.returnValue);
 								this.targetAdapter.setDefaultTestingData(o1);
 								
+								//Recorder for recording metamorphic testing result
 								HashMap<String, Object> recorder1 = new HashMap<String, Object>();
 								HashMap<String, Object> recorder2 = new HashMap<String, Object>();
+								
+								HashMap<String, Set<String>> fieldRecorder1 = new HashMap<String, Set<String>>();
+								HashMap<String, Set<String>> fieldRecorder2 = new HashMap<String, Set<String>>();
 								
 								//Get the classmap from child
 								this.targetAdapter.setStateDefinition(j.getClassMap());
@@ -64,8 +77,8 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								Object calleei = i.getCallee();
 								Object calleej = j.getCallee();
 								
-								this.recursiveRecordState(recorder1, calleei);
-								this.recursiveRecordState(recorder2, calleej);
+								this.recursiveRecordState(recorder1, calleei, true);
+								this.recursiveRecordState(recorder2, calleej, false);
 								
 								System.out.println("Check callee: " + calleei.getClass().getName());
 						
@@ -87,8 +100,8 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								}
 								
 								//Recursively check if field in output object is metamorphic
-								this.recursiveRecordState(recorder1, i.returnValue);
-								this.recursiveRecordState(recorder2, j.returnValue);
+								this.recursiveRecordState(recorder1, i.returnValue, true);
+								this.recursiveRecordState(recorder2, j.returnValue, false);
 								
 								Object tmpObj1 = null;
 								Object tmpObj2 = null;
@@ -125,27 +138,6 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 									}
 									propertyList.add(result);
 								}
-								
-								/*if (returnValuesApply(o1, adaptRt1, o2, adaptRt2))
-								{
-									//Property may hold
-									result.result=Result.HOLDS;
-									result.holds=true;
-									result.supportingSize++;
-									result.supportingInvocations.add(new MethodInvocation[] {i, j});
-									result.combinedProperty = j.getFrontend() + "=>" + j.getBackend();
-									this.mProfiler.addHoldMethodProfile(i, j, result);
-								}
-								else
-								{
-									//Property definitely doesn't hold
-									result.result=Result.DOES_NOT_HOLD;
-									result.holds=false;
-									result.antiSupportingSize++;
-									result.antiSupportingInvocations.add(new MethodInvocation[] {i, j});
-									result.combinedProperty = j.getFrontend() + "=>" + j.getBackend();
-								}
-								propertyList.add(result);*/
 							}
 						}
 					}
@@ -156,7 +148,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 		
 	}
 	
-	private void recursiveRecordState(HashMap<String, Object> recorder, Object obj) {
+	private void recursiveRecordState(HashMap<String, Object> recorder, Object obj, boolean shouldSerialize) {
 		if (obj == null)
 			return ;
 		
@@ -175,6 +167,11 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 			combinedFields.addAll(myFields);
 			combinedFields.addAll(parentFields);
 			
+			String objClassName = obj.getClass().getName();
+			Map<Integer, String> localVarMap = this.deserializeLocalVarMap(objClassName);
+			System.out.println("Check localVarMap in pairwise: " + localVarMap);
+			
+			Set<String> allFields = new HashSet<String>();
 			for(Field field: combinedFields) {
 				fieldName = field.getName();
 				
@@ -199,19 +196,61 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 					//Flatten local variable map
 					Map tmpMap = (HashMap)ClassChecker.comparableClasses(fieldValue);
 					for (Object key: tmpMap.keySet()) {
-						recorder.put(obj.getClass().getName() + ":" + fieldName + key, tmpMap.get(key));
+						recorder.put(objClassName + ":" + localVarMap.get(key) + localSuffix, tmpMap.get(key));
+						allFields.add(localVarMap.get(key) + localSuffix);
 					}
 				} else if (fieldValue != null) {
 					if (comparable || basic)
-						recorder.put(obj.getClass().getName() + ":" + fieldName, fieldValue);
+						recorder.put(objClassName + ":" + fieldName, fieldValue);
 					else
-						recorder.put(obj.getClass().getName() + ":" + fieldName, fieldValue.toString());
+						recorder.put(objClassName + ":" + fieldName, fieldValue.toString());
+					
+					allFields.add(fieldName);
 				} else {
-					recorder.put(obj.getClass().getName() + ":" + fieldName, uninitialized);
+					recorder.put(objClassName + ":" + fieldName, uninitialized);
+					allFields.add(fieldName);
 				}
 				
-				recursiveRecordState(recorder, fieldValue);
+				recursiveRecordState(recorder, fieldValue, shouldSerialize);
 			}
+			
+			if (shouldSerialize) {
+				this.serializeFieldSet(objClassName, allFields);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	private Map<Integer, String> deserializeLocalVarMap(String className) {
+		try {
+			File mapFile = new File("ser/" + className + ".ser");
+			FileInputStream in = new FileInputStream(mapFile);
+			ObjectInputStream reader = new ObjectInputStream(in);
+			
+			Map<Integer, String> localVarMap = (Map<Integer, String>)reader.readObject();
+			System.out.println("Complete deserialization of " + mapFile.getAbsolutePath());
+			return localVarMap;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+	
+	private void serializeFieldSet(String className, Set<String> fields) {
+		try {
+			File fieldFile = new File("ser/" + className + fieldSuffix + ".ser");
+			if (fieldFile.exists()) {
+				fieldFile.delete();
+			}
+			
+			FileOutputStream out = new FileOutputStream(fieldFile);
+			ObjectOutputStream writer = new ObjectOutputStream(out);
+			writer.writeObject(fields);
+			
+			out.close();
+			writer.close();
+			System.out.println("Complete serialization of all fields: " + fieldFile.getAbsolutePath());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -225,11 +264,6 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 		result.property=this.getClass();
 		
 		int[] interestedIndices = getInterestedVariableIndices();
-		//Check interestedIndeices
-		/*System.out.println("Indice length:  " + interestedIndices.length);
-		for (int i = 0; i < interestedIndices.length; i++) {
-			System.out.println("Check index: " + interestedIndices[i]);
-		}*/
 		
 		for(MethodInvocation i : getInvocations())
 		{
@@ -242,29 +276,6 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 						{
 							Object o1 = v;
 							Object o2 = j.params[k];
-							// In order to make o1 is the ori (parent) and o2 is the transformation (child)
-							/*Object o1;
-							Object o2;
-							
-							System.out.println("Test i: " + i + " " + i.getParent() + " " + i.getReturnValue());
-							System.out.println("Test j: " + j + " " + j.getParent() + " " + j.getReturnValue());
-							
-							if (i == j.getParent()) {
-//								System.out.println("i is parent of j");
-								parent = i;
-								child = j;
-								o1 = v;
-								o2 = j.params[k];
-							} else if (j == i.getParent()) {
-//								System.out.println("j is parent of i");
-								parent = j;
-								child = i;
-								o1 = j.params[k];
-								o2 = v;
-							} else {
-								System.err.println("Two input has no relation to compare");
-								return null;
-							}*/
 							
 							if(propertyApplies(i, j, k))
 							{

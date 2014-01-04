@@ -12,7 +12,7 @@ import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.bayes.NaiveBayes;
 //import weka.classifiers.functions.GaussianProcesses;
 import weka.classifiers.functions.LeastMedSq;
-//import weka.classifiers.functions.LibSVM;
+import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.SMO;
@@ -138,7 +138,7 @@ public class WekaClassifierExample {
 		return null;
 	}
 	
-	/*@Metamorphic
+	@Metamorphic
 	public LibSVM trainSVM(Instances data) {
 		LibSVM svm = new LibSVM();
 		//String[] options = new String[]{"-t"};
@@ -150,7 +150,7 @@ public class WekaClassifierExample {
 			ex.printStackTrace();
 		}
 		return null;
-	}*/
+	}
 	
 	@Metamorphic
 	public Logistic trainLogistic(Instances data) {
@@ -276,11 +276,11 @@ public class WekaClassifierExample {
 		}
 		wcEx.evalModel(bag, data);*/
 		
-		/*LibSVM libsvm = wcEx.trainSVM(data);
+		LibSVM libsvm = wcEx.trainSVM(data);
 		if (libsvm == null) {
 			System.out.println("Fail to train SVM");
 		}
-		wcEx.evalModel(libsvm, data);*/
+		wcEx.evalModel(libsvm, data);
 		
 		/*Decorate decorate = wcEx.trainDecorate(data);
 		if (decorate == null) {
@@ -301,11 +301,11 @@ public class WekaClassifierExample {
 		}
 		wcEx.evalModel(smo, data);*/
 		
-		LogitBoost lb = wcEx.trainLB(data);
+		/*LogitBoost lb = wcEx.trainLB(data);
 		if (lb == null) {
 			System.err.println("Fail to train LogitBoost");
 		}
-		wcEx.evalModel(lb, data);
+		wcEx.evalModel(lb, data);*/
 		
 		/*J48 tree = wcEx.trainJ48Model(data);
 		if (tree == null) {
