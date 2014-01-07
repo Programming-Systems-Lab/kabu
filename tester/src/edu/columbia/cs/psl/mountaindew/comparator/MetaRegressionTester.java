@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import java.util.Comparator;
 
 import edu.columbia.cs.psl.mountaindew.util.MRExporter;
+import edu.columbia.cs.psl.mountaindew.util.MetaSerializer;
 import edu.columbia.cs.psl.mountaindew.versionsorter.EJMLVersionSorter;
 import edu.columbia.cs.psl.mountaindew.versionsorter.WekaVersionSorter;
 
@@ -48,10 +49,12 @@ public class MetaRegressionTester {
 		HashSet<String> versions = new HashSet<String>();
 		
 		//Make compartor configurable
-		//Comparator<String> vSorter = new WekaVersionSorter();
-		Comparator<String> vSorter = new EJMLVersionSorter();
+		Comparator<String> vSorter = new WekaVersionSorter();
+		//Comparator<String> vSorter = new EJMLVersionSorter();
 		TreeMap<String, Set<StateObject>> stateMap = 
 				new TreeMap<String, Set<StateObject>>(vSorter);
+		HashMap<String, Map<String, Set<String>>> fieldMap = 
+				new HashMap<String, Map<String, Set<String>>>();
 		
 		for (int i = 3; i < args.length; i++) {
 			//versions.add(libSpecificName(libName, args[i]));
@@ -65,6 +68,7 @@ public class MetaRegressionTester {
 		for (String version: versions) {
 			executeMetaTesting(driver, version, libBase);
 			stateMap.put(version, JSONComparator.getStateSet(configBase + methodName + ".json"));
+			fieldMap.put(version, MetaSerializer.deserializeClassFieldMap(version));
 			cleanJSONFile(methodName, version, libBase);
 		}
 		
@@ -85,17 +89,20 @@ public class MetaRegressionTester {
 				}
 				Set<StateObject> nextSet = stateMap.get(nextKey);
 				
+				Map<String, Set<String>> curFieldMap = fieldMap.get(key);
+				Map<String, Set<String>> nextFieldMap = fieldMap.get(nextKey);
+				
 				String kn = key + "vs." + nextKey;
 				System.out.println(kn);
 				sb.append(kn + "\n");
-				Set<StateObject> diffSet = JSONComparator.diffStates(curSet, nextSet);
+				Set<StateObject> diffSet = JSONComparator.diffStates(curSet, nextSet, curFieldMap, nextFieldMap);
 				System.out.println(diffSet);
 				sb.append(diffSet + "\n");
 				
 				String nk = nextKey + "vs." + key;
 				System.out.println(nk);
 				sb.append(nk + "\n");
-				diffSet = JSONComparator.diffStates(nextSet, curSet);
+				diffSet = JSONComparator.diffStates(nextSet, curSet, nextFieldMap, curFieldMap);
 				System.out.println(diffSet);
 				sb.append(diffSet + "\n");
 			}

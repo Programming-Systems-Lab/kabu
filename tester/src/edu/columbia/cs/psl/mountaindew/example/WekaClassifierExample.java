@@ -12,14 +12,14 @@ import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.bayes.NaiveBayes;
 //import weka.classifiers.functions.GaussianProcesses;
 import weka.classifiers.functions.LeastMedSq;
-import weka.classifiers.functions.LibSVM;
+//import weka.classifiers.functions.LibSVM;
 import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.functions.Logistic;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.functions.VotedPerceptron;
 import weka.classifiers.lazy.IBk;
 import weka.classifiers.meta.Bagging;
-//import weka.classifiers.meta.Dagging;
+import weka.classifiers.meta.Dagging;
 import weka.classifiers.meta.Decorate;
 import weka.classifiers.meta.LogitBoost;
 import weka.classifiers.rules.DecisionTable;
@@ -138,7 +138,7 @@ public class WekaClassifierExample {
 		return null;
 	}
 	
-	@Metamorphic
+	/*@Metamorphic
 	public LibSVM trainSVM(Instances data) {
 		LibSVM svm = new LibSVM();
 		//String[] options = new String[]{"-t"};
@@ -150,7 +150,7 @@ public class WekaClassifierExample {
 			ex.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 	
 	@Metamorphic
 	public Logistic trainLogistic(Instances data) {
@@ -208,7 +208,7 @@ public class WekaClassifierExample {
 		return null;
 	}
 	
-	/*@Metamorphic
+	@Metamorphic
 	public Dagging trainDagging(Instances data) {
 		Dagging dagging = new Dagging();
 		try {
@@ -220,7 +220,7 @@ public class WekaClassifierExample {
 			ex.printStackTrace();
 		}
 		return null;
-	}*/
+	}
 	
 	@Metamorphic
 	public Bagging trainBagging(Instances data) {
@@ -276,11 +276,17 @@ public class WekaClassifierExample {
 		}
 		wcEx.evalModel(bag, data);*/
 		
-		LibSVM libsvm = wcEx.trainSVM(data);
+		/*J48 j48 = wcEx.trainJ48Model(data);
+		if (j48 == null) {
+			System.err.println("Fail to train j48");
+		}
+		wcEx.evalModel(j48, data);*/
+		
+		/*LibSVM libsvm = wcEx.trainSVM(data);
 		if (libsvm == null) {
 			System.out.println("Fail to train SVM");
 		}
-		wcEx.evalModel(libsvm, data);
+		wcEx.evalModel(libsvm, data);*/
 		
 		/*Decorate decorate = wcEx.trainDecorate(data);
 		if (decorate == null) {
@@ -288,11 +294,11 @@ public class WekaClassifierExample {
 		}
 		wcEx.evalModel(decorate, data);*/
 		
-		/*Dagging dagging = wcEx.trainDagging(data);
+		Dagging dagging = wcEx.trainDagging(data);
 		if (dagging == null) {
 			System.err.println("Fail to train Dagging");
 		}
-		wcEx.evalModel(dagging, data);*/
+		wcEx.evalModel(dagging, data);
 		
 		/*SMO smo = wcEx.trainSMOModel(data);
 		if (smo == null) {

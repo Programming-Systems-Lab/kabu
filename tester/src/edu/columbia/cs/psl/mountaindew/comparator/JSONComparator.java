@@ -14,6 +14,8 @@ import com.google.gson.stream.JsonReader;
 
 public class JSONComparator {
 	
+	public static String metaOutput = "__metamorphicOutput";
+	
 	public static Set<StateObject> getStateSet(String jsonPath) {
 		File jsonFile = new File(jsonPath);
 		try {
@@ -34,27 +36,9 @@ public class JSONComparator {
 		
 		return null;
 	}
-			
-	/*public static void compareJson(Set<StateObject> f1States, Set<StateObject> f2States) {
-		try {			
-			Set<StateObject> f1BasedDiff = diffStates(f1States, f2States);
-			
-			System.out.println("Check " + firstFile.getName() + " based diff");
-			for (StateObject tmp: f1BasedDiff) {
-				System.out.println(tmp);
-			}
-			
-			Set<StateObject> f2BasedDiff = diffStates(f2States, f1States);
-			System.out.println("Check " + secondFile.getName() + " based diff");
-			for (StateObject tmp: f2BasedDiff) {
-				System.out.println(tmp);
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}*/
 	
-	public static Set<StateObject> diffStates(Set<StateObject> target, Set<StateObject> compare) {
+	public static Set<StateObject> diffStates(Set<StateObject> target, Set<StateObject> compare, 
+			Map<String, Set<String>> tClassFieldMap, Map<String, Set<String>> cClassFieldMap) {
 		Set<StateObject> ret = new HashSet<StateObject>();
 		//If s2 does not have, add directly
 		//If s2 has, check class spec
@@ -85,11 +69,25 @@ public class JSONComparator {
 						HashSet<String> c2fields = c2tmp.getFieldNames();
 						
 						ClassSpec diffSpec = new ClassSpec();
-						diffSpec.setClassName(c1tmp.getClassName());
+						String className = c1tmp.getClassName();
+						diffSpec.setClassName(className);
 						diffObj.addSpec(diffSpec);
 						
+						System.out.println("Check class field map of " + className);
+						Set<String> tFields = tClassFieldMap.get(className);
+						Set<String> cFields = cClassFieldMap.get(className);
+						Set<String> commonFields = calCommonSet(tFields, cFields);
+						System.out.println("tFields: " + tFields);
+						System.out.println("cFields: " + cFields);
+						System.out.println("common fields: " + commonFields);
+						
+						//Check output
+						if (c1fields.contains(metaOutput) && !c2fields.contains(metaOutput))
+							diffSpec.addFieldName(metaOutput);
+						
+						//If c2 does not have and common field have this field, it's a diff
 						for (String c1field: c1fields) {
-							if (!c2fields.contains(c1field)) {
+							if (!c2fields.contains(c1field) && commonFields.contains(c1field)) {
 								diffSpec.addFieldName(c1field);
 							}
 						}
@@ -117,6 +115,13 @@ public class JSONComparator {
 		}
 		
 		return null;
+	}
+	
+	public static Set<String> calCommonSet(Set<String> tSet, Set<String> cSet) {
+		Set<String> commons = new HashSet<String>(tSet);
+		commons.retainAll(cSet);
+		
+		return commons;
 	}
 
 }

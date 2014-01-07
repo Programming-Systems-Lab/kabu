@@ -60,7 +60,7 @@ public class WekaClusterExample {
 	public Cobweb trainCobweb(Instances data) {
 		Cobweb cw = new Cobweb();
 		try {
-			cw.setOptions(new String[]{"-S", "-5"});
+			cw.setOptions(new String[]{"-S", "-3"});
 			cw.buildClusterer(data);
 			return cw;
 		} catch (Exception ex) {
@@ -74,6 +74,7 @@ public class WekaClusterExample {
 		EM em = new EM();
 		try {
 			em.setNumClusters(-1);
+			em.setOptions(new String[]{"-S", "1"});
 			em.buildClusterer(data);
 			return em;
 		} catch (Exception ex) {
@@ -160,11 +161,11 @@ public class WekaClusterExample {
 		WekaClusterExample wce = new WekaClusterExample();
 		Instances data = wce.loadData("data/iris.arff");
 		
-		MakeDensityBasedClusterer mdb = wce.trainMDB(data);
+		/*MakeDensityBasedClusterer mdb = wce.trainMDB(data);
 		if (mdb == null) {
 			System.out.println("Fail to create mdb");
 		}
-		wce.evalClusterer(mdb, data);
+		wce.evalClusterer(mdb, data);*/
 		
 		/*SimpleKMeans sk = wce.trainKMeans(data);
 		if (sk == null) {
@@ -178,11 +179,11 @@ public class WekaClusterExample {
 		}
 		wce.evalClusterer(cw, data);*/
 		
-		/*EM em = wce.trainEM(data);
+		EM em = wce.trainEM(data);
 		if (em == null) {
 			System.out.println("Fail to create EM");
 		}
-		wce.evalClusterer(em, data);*/
+		wce.evalClusterer(em, data);
 		
 		/*CLOPE clope = wce.trainCLOPE(data);
 		if (clope == null) {

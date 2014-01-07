@@ -23,6 +23,7 @@ import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty.PropertyResult.Result;
 import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 import edu.columbia.cs.psl.mountaindew.util.ClassChecker;
+import edu.columbia.cs.psl.mountaindew.util.MetaSerializer;
 
 public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 	
@@ -32,11 +33,9 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 	
 	private static String localMap = "stateStorage";
 	
-	private static String localSuffix = "_local";
-	
-	private static String fieldSuffix = "_field";
-	
 	private MethodProfiler mProfiler = new MethodProfiler();
+	
+	private Map<String, Set<String>> classFieldMap = new HashMap<String, Set<String>>();
 	
 	@Override
 	public final List<PropertyResult> propertiesHolds() {
@@ -109,6 +108,9 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								System.out.println("Check recorder1: " + recorder1);
 								System.out.println("Check recorder2: " + recorder2);
 								
+								String version = MetaSerializer.extractVersion(i.returnValue);
+								MetaSerializer.serializeClassFieldMap(version, this.classFieldMap);
+								
 								for (String tmpKey: recorder1.keySet()) {
 									tmpObj1 = recorder1.get(tmpKey);
 									tmpObj2 = recorder2.get(tmpKey);
@@ -168,7 +170,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 			combinedFields.addAll(parentFields);
 			
 			String objClassName = obj.getClass().getName();
-			Map<Integer, String> localVarMap = this.deserializeLocalVarMap(objClassName);
+			Map<Integer, String> localVarMap = MetaSerializer.deserializeLocalVarMap(objClassName);
 			System.out.println("Check localVarMap in pairwise: " + localVarMap);
 			
 			Set<String> allFields = new HashSet<String>();
@@ -196,8 +198,8 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 					//Flatten local variable map
 					Map tmpMap = (HashMap)ClassChecker.comparableClasses(fieldValue);
 					for (Object key: tmpMap.keySet()) {
-						recorder.put(objClassName + ":" + localVarMap.get(key) + localSuffix, tmpMap.get(key));
-						allFields.add(localVarMap.get(key) + localSuffix);
+						recorder.put(objClassName + ":" + localVarMap.get(key) + MetaSerializer.localSuffix, tmpMap.get(key));
+						allFields.add(localVarMap.get(key) + MetaSerializer.localSuffix);
 					}
 				} else if (fieldValue != null) {
 					if (comparable || basic)
@@ -215,48 +217,13 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 			}
 			
 			if (shouldSerialize) {
-				this.serializeFieldSet(objClassName, allFields);
+				this.classFieldMap.put(objClassName, allFields);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 	
-	private Map<Integer, String> deserializeLocalVarMap(String className) {
-		try {
-			File mapFile = new File("ser/" + className + ".ser");
-			FileInputStream in = new FileInputStream(mapFile);
-			ObjectInputStream reader = new ObjectInputStream(in);
-			
-			Map<Integer, String> localVarMap = (Map<Integer, String>)reader.readObject();
-			System.out.println("Complete deserialization of " + mapFile.getAbsolutePath());
-			return localVarMap;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return null;
-	}
-	
-	private void serializeFieldSet(String className, Set<String> fields) {
-		try {
-			File fieldFile = new File("ser/" + className + fieldSuffix + ".ser");
-			if (fieldFile.exists()) {
-				fieldFile.delete();
-			}
-			
-			FileOutputStream out = new FileOutputStream(fieldFile);
-			ObjectOutputStream writer = new ObjectOutputStream(out);
-			writer.writeObject(fields);
-			
-			out.close();
-			writer.close();
-			System.out.println("Complete serialization of all fields: " + fieldFile.getAbsolutePath());
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	
-
 	@Override
 	public final PropertyResult propertyHolds() {		
 		PropertyResult result = new PropertyResult();

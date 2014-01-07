@@ -2,6 +2,9 @@ package edu.columbia.cs.psl.mountaindew.example;
 
 import java.util.Arrays;
 
+import org.encog.mathutil.rbf.BasicRBF;
+import org.encog.mathutil.rbf.GaussianFunction;
+import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLCluster;
@@ -16,8 +19,12 @@ import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.kmeans.KMeansClustering;
 import org.encog.ml.svm.*;
 import org.encog.ml.svm.training.SVMSearchTrain;
+import org.encog.neural.rbf.RBFNetwork;
+import org.encog.neural.rbf.training.SVDTraining;
 import org.encog.neural.som.SOM;
 import org.encog.neural.som.training.basic.BasicTrainSOM;
+import org.encog.neural.som.training.basic.neighborhood.NeighborhoodRBF;
+import org.encog.neural.som.training.basic.neighborhood.NeighborhoodRBF1D;
 import org.encog.neural.som.training.basic.neighborhood.NeighborhoodSingle;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.simple.EncogUtility;
@@ -30,18 +37,18 @@ public class EncogExample {
 	
 	public SVM trainSVM(BasicMLDataSet set) {
 		SVM svm = new SVM(set.size(), false);
-		/*SVMSearchTrain sst = new SVMSearchTrain(svm, set);
+		SVMSearchTrain sst = new SVMSearchTrain(svm, set);
 		
 		do {
 			sst.iteration();
 		} while (sst.getError() > 0.01);
 		
-		System.out.println("Check svm error: " + svm.calculateError(set));*/
+		System.out.println("Check svm error: " + svm.calculateError(set));
 		
-		System.out.println("Check instance: " + (svm instanceof SVM));
+		/*System.out.println("Check instance: " + (svm instanceof SVM));
 		
 		EncogUtility.trainToError(svm, set, 0.01);
-		EncogUtility.evaluate(svm, set);
+		EncogUtility.evaluate(svm, set);*/
 		return svm;
 	}
 	
@@ -53,19 +60,40 @@ public class EncogExample {
 		int iteration = 0;
 		do {
 			train.iteration();
-			System.out.println("SOM error in iteration: " + iteration + " " + train.getError());
 			iteration++;
-		} while(iteration < 10);
+		} while(iteration < 500);
 		
-		System.out.println("Check som error: " + som.calculateError(set));
+		System.out.println("Check SOM error: " + som.calculateError(set));
 		return som;
 	}
 	
-	public void evaluateModel(MLClassification model, BasicMLDataSet set) {
+	public RBFNetwork trainRBF(BasicMLDataSet set) {
+		RBFNetwork network = new RBFNetwork(set.getInputSize(), 10, 1, RBFEnum.Gaussian);
+		SVDTraining train = new SVDTraining(network, set);
+		int iteration = 0;
+		do {
+			train.iteration();
+			iteration++;
+		} while(iteration < 10000);
+		
+		System.out.println("RBF network error: " + train.getError());
+		
+		return network;
+	}
+	
+	public void evaluateClassifier(MLClassification model, BasicMLDataSet set) {
 		for (MLDataPair pair: set.getData()) {
 			System.out.println("Input: " + pair.getInputArray()[0]);
 			System.out.println("Actual output: " + model.classify(pair.getInput()));
-			System.out.println("Ideaal output: " + pair.getIdealArray()[0]);
+			System.out.println("Ideal output: " + pair.getIdealArray()[0]);
+		}
+	}
+	
+	public void evaluateRegression(MLRegression model, BasicMLDataSet set) {
+		for (MLDataPair pair: set.getData()) {
+			System.out.println("Input: " + pair.getInputArray()[0]);
+			System.out.println("Actual output: " + model.compute(pair.getInput()).getData(0));
+			System.out.println("Ideal output: " + pair.getIdealArray()[0]);
 		}
 	}
 	
@@ -89,11 +117,14 @@ public class EncogExample {
 		
 		EncogExample ee = new EncogExample();
 		
-		MLClassification model = ee.trainSVM(set);
-		ee.evaluateModel(model, set);
-		
-		/*MLClassification model = ee.trainSOM(set);
+		/*MLClassification model = ee.trainSVM(set);
 		ee.evaluateModel(model, set);*/
+		
+		MLClassification model = ee.trainSOM(set);
+		ee.evaluateClassifier(model, set);
+		
+		/*MLRegression model = ee.trainRBF(set);
+		ee.evaluateRegression(model, set);*/
 		
 		/*KMeansClustering kmeans = new KMeansClustering(3, set);
 		kmeans.iteration(100);
