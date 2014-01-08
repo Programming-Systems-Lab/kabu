@@ -8,7 +8,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.hadoop.conf.Configuration;
@@ -97,7 +99,100 @@ public class SimpleExample extends AbstractExample {
 			ret[i] = in[i] + 1;
 		}
 		return ret;
-	}	
+	}
+	
+	@Metamorphic
+	public int[][] increArray2(int[][] in) {
+		int dataLength = in.length;
+		int dataSize = in[0].length;
+		int[][] ret = new int[dataLength][dataSize];
+		
+		for (int i = 0; i < dataLength; i++) {
+			for (int j = 0; j < dataSize; j++) {
+				ret[i][j] = in[i][j] + 1;
+			}
+		}
+		
+		return ret;
+	}
+	
+	@Metamorphic
+	public ArrayList<Integer> increList(ArrayList<Integer> in) {
+		ArrayList<Integer> ret = new ArrayList<Integer>();
+		
+		for (Integer i: in) {
+			int tmp = i + 1;
+			ret.add(tmp);
+		}
+		System.out.println("Ret: " + ret);
+		
+		return ret;
+	}
+	
+	@Metamorphic
+	public ArrayList<ArrayList<Integer>> increList2(ArrayList<ArrayList<Integer>> in) {
+		ArrayList<ArrayList<Integer>> ret = new ArrayList<ArrayList<Integer>>();
+		
+		for (ArrayList<Integer> tmpList: in) {
+			ArrayList<Integer> newList = new ArrayList<Integer>();
+			for (Integer t: tmpList) {
+				int tmp = t + 1;
+				newList.add(tmp);
+			}
+			ret.add(newList);
+		}
+		
+		System.out.println("Check double list: " + ret);
+		
+		return ret;
+	}
+	
+	@Metamorphic
+	public ArrayList<ArrayList<Integer>> mulList2(ArrayList<ArrayList<Integer>> in) {
+		ArrayList<ArrayList<Integer>> ret = new ArrayList<ArrayList<Integer>>();
+		
+		for (ArrayList<Integer> tmpList: in) {
+			ArrayList<Integer> newList = new ArrayList<Integer>();
+			for (Integer t: tmpList) {
+				int tmp = t * 2;
+				newList.add(tmp);
+			}
+			ret.add(newList);
+		}
+		
+		System.out.println("Check double list: " + ret);
+		
+		return ret;
+	}
+	
+	@Metamorphic
+	public ArrayList<ArrayList<Integer>> negList2(ArrayList<ArrayList<Integer>> in) {
+		ArrayList<ArrayList<Integer>> ret = new ArrayList<ArrayList<Integer>>();
+		
+		for (ArrayList<Integer> tmpList: in) {
+			ArrayList<Integer> newList = new ArrayList<Integer>();
+			for (Integer t: tmpList) {
+				int tmp = t * -1;
+				newList.add(tmp);
+			}
+			ret.add(newList);
+		}
+		
+		System.out.println("Check double list: " + ret);
+		
+		return ret;
+	}
+	
+	@Metamorphic
+	public Map increMap(ArrayList<ArrayList<Integer>> in) {
+		Map out = new HashMap();
+		
+		out.put("a", in.get(0));
+		out.put("b", in.get(1));
+		
+		System.out.println("Check map: " + out);
+		return out;
+	}
 	
 	@Metamorphic
 	public double selectMax(int[] in) {
@@ -306,6 +401,29 @@ public class SimpleExample extends AbstractExample {
 	
 	public static void main(String[] args) {
 		SimpleExample s = new SimpleExample();
+		//s.addThree(2);
+		//s.increArray(new int[]{1, 2, 3});
+		/*ArrayList<Integer> a = new ArrayList<Integer>();
+		a.add(1);
+		a.add(2);
+		a.add(3);
+		s.increList(a);*/
+		
+		/*int[][] in = new int[][]{{1, 2, 3}, {4, 5, 6}};
+		s.increArray2(in);*/
+		
+		ArrayList<ArrayList<Integer>> in = new ArrayList<ArrayList<Integer>>();
+		ArrayList<Integer> e1 = new ArrayList<Integer>();
+		ArrayList<Integer> e2 = new ArrayList<Integer>();
+		e1.add(1); e1.add(2); e1.add(3);
+		e2.add(4); e2.add(5); e2.add(6);
+		in.add(e1);
+		in.add(e2);
+		//s.increList2(in);
+		//s.increMap(in);
+		//s.mulList2(in);
+		s.negList2(in);
+		
 //		s.selectMax(new int[]{3, 4, 5});
 //		String[] barzzz = {"aa","bb"};
 //		System.out.println("Max memory: " + Runtime.getRuntime().maxMemory());
@@ -386,7 +504,6 @@ public class SimpleExample extends AbstractExample {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}*/
-		SimpleExample ex = new SimpleExample();
 		/*List<Integer> input = new ArrayList<Integer>();
 		input.add(3);
 		input.add(4);
@@ -400,10 +517,10 @@ public class SimpleExample extends AbstractExample {
 		
 		//double arrayLength = ex.getLength(new int[]{4,7,8});
 		
-		double sum = ex.foo(new int[]{4, 5, 6});
+		/*double sum = ex.foo(new int[]{4, 5, 6});
 		System.out.println("Check sum: " + sum);
 		
 		sum = ex.foo(new int[]{0, 0, 0});
-		System.out.println("Check sum twice: " + sum);
+		System.out.println("Check sum twice: " + sum);*/
 	}
 }

@@ -15,17 +15,22 @@ public class MetaSerializer {
 	public static String fieldSuffix = "_field";
 	
 	public static String extractVersion(Object obj) {
-		Class objClass = obj.getClass();
-		String objFullName = objClass.getName().replace(".", "/") + ".class";
-		String objPath = objClass.getClassLoader().getResource(objFullName).toString();
-		String binPath = objPath.substring(0, objPath.indexOf(objFullName));
-		File binParDir = (new File(binPath)).getParentFile();
-		String binParPath = binParDir.getPath();
-		String version = binParPath.substring(binParPath.lastIndexOf("/") + 1);
-		
-		System.out.println("Extracted version: " + version);
-		
-		return version;
+		try {
+			Class objClass = obj.getClass();
+			String objFullName = objClass.getName().replace(".", "/") + ".class";
+			String objPath = objClass.getClassLoader().getResource(objFullName).toString();
+			String binPath = objPath.substring(0, objPath.indexOf(objFullName));
+			File binParDir = (new File(binPath)).getParentFile();
+			String binParPath = binParDir.getPath();
+			String version = binParPath.substring(binParPath.lastIndexOf("/") + 1);
+			
+			System.out.println("Extracted version: " + version);
+			
+			return version;
+		} catch (Exception ex) {
+			System.out.println("Find no class path for object: " + obj.getClass().getName());
+			return null;
+		}
 	}
 	
 	public static Map<Integer, String> deserializeLocalVarMap(String className) {

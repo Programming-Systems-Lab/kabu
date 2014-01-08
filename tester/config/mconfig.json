@@ -1,5 +1,5 @@
 {"globalConfig": {
-	"Adapter":"WekaClusterAdapter",
-	"Transformers":[{"MultiplyByNumericConstant":[10, 100]}, {"AddNumericConstant":[5, 100]}, {"Negate":[2]}, {"Shuffle":[9]}, {"Reverse":[2]}],
-	"Checkers":["ContentEqualer"]
+	"Adapter":"DefaultAdapter",
+	"Transformers":[{"MultiplyByNumericConstant":[]}, {"AddNumericConstant":[]}, {"Negate":[]},  {"Shuffle":[]}, {"Reverse":[]}],
+	"Checkers":["ContentEqualer","MultiplicativeByConstant"]
 }}

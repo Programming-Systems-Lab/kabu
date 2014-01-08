@@ -109,7 +109,9 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								System.out.println("Check recorder2: " + recorder2);
 								
 								String version = MetaSerializer.extractVersion(i.returnValue);
-								MetaSerializer.serializeClassFieldMap(version, this.classFieldMap);
+								
+								if (version != null)
+									MetaSerializer.serializeClassFieldMap(version, this.classFieldMap);
 								
 								for (String tmpKey: recorder1.keySet()) {
 									tmpObj1 = recorder1.get(tmpKey);
@@ -277,24 +279,37 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 	
 	protected List returnList(Object val) {
 		
-		List retList = null;
+		List retList = new ArrayList();
 		
 		if (val.getClass().isArray()) {
-			retList = new ArrayList();
-			
 			for (int i = 0; i < Array.getLength(val); i++) {
-				retList.add(Array.get(val, i));
+				Object tmp = Array.get(val, i);
+				if (Number.class.isAssignableFrom(tmp.getClass())) {
+					retList.add((Number)tmp);
+				} else {
+					retList.add(returnList(tmp));
+				}
+			}
+		} else if (Collection.class.isAssignableFrom(val.getClass())) {
+			Collection tmpCollection = (Collection)val;
+			
+			for (Object t: tmpCollection) {
+				if (Number.class.isAssignableFrom(t.getClass())) {
+					retList.add((Number)t);
+				} else {
+					retList.add(returnList(t));
+				}
 			}
 		}
-		else if (Collection.class.isAssignableFrom(val.getClass()))
-			retList = new ArrayList((Collection)val);
-		else if (Number.class.isAssignableFrom(val.getClass())) {
-			retList = new ArrayList();
-			retList.add(val);
-		}
-		
 		return retList;
-		
+	}
+	
+	protected double roundDouble(double numberToRound, int digit) {
+		int roundMultiplier = (int)Math.pow(10, digit);
+		numberToRound = numberToRound * roundMultiplier;
+		numberToRound = Math.round(numberToRound);
+		numberToRound = numberToRound / roundMultiplier;
+		return numberToRound;
 	}
 	
 	public MethodProfiler getMethodProfiler() {
