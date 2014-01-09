@@ -156,6 +156,8 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 		if (obj == null)
 			return ;
 		
+		System.out.println("In recursiveRecordeState: " + obj.getClass().getName());
+		
 		if (obj.getClass().getAnnotation(LogState.class) == null)
 			return ;
 		
@@ -186,6 +188,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 				
 				field.setAccessible(true);
 				fieldValue = field.get(obj);
+				System.out.println("Check field: " + fieldName + " " + fieldValue);
 				
 				boolean basic = ClassChecker.basicClass(fieldValue);
 				boolean comparable = ClassChecker.comparableClass(fieldValue, "equals", Object.class);
@@ -279,6 +282,9 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 	
 	protected List returnList(Object val) {
 		
+		if (val == null)
+			return null;
+		
 		List retList = new ArrayList();
 		
 		if (val.getClass().isArray()) {
@@ -286,8 +292,10 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 				Object tmp = Array.get(val, i);
 				if (Number.class.isAssignableFrom(tmp.getClass())) {
 					retList.add((Number)tmp);
-				} else {
+				} else if (tmp.getClass().isArray() || Collection.class.isAssignableFrom(tmp.getClass())){
 					retList.add(returnList(tmp));
+				} else {
+					retList.add(tmp.toString());
 				}
 			}
 		} else if (Collection.class.isAssignableFrom(val.getClass())) {
@@ -296,8 +304,10 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 			for (Object t: tmpCollection) {
 				if (Number.class.isAssignableFrom(t.getClass())) {
 					retList.add((Number)t);
-				} else {
+				} else if (t.getClass().isArray() || Collection.class.isAssignableFrom(t.getClass())){
 					retList.add(returnList(t));
+				} else {
+					retList.add(t.toString());
 				}
 			}
 		}

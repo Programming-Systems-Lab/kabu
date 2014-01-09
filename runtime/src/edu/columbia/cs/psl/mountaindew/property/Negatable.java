@@ -34,7 +34,14 @@ public class Negatable extends MultiplicativeByConstant{
 				double rv1 = ((Number)returnValue1).doubleValue();
 				double rv2 = ((Number)returnValue2).doubleValue();
 				
-				return rv1 == rv2 * neg;
+				System.out.println("Negatable check rv1: " + rv1);
+				System.out.println("Negatable check rv2: " + rv2);
+				
+				//Leave this case to equality checker
+				if (rv1 == rv2)
+					return false;
+				else
+					return rv1 == rv2 * neg;
 			} else if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 				//Because propertiesApply now not check length, check them here
 				if (Array.getLength(returnValue1) != Array.getLength(returnValue2))
@@ -46,7 +53,12 @@ public class Negatable extends MultiplicativeByConstant{
 				System.out.println("Negatable check array1: " + rt1List);
 				System.out.println("Negatable check array2: " + rt2List);
 				
+				if (rt1List.equals(rt2List))
+					return false;
+				
 				List mrt2List = (List)this.multiplyObject(rt2List, neg);
+				
+				System.out.println("Negate mrt2List: " + mrt2List);
 				
 				return this.ce.checkEquivalence(rt1List, mrt2List);
 			} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
@@ -56,9 +68,12 @@ public class Negatable extends MultiplicativeByConstant{
 				System.out.println("Negatable check list1: " + rt1List);
 				System.out.println("Negatable check list2: " + rt2List);
 				
+				if (rt1List.equals(rt2List))
+					return false;
+				
 				List mrt2List = (List)this.multiplyObject(rt2List, neg);
 				
-				System.out.println("mrt2List: " + mrt2List);
+				System.out.println("Negate mrt2List: " + mrt2List);
 				
 				return this.ce.checkEquivalence(rt1List, mrt2List);
 			} else if (Map.class.isAssignableFrom(returnValue1.getClass()) && Map.class.isAssignableFrom(returnValue2.getClass())) {
@@ -82,7 +97,10 @@ public class Negatable extends MultiplicativeByConstant{
 						double n1 = ((Number)tmpObj1).doubleValue();
 						double n2 = ((Number)tmpObj2).doubleValue();
 						
-						if (this.roundDouble(n1, roundDigit) != this.roundDouble(n2 * neg, roundDigit))
+						//For filtering out 0 = 0 * -1
+						if (this.roundDouble(n1, roundDigit) == this.roundDouble(n2, roundDigit))
+							return false;
+						else if (this.roundDouble(n1, roundDigit) != this.roundDouble(n2 * neg, roundDigit))
 							return false;
 					} else if (tmpObj1.getClass().isArray() || Collections.class.isAssignableFrom(tmpObj1.getClass())) {
 						List tmpList1 = this.returnList(tmpObj1);
@@ -90,7 +108,9 @@ public class Negatable extends MultiplicativeByConstant{
 						
 						List mList2 = (List)this.multiplyObject(tmpList2, neg);
 						
-						if (this.ce.checkEquivalence(tmpList1, mList2) == false)
+						if (tmpList1.equals(tmpList2))
+							return false;
+						else if (this.ce.checkEquivalence(tmpList1, mList2) == false)
 							return false;
 					} else {
 						return false;

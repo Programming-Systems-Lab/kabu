@@ -36,7 +36,15 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					&& Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
 				double div1 = this.roundDouble(getDivisor(p1, p2), roundDigit);
 				double div2 = this.roundDouble(getDivisor(returnValue1, returnValue2), roundDigit);
-				return div1 == div2;
+				
+				System.out.println("Check div1: " + div1);
+				System.out.println("Check div2: " + div2);
+				
+				//Leave 1 for equaler and -1 or negater to check
+				if (div1 == 1 || div1 == -1)
+					return false;
+				else
+					return div1 == div2;
 			} else if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 				//Because propertiesApply now not check length, check them here
 				if (Array.getLength(returnValue1) != Array.getLength(returnValue2))
@@ -49,10 +57,14 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 				System.out.println("Multiplicity check array2: " + rt2List);
 				
 				fDivisor = this.getFirstDivisor(rt1List, rt2List);
-				if (fDivisor == Double.MAX_VALUE)
+				if (fDivisor == Double.MAX_VALUE || fDivisor == 1 || fDivisor == -1)
 					return false;
 				
+				List mrt1List = (List)this.multiplyObject(rt1List, 1.0);
 				List mrt2List = (List)this.multiplyObject(rt2List, fDivisor);
+				
+				System.out.println("mrt1Array: " + mrt1List);
+				System.out.println("mrt2Array: " + mrt2List);
 				
 				return this.ce.checkEquivalence(rt1List, mrt2List);
 			} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
@@ -63,11 +75,13 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 				System.out.println("Multiplicity check list2: " + rt2List);
 				
 				fDivisor = this.getFirstDivisor(rt1List, rt2List);
-				if (fDivisor == Double.MAX_VALUE)
+				if (fDivisor == Double.MAX_VALUE || fDivisor == 1 || fDivisor == -1)
 					return false;
 				
+				List mrt1List = (List)this.multiplyObject(rt1List, 1.0);
 				List mrt2List = (List)this.multiplyObject(rt2List, fDivisor);
 				
+				System.out.println("mrt1List: " + mrt1List);
 				System.out.println("mrt2List: " + mrt2List);
 				
 				return this.ce.checkEquivalence(rt1List, mrt2List);
@@ -82,7 +96,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 				System.out.println("Multiplicity check map2: " + map2);
 				
 				fDivisor = this.getFirstDivisor(map1, map2);
-				if (fDivisor == Double.MAX_VALUE)
+				if (fDivisor == Double.MAX_VALUE || fDivisor == 1 || fDivisor == -1)
 					return false;
 				
 				for (Object tmp: map1.keySet()) {
@@ -103,9 +117,10 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 						List tmpList1 = this.returnList(tmpObj1);
 						List tmpList2 = this.returnList(tmpObj2);
 						
+						List mList1 = (List)this.multiplyObject(tmpList1, 1.0);
 						List mList2 = (List)this.multiplyObject(tmpList2, fDivisor);
 						
-						if (this.ce.checkEquivalence(tmpList1, mList2) == false)
+						if (this.ce.checkEquivalence(mList1, mList2) == false)
 							return false;
 					} else {
 						return false;
@@ -258,7 +273,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		{
 			if((Integer) o2 != 0) {
 				double rawResult = ((Integer) o1).doubleValue() / ((Integer) o2).doubleValue();
-				return this.roundDouble(rawResult, 1);
+				return this.roundDouble(rawResult, 5);
 			} else {
 				return Double.MAX_VALUE;
 			}
@@ -267,7 +282,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		{
 			if((Short) o2 != 0) {
 				double rawResult = ((Short) o1).doubleValue() / ((Short) o2).doubleValue();
-				return this.roundDouble(rawResult, 1);
+				return this.roundDouble(rawResult, 5);
 			} else {
 				return Double.MAX_VALUE;
 			}
@@ -276,7 +291,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		{
 			if((Long) o2 != 0) {
 				double rawResult = ((Long) o1).doubleValue() / ((Long) o2).doubleValue();
-				return this.roundDouble(rawResult, 1);
+				return this.roundDouble(rawResult, 5);
 			} else {
 				return Double.MAX_VALUE;
 			}
@@ -285,7 +300,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		{
 			if((Double) o2 != 0) {
 				double rawResult = ((Double)o1) / ((Double) o2);
-				return this.roundDouble(rawResult, 1);
+				return this.roundDouble(rawResult, 5);
 			} else {
 				return Double.MAX_VALUE;
 			}
@@ -375,6 +390,10 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					String.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
 				rets.add(i);
 		}
+		
+		if (rets.size() == 0)
+			rets.add(0);
+		
 		int[] ret = new int[rets.size()];
 		for(int i = 0;i<rets.size();i++)
 			ret[i]=rets.get(i);

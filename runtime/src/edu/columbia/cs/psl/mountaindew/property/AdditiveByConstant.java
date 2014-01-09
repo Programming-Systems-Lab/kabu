@@ -32,6 +32,8 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
 			Object p2, Object returnValue2) {
 		
+		System.out.println("Start comparison in additive: " + returnValue1 + " " + returnValue2);
+		
 		List rt1List = null;
 		List rt2List = null;
 		double fDiff = 0;
@@ -45,7 +47,10 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 				System.out.println("Additive diff1: " + diff1);
 				System.out.println("Additive diff2: " + diff2);
 				
-				return diff1 == diff2;
+				if (diff1 == 0)
+					return false;
+				else
+					return diff1 == diff2;
 			} else if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 				
 				if (Array.getLength(returnValue1) != Array.getLength(returnValue2))
@@ -58,12 +63,16 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 				System.out.println("Additive check array2: " + rt2List);
 				
 				fDiff = this.getFirstDiff(rt1List, rt2List);
-				if (fDiff == Double.MAX_VALUE)
+				if (fDiff == Double.MAX_VALUE || fDiff == 0)
 					return false;
 				
+				List mrt1List = (List)this.addObject(rt1List, 0.0);
 				List mrt2List = (List)this.addObject(rt2List, fDiff);
 				
-				return this.ce.checkEquivalence(rt1List, mrt2List);
+				System.out.println("Additive check mrt1Array: " + rt1List);
+				System.out.println("Additive check mrt2Array: " + rt2List);
+				
+				return this.ce.checkEquivalence(mrt1List, mrt2List);
 			} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
 				rt1List = this.returnList(returnValue1);
 				rt2List = this.returnList(returnValue2);
@@ -72,12 +81,16 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 				System.out.println("Additive check list2: " + rt2List);
 				
 				fDiff = this.getFirstDiff(rt1List, rt2List);
-				if (fDiff == Double.MAX_VALUE)
+				if (fDiff == Double.MAX_VALUE || fDiff == 0)
 					return false;
 				
+				List mrt1List = (List)this.addObject(rt1List, 0.0);
 				List mrt2List = (List)this.addObject(rt2List, fDiff);
 				
-				return this.ce.checkEquivalence(rt1List, mrt2List);
+				System.out.println("Additive check mrt1List: " + rt1List);
+				System.out.println("Additive check mrt2List: " + rt2List);
+				
+				return this.ce.checkEquivalence(mrt1List, mrt2List);
 			} else if (Map.class.isAssignableFrom(returnValue1.getClass()) && Map.class.isAssignableFrom(returnValue2.getClass())) {
 				Map map1 = (Map)returnValue1;
 				Map map2 = (Map)returnValue2;
@@ -89,7 +102,7 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 				System.out.println("Additive check map2: " + map2);
 				
 				fDiff = this.getFirstDiff(map1, map2);
-				if (fDiff == Double.MAX_VALUE)
+				if (fDiff == Double.MAX_VALUE || fDiff == 0)
 					return false;
 				
 				System.out.println("Check first diff: " + fDiff);
@@ -117,9 +130,10 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 						System.out.println("Tmp list1: " + tmpList1);
 						System.out.println("Tmp list2: " + tmpList2);
 						
+						List mList1 = (List)this.addObject(tmpList1, 0.0);
 						List mList2 = (List)this.addObject(tmpList2, fDiff);
 						
-						if (this.ce.checkEquivalence(tmpList1, mList2) == false)
+						if (this.ce.checkEquivalence(mList1, mList2) == false)
 							return false;
 					} else {
 						return false;
@@ -358,6 +372,12 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 					Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
 				rets.add(i);
 		}
+		
+		if (rets.size() == 0) {
+			rets.add(0);
+		}
+		System.out.println("Interested params: " + rets);
+		
 		int[] ret = new int[rets.size()];
 		for(int i = 0;i<rets.size();i++)
 			ret[i]=rets.get(i);

@@ -16,6 +16,8 @@ import edu.columbia.cs.psl.mountaindew.absprop.PairwiseMetamorphicProperty;
 
 public class Invertable extends PairwiseMetamorphicProperty{
 	
+	private ContentEqualer ce = new ContentEqualer();
+	
 	@Override
 	protected boolean returnValuesApply(Object p1, Object returnValue1,
 			Object p2, Object returnValue2) {
@@ -28,37 +30,19 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			if (rt1Length != rt2Length)
 				return false;
 			
-			/*double[] rt1 = new double[rt1Length];
-			double[] rt2 = new double[rt2Length];*/
+			List rt1List = this.returnList(returnValue1);
+			List rt2List = this.returnList(returnValue2);
 			
-			double tmp1, tmp2;
+			System.out.println("Invertable check array1: " + rt1List);
+			System.out.println("Invertable check array2: " + rt2List);
 			
-			for (int i = 0; i < rt1Length; i++) {
-				/*rt1[i] = ((Number)Array.get(returnValue1, i)).doubleValue();
-				rt2[i] = ((Number)Array.get(returnValue2, i)).doubleValue();*/
-				tmp1 = ((Number)Array.get(returnValue1, i)).doubleValue();
-				tmp2 = ((Number)Array.get(returnValue2, rt1Length - i - 1)).doubleValue();
-				
-				if (tmp1 != tmp2)
-					return false;
-			}
+			//Leave this case for identity checker
+			if (rt1List.equals(rt2List))
+				return false;
 			
-			return true;
+			List reverseList = this.reverseObject(rt2List);
 			
-			/*Arrays.sort(rt1);
-			Arrays.sort(rt2);
-			return Arrays.equals(rt1, rt2);*/
-			
-			/*double tmp1, tmp2;
-			for (int i = 0; i < rt1Length; i++) {
-				tmp1 = ((Number)Array.get(returnValue1, i)).doubleValue();
-				tmp2 = ((Number)Array.get(returnValue2, rt1Length - i - 1)).doubleValue();
-				
-				if (tmp1 != tmp2)
-					return false;
-			}
-			return true;*/
-			
+			return this.ce.checkEquivalence(rt1List, reverseList);
 		} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
 			List o1List = new ArrayList((Collection)returnValue1);
 			List o2List = new ArrayList((Collection)returnValue2);
@@ -66,20 +50,14 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			if (o1List.size() != o2List.size())
 				return false;
 						
-			/*Collections.sort(o1List);
-			Collections.sort(o2List);*/
+			System.out.println("Invertable check list1: " + o1List);
+			System.out.println("Invertable check list2: " + o2List);
 			
-			for (int i = 0; i < o1List.size(); i++) {
-				if (((Number)o1List.get(i)).doubleValue() != ((Number)o2List.get(o1List.size() - i - 1)).doubleValue())
-					return false;
-			}
-			
-			return true;
-		} else if (Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
-			if (((Number)returnValue1).doubleValue() != ((Number)returnValue2).doubleValue())
+			if (o1List.equals(o2List))
 				return false;
-			else
-				return true;
+			
+			List reverseList = this.reverseObject(o2List);
+			return this.ce.checkEquivalence(o1List, reverseList);
 		}
 		
 		return false;
@@ -107,51 +85,6 @@ public class Invertable extends PairwiseMetamorphicProperty{
 		else
 			return true;
 		
-		/*if (o1.getClass().isArray() && o2.getClass().isArray()) {
-			int o1Length = Array.getLength(o1);
-			int o2Length = Array.getLength(o2);
-			
-			//Input params of parent should be the same with child
-			if (o1Length != o2Length)
-				return false;
-			
-			double o1Val, o2Val;
-			for (int i = 0; i < o1Length; i++) {
-				o1Val = ((Number)Array.get(o1, i)).doubleValue();
-				o2Val = ((Number)Array.get(o2, o1Length - i - 1)).doubleValue();
-				
-//				System.out.println("Check o1Val in Invertable: " + o1Val);
-//				System.out.println("Check o2Val in Invertable: " + o2Val);
-				
-				if (o1Val != o2Val)
-					return false;
-			}
-			
-			return true;
-		} else if (Collection.class.isAssignableFrom(o1.getClass()) && Collection.class.isAssignableFrom(o2.getClass())) {
-			int o1Length, o2Length;
-			double o1Val, o2Val;
-			Object[] o1Array = ((Collection)o1).toArray();
-			Object[] o2Array = ((Collection)o2).toArray();
-			
-			o1Length = o1Array.length;
-			o2Length = o2Array.length;
-			
-			if (o1Length != o2Length)
-				return false;
-			
-			for (int i = 0; i < o1Length; i++) {
-				o1Val = ((Number)o1Array[i]).doubleValue();
-				o2Val = ((Number)o2Array[o1Length - i - 1]).doubleValue();
-				
-				if (o1Val != o2Val)
-					return false;
-			}
-			
-			return true;
-		} 
-		
-		return false;*/
 	}
 
 	@Override
@@ -160,13 +93,42 @@ public class Invertable extends PairwiseMetamorphicProperty{
 		ArrayList<Integer> rets = new ArrayList<Integer>();
 		for(int i = 0;i<getMethod().getParameterTypes().length; i++)
 		{
-			if(getMethod().getParameterTypes()[i].isArray() || Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
+			if(getMethod().getParameterTypes()[i].isArray() || 
+					Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]) ||
+					String.class.isAssignableFrom(getMethod().getParameterTypes()[i])) {
 				rets.add(i);
+			}
 		}
+		
+		//If no input type matches, target on first param
+		if (rets.size() == 0) {
+			rets.add(0);
+		}
+		
 		int[] ret = new int[rets.size()];
 		for(int i = 0;i<rets.size();i++)
 			ret[i]=rets.get(i);
 		return ret;
+	}
+	
+	private List reverseObject(Object obj) {
+		List ret = new ArrayList();
+		if (obj.getClass().isArray()) {
+			int objLength = Array.getLength(obj);
+			
+			for (int i = objLength - 1; i >= 0; i--) {
+				ret.add(Array.get(obj, i));
+			}
+			return ret;
+		} else if (Collection.class.isAssignableFrom(obj.getClass())) {
+			List objList = new ArrayList((Collection)obj);
+			
+			for (int i = objList.size() - 1; i >=0; i--) {
+				ret.add(objList.get(i));
+			}
+			return ret;
+		}
+		return null;
 	}
 
 	@Override

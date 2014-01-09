@@ -424,6 +424,14 @@ public class SimpleExample extends AbstractExample {
 		//s.mulList2(in);
 		s.negList2(in);
 		
+		ArrayList a = new ArrayList();
+		ArrayList b = new ArrayList();
+		System.out.println("Check equal: " + (a.equals(b)));
+		
+		String c = null;
+		String d = null;
+		System.out.println("Check equal: " + (c == d));
+		
 //		s.selectMax(new int[]{3, 4, 5});
 //		String[] barzzz = {"aa","bb"};
 //		System.out.println("Max memory: " + Runtime.getRuntime().maxMemory());
