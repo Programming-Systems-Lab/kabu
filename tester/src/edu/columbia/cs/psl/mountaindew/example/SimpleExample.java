@@ -399,6 +399,36 @@ public class SimpleExample extends AbstractExample {
 		return ret;
 	}
 	
+	@Metamorphic
+	public String addD(String a) {
+		return a + "d";
+	}
+	
+	@Metamorphic
+	public ArrayList<String> addDS(ArrayList<String> ss) {
+		ArrayList<String> ret = new ArrayList<String>();
+		for (String tmp: ss) {
+			ret.add(tmp + "d");
+		}
+		
+		System.out.println("Chec ret: " + ret);
+		
+		return ret;
+	}
+	
+	@Metamorphic
+	public ArrayList<String> revDS(ArrayList<String> ss) {
+		ArrayList<String> ret = new ArrayList<String>();
+		
+		for (int i = (ss.size()-1); i >= 0; i--) {
+			ret.add(ss.get(i));
+		}
+		
+		System.out.println("Check ret: " + ret);
+		
+		return ret;
+	}
+	
 	public static void main(String[] args) {
 		SimpleExample s = new SimpleExample();
 		//s.addThree(2);
@@ -412,25 +442,47 @@ public class SimpleExample extends AbstractExample {
 		/*int[][] in = new int[][]{{1, 2, 3}, {4, 5, 6}};
 		s.increArray2(in);*/
 		
-		ArrayList<ArrayList<Integer>> in = new ArrayList<ArrayList<Integer>>();
+		/*ArrayList<ArrayList<Integer>> in = new ArrayList<ArrayList<Integer>>();
 		ArrayList<Integer> e1 = new ArrayList<Integer>();
 		ArrayList<Integer> e2 = new ArrayList<Integer>();
 		e1.add(1); e1.add(2); e1.add(3);
 		e2.add(4); e2.add(5); e2.add(6);
 		in.add(e1);
 		in.add(e2);
-		//s.increList2(in);
-		//s.increMap(in);
-		//s.mulList2(in);
-		s.negList2(in);
+		s.increList2(in);
+		s.increMap(in);
+		s.mulList2(in);
+		s.negList2(in);*/
 		
-		ArrayList a = new ArrayList();
+		String tester = "abc";
+		String tester2 = "def";
+		String tester3 = "ghi";
+		ArrayList<String> ss = new ArrayList<String>();
+		ss.add(tester);
+		ss.add(tester2);
+		ss.add(tester3);
+		s.revDS(ss);
+		//s.addDS(ss);
+		//s.addD(tester);
+		double dd = 3.0;
+		double ee = 1.2;
+		System.out.println("Check dd: " + (dd%1 == 0));
+		System.out.println("Check ee: " + (ee%1 == 0));
+		
+		/*ArrayList a = new ArrayList();
 		ArrayList b = new ArrayList();
 		System.out.println("Check equal: " + (a.equals(b)));
 		
 		String c = null;
 		String d = null;
 		System.out.println("Check equal: " + (c == d));
+		
+		int t = 97;
+		int ss = 1;
+		String abc = "abc" + ((char)ss) + "d";
+		String exp = "abd";
+		System.out.println("Test 97: " + (char)t);
+		System.out.println("Test 128: " + abc + " " + abc.length());*/
 		
 //		s.selectMax(new int[]{3, 4, 5});
 //		String[] barzzz = {"aa","bb"};

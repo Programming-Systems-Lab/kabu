@@ -51,6 +51,18 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 					return false;
 				else
 					return diff1 == diff2;
+			} else if (String.class.isAssignableFrom(p1.getClass()) && String.class.isAssignableFrom(p2.getClass()) 
+					&&String.class.isAssignableFrom(returnValue1.getClass()) && String.class.isAssignableFrom(returnValue2.getClass())) {
+				int diff1 = (int)getDifference(p1, p2);
+				int diff2 = (int)getDifference(returnValue1, returnValue2);
+				
+				System.out.println("Additive string diff1: " + diff1);
+				System.out.println("Additive string diff2: " + diff2);
+				
+				if (diff1 == 0)
+					return false;
+				else
+					return diff1 == diff2;
 			} else if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 				
 				if (Array.getLength(returnValue1) != Array.getLength(returnValue2))
@@ -154,6 +166,8 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 		try {
 			if (Number.class.isAssignableFrom(o1.getClass()) && Number.class.isAssignableFrom(o2.getClass())) {
 				return getDifference(o1, o2);
+			} else if (String.class.isAssignableFrom(o1.getClass()) && String.class.isAssignableFrom(o2.getClass())) {
+				return getDifference(o1, o2);
 			} else if (o1.getClass().isArray() && o2.getClass().isArray()) {
 				
 				for (int i = 0; i < Array.getLength(o1); i++) {
@@ -202,6 +216,30 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 	private Object addObject(Object obj, double diff) {
 		if (Number.class.isAssignableFrom(obj.getClass())) {
 			return ((Number)obj).doubleValue() + diff;
+		} else if (String.class.isAssignableFrom(obj.getClass())) {
+			if (diff == 0)
+				return obj;
+			else {
+				String objString = (String)obj;
+				char c = (char)(-1 * ((int)diff));
+				int last = objString.lastIndexOf(c);
+				
+				if (last == -1)
+					return null;
+				
+				char[] oriChars = objString.toCharArray();
+				char[] newChars = new char[oriChars.length - 1];
+				int count = 0;
+				for (int i = 0; i < oriChars.length; i++) {
+					if (i == last)
+						continue;
+					else {
+						newChars[count++] = oriChars[i];
+					}
+				}
+				
+				return new String(newChars);
+			}
 		} else if (obj.getClass().isArray()) {
 			int objLength = Array.getLength(obj);
 			
@@ -228,53 +266,6 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 		
 		return null;
 	}
-	
-	private boolean checkListDifference(List rt1List, List rt2List) {
-		if (rt1List.size() != rt2List.size())
-			return false;
-		
-		for (int i = 0; i < rt1List.size() - 1; i++) {
-			Object rt1Tmp1 = rt1List.get(i);
-			Object rt1Tmp2 = rt1List.get(i + 1);
-			Object rt2Tmp1 = rt2List.get(i);
-			Object rt2Tmp2 = rt2List.get(i + 1);
-			
-			if (checkDifference(rt1Tmp1, rt1Tmp2, rt2Tmp1, rt2Tmp2) == false)
-				return false;
-		}
-		
-		return true;
-	}
-	
-	private boolean checkDifference(Object obj11, Object obj12, Object obj21, Object obj22) {
-		if (Number.class.isAssignableFrom(obj11.getClass())) {
-			//Round it
-			double diff1 = this.roundDouble(getDifference(obj11, obj12), roundDigit);
-			double diff2 = this.roundDouble(getDifference(obj21, obj22), roundDigit);
-			return diff1 == diff2;
-		} else if (Collection.class.isAssignableFrom(obj11.getClass())) {
-			List tmpList11 = (List)obj11;
-			List tmpList12 = (List)obj12;
-			List tmpList21 = (List)obj21;
-			List tmpList22 = (List)obj22;
-			
-			if (tmpList11.size() != tmpList21.size())
-				return false;
-			
-			if (tmpList12.size() != tmpList22.size())
-				return false;
-			
-			for (int i = 0; i < tmpList11.size(); i++) {
-				if (checkDifference(tmpList11.get(i), tmpList12.get(i), 
-						tmpList21.get(i), tmpList22.get(i)) == false)
-					return false;
-			}
-			
-			return true;
-		}
-		
-		return false;
-	}
 
 	private double getDifference(Object o1, Object o2) throws IllegalArgumentException
 	{
@@ -288,8 +279,23 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 			return ((Long) o1) - ((Long) o2);
 		else if(o1.getClass().equals(Double.class) || o1.getClass().equals(Double.TYPE))
 			return ((Double) o1) - ((Double) o2);
+		else if (String.class.isAssignableFrom(o1.getClass()) || o1.getClass().equals(String.class)) {
+			int ret = this.sumUpChars((String)o1) - this.sumUpChars((String)o2);
+			return ret;
+		}
 		throw new IllegalArgumentException("Non numeric types");
 	}
+	
+	private int sumUpChars(String str) {
+		char[] chars = str.toCharArray();
+		int ret = 0;
+		for (int i = 0; i < chars.length; i++) {
+			ret += ((int)chars[i]);
+		}
+		
+		return ret;
+	}
+	
 	@Override
 	protected boolean propertyApplies(MethodInvocation i1, MethodInvocation i2,
 			int interestedVariable) {

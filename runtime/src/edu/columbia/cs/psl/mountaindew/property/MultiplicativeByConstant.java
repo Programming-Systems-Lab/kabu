@@ -45,6 +45,20 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					return false;
 				else
 					return div1 == div2;
+			} else if (String.class.isAssignableFrom(returnValue1.getClass()) && String.class.isAssignableFrom(returnValue2.getClass())) {
+				double div = getDivisor(returnValue1, returnValue2);
+				
+				System.out.println("Check p1: " + p1);
+				System.out.println("Check p2: " + p2);
+				if (div == Double.MAX_VALUE || div == 1)
+					return false;
+				
+				System.out.println("Check return value1: " + returnValue1);
+				System.out.println("Check return value2: " + returnValue2);
+				String rv1 = (String)this.multiplyObject(returnValue1, 1.0);
+				String rv2 = (String)this.multiplyObject(returnValue2, div);
+				
+				return rv1.equals(rv2);
 			} else if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 				//Because propertiesApply now not check length, check them here
 				if (Array.getLength(returnValue1) != Array.getLength(returnValue2))
@@ -81,6 +95,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 				List mrt1List = (List)this.multiplyObject(rt1List, 1.0);
 				List mrt2List = (List)this.multiplyObject(rt2List, fDivisor);
 				
+				System.out.println("fDivisor: " + fDivisor);
 				System.out.println("mrt1List: " + mrt1List);
 				System.out.println("mrt2List: " + mrt2List);
 				
@@ -143,6 +158,8 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		try {
 			if (Number.class.isAssignableFrom(o1.getClass()) && Number.class.isAssignableFrom(o2.getClass())) {
 				return getDivisor(o1, o2);
+			} else if (String.class.isAssignableFrom(o1.getClass()) && String.class.isAssignableFrom(o2.getClass())) {
+				return getDivisor(o1, o2);
 			} else if (o1.getClass().isArray() && o2.getClass().isArray()) {
 				
 				for (int i = 0; i < Array.getLength(o1); i++) {
@@ -191,6 +208,15 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 	protected Object multiplyObject(Object obj, double divisor) {
 		if (Number.class.isAssignableFrom(obj.getClass())) {
 			return ((Number)obj).doubleValue() * divisor;
+		} else if (String.class.isAssignableFrom(obj.getClass())) {
+			String oString = (String)obj;
+			Double newLength = oString.length() * divisor;
+			System.out.println("Check oString: " + oString);
+			
+			if (newLength > oString.length())
+				return null;
+			else
+				return oString.substring(0, newLength.intValue());
 		} else if (obj.getClass().isArray()) {
 			int objLength = Array.getLength(obj);
 			
@@ -304,6 +330,14 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			} else {
 				return Double.MAX_VALUE;
 			}
+		}
+		else if(o1.getClass().equals(String.class) || String.class.isAssignableFrom(o1.getClass())) {
+			double o1Length = (double)((String)o1).length();
+			int o2Length = ((String)o2).length();
+			
+			System.out.println("Check o1 o2 length: " + o1Length + " " + o2Length);
+			double ret = o1Length/o2Length;
+			return ret;
 		}
 		throw new IllegalArgumentException("Non numeric types");
 	}

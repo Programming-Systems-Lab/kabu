@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
@@ -40,12 +42,12 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			if (rt1List.equals(rt2List))
 				return false;
 			
-			List reverseList = this.reverseObject(rt2List);
+			List reverseList = (List)this.reverseObject(rt2List);
 			
 			return this.ce.checkEquivalence(rt1List, reverseList);
 		} else if (Collection.class.isAssignableFrom(returnValue1.getClass()) && Collection.class.isAssignableFrom(returnValue2.getClass())) {
-			List o1List = new ArrayList((Collection)returnValue1);
-			List o2List = new ArrayList((Collection)returnValue2);
+			List o1List = this.returnList(returnValue1);
+			List o2List = this.returnList(returnValue2);
 			
 			if (o1List.size() != o2List.size())
 				return false;
@@ -56,8 +58,34 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			if (o1List.equals(o2List))
 				return false;
 			
-			List reverseList = this.reverseObject(o2List);
+			List reverseList = (List)this.reverseObject(o2List);
 			return this.ce.checkEquivalence(o1List, reverseList);
+		} else if (Map.class.isAssignableFrom(returnValue1.getClass()) && Map.class.isAssignableFrom(returnValue2.getClass())) {
+			Map o1Map = (Map)returnValue1;
+			Map o2Map = (Map)returnValue2;
+			
+			if (o1Map.size() != o2Map.size())
+				return false;
+			
+			if (o1Map.equals(o2Map))
+				return false;
+			
+			Map r2Map = (Map)this.reverseObject(o2Map);
+			
+			return this.ce.checkEquivalence(o1Map, r2Map);
+		} else if (String.class.isAssignableFrom(returnValue1.getClass()) && String.class.isAssignableFrom(returnValue2.getClass())) {
+			String s1 = (String)returnValue1;
+			String s2 = (String)returnValue2;
+			
+			if (s1.length() != s2.length())
+				return false;
+			
+			if (s1.equals(s2))
+				return false;
+			
+			String rs2 = (String)this.reverseObject(s2);
+			
+			return this.ce.checkEquivalence(s1, rs2);
 		}
 		
 		return false;
@@ -111,9 +139,9 @@ public class Invertable extends PairwiseMetamorphicProperty{
 		return ret;
 	}
 	
-	private List reverseObject(Object obj) {
-		List ret = new ArrayList();
+	private Object reverseObject(Object obj) {
 		if (obj.getClass().isArray()) {
+			List ret = new ArrayList();
 			int objLength = Array.getLength(obj);
 			
 			for (int i = objLength - 1; i >= 0; i--) {
@@ -121,12 +149,26 @@ public class Invertable extends PairwiseMetamorphicProperty{
 			}
 			return ret;
 		} else if (Collection.class.isAssignableFrom(obj.getClass())) {
+			List ret = new ArrayList();
 			List objList = new ArrayList((Collection)obj);
 			
 			for (int i = objList.size() - 1; i >=0; i--) {
 				ret.add(objList.get(i));
 			}
 			return ret;
+		} else if (Map.class.isAssignableFrom(obj.getClass())) {
+			Map objMap = (Map)obj;
+			Map retMap = new HashMap();
+			
+			for (Object key: objMap.keySet()) {
+				Object val = objMap.get(key);
+				retMap.put(key, this.reverseObject(val));
+			}
+			return retMap;
+		} else if (String.class.isAssignableFrom(obj.getClass())) {
+			StringBuilder sb = new StringBuilder();
+			sb.append((String)obj);
+			return sb.reverse().toString();
 		}
 		return null;
 	}

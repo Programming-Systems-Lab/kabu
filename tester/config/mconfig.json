@@ -1,5 +1,5 @@
 {"globalConfig": {
 	"Adapter":"KnapsackAdapter",
 	"Transformers":[{"MultiplyByNumericConstant":[10, 100]}, {"AddNumericConstant":[5, 100]}, {"Shuffle":[4]}, {"Reverse":[2]}],
-	"Checkers":["ContentEqualer","MultiplicativeByConstant","AdditiveByConstant","Invertable","Negatable"]
+	"Checkers":["ContentEqualer","MultiplicativeByConstant","AdditiveByConstant","Invertable","Shufflable","Negatable"]
 }}

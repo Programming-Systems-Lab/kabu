@@ -28,5 +28,6 @@
 	<classpathentry kind="lib" path="/mtndew-tester/lib/ejml-0.23.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/encog-core-3.2.0"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/knapsack"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/superstring"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

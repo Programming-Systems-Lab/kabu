@@ -123,6 +123,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 									this.mProfiler.addMethodProfile(i, j, result);
 									
 									result.stateItem = tmpKey;
+									System.out.println("Check tmpKey: " + tmpKey);
 									
 									if (returnValuesApply(o1, tmpObj1, o2, tmpObj2)) {
 										//Property may hold
