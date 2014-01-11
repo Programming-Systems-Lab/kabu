@@ -1,11 +1,18 @@
 package edu.columbia.cs.psl.mountaindew.example;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 
 @Metamorphic
 public class MyObject {
+	
+	private static int __metamorphicCount = 0;
+	
+	private static HashMap __meta_static_map;
+	
+	private HashMap __meta_obj_map = new HashMap();
 	
 	private String myString = "Test123";
 	
@@ -19,6 +26,47 @@ public class MyObject {
 	
 	public MyObject(int i) {
 		myArray = new Integer[]{1, 2, 3, 4, 5};
+		__meta_static_map = new HashMap();
+	}
+	
+	public void pushObjMap() {
+		HashMap __meta_local_map = new HashMap();
+		int i = 0;
+		__meta_local_map.put(0, i);
+		int j = 1;
+		__meta_local_map.put(1, j);
+		String k = "Friday";
+		__meta_local_map.put(2, k);
+		this.__meta_obj_map.put("pushObjMap", __meta_local_map);
+	}
+	
+	public void pushOriObjMap() {
+		int i = 0;
+		dummyMap2.put(0, i);
+		int j = 1;
+		dummyMap2.put(1, j);
+		String k = "Friday";
+		dummyMap2.put(2, k);
+	}
+	
+	public static void pushStaticMap() {		
+		int i = 0;
+		__meta_static_map.put(0, i);
+		int j = 1;
+		__meta_static_map.put(1, j);
+		String k = "Friday";
+		__meta_static_map.put(2, k);
+		
+		System.out.println("My static map: " + __meta_static_map);
+	}
+	
+	public void pushOriMap() {
+		int i = 0;
+		this.__meta_obj_map.put(0, i);
+		int j = 1;
+		this.__meta_obj_map.put(1, j);
+		String k = "Friday";
+		this.__meta_obj_map.put(2, k);
 	}
 	
 	public String getMyString() {
@@ -84,6 +132,7 @@ public class MyObject {
 	
 	public static void main (String args[]) {
 		MyObject mo = new MyObject(5);
-		mo.sumUp(5);
+		//mo.sumUp(5);
+		mo.pushStaticMap();
 	}
 }

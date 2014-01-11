@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +35,26 @@ public class MetaSerializer {
 		}
 	}
 	
+	public static Map<String, Map<Integer,String>> deserializedAllClassLocalVarMap(String className, Set<Method> mSet) {
+		Map<String, Map<Integer, String>> ret = new HashMap<String, Map<Integer, String>>();
+		
+		String tmpName;
+		String tmpKey;
+		Map tmpVarMap;
+		for (Method m: mSet) {
+			tmpName = m.getName();
+			tmpKey = className + ":" + tmpName;
+			tmpVarMap = deserializeLocalVarMap(tmpKey);
+			
+			if (tmpVarMap == null)
+				continue;
+			
+			ret.put(tmpKey, tmpVarMap);
+		}
+		
+		return ret;
+	}
+	
 	public static Map<Integer, String> deserializeLocalVarMap(String className) {
 		String path = "ser/" + className + ".ser";
 		Map<Integer, String> localVarMap = (Map<Integer, String>)deserializeBasic(path);
@@ -55,7 +77,7 @@ public class MetaSerializer {
 			File file = new File(path);
 			
 			if (!file.exists()) {
-				System.err.println("File does not exist: " + file.getAbsolutePath());
+				System.out.println("Warning: File does not exist: " + file.getAbsolutePath());
 				return null;
 			}
 			

@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,7 +32,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 	
 	private static String uninitialized = "unintitialized";
 	
-	private static String localMap = "stateStorage";
+	private static String objMap = "__meta_obj_map";
 	
 	private MethodProfiler mProfiler = new MethodProfiler();
 	
@@ -174,9 +175,19 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 			combinedFields.addAll(myFields);
 			combinedFields.addAll(parentFields);
 			
+			//Need a Map<methodName, localVarMap>
+			Set<Method> myMethods = new HashSet(Arrays.asList(obj.getClass().getDeclaredMethods()));
+			Set<Method> parentMethods = new HashSet(Arrays.asList(obj.getClass().getMethods()));
+			
+			Set<Method> combinedMethods = new HashSet();
+			combinedMethods.addAll(myMethods);
+			combinedMethods.addAll(parentMethods);
+			
 			String objClassName = obj.getClass().getName();
-			Map<Integer, String> localVarMap = MetaSerializer.deserializeLocalVarMap(objClassName);
-			System.out.println("Check localVarMap in pairwise: " + localVarMap);
+			Map<String, Map<Integer, String>> methodVarMap = 
+					MetaSerializer.deserializedAllClassLocalVarMap(objClassName, combinedMethods);
+			
+			System.out.println("Check all localVarMap in pairwise: " + methodVarMap);
 			
 			Set<String> allFields = new HashSet<String>();
 			for(Field field: combinedFields) {
@@ -200,13 +211,26 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 				if (!basic && !comparable && !stringable && !annotable)
 					continue;
 					
-				if (fieldName.equals(localMap)) {
-					//Flatten local variable map
-					Map tmpMap = (HashMap)ClassChecker.comparableClasses(fieldValue);
+				if (fieldName.equals(objMap)) {
+					//Flatten all local variable map
+					Map allMaps = (Map)fieldValue;
+					
+					for (Object methodName: allMaps.keySet()) {
+						Map tmpMap = (HashMap)ClassChecker.comparableClasses(allMaps.get(methodName));
+						String localKey = objClassName + ":" + methodName;
+						Map varMap = (HashMap)(methodVarMap.get(localKey));
+						
+						for (Object innerKey: tmpMap.keySet()) {
+							recorder.put(localKey + "_" + varMap.get(innerKey), tmpMap.get(innerKey));
+							allFields.add(localKey + "_" + varMap.get(innerKey));
+						}
+					}
+					
+					/*Map tmpMap = (HashMap)ClassChecker.comparableClasses(fieldValue);
 					for (Object key: tmpMap.keySet()) {
 						recorder.put(objClassName + ":" + localVarMap.get(key) + MetaSerializer.localSuffix, tmpMap.get(key));
 						allFields.add(localVarMap.get(key) + MetaSerializer.localSuffix);
-					}
+					}*/
 				} else if (fieldValue != null) {
 					if (comparable || basic)
 						recorder.put(objClassName + ":" + fieldName, fieldValue);
