@@ -1,0 +1,32 @@
+weka-3-6-3
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [m_acuity, m_saveInstances, m_numberOfClustersDetermined, m_normal, TREE, m_cutoff, NOT_DRAWABLE, stateStorage2, serialVersionUID, Newick, BayesNet]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [m_saveInstances, m_numberOfClustersDetermined, m_normal, TREE, m_cutoff, stateStorage2, Newick, m_acuity, __metamorphicOutput, m_numberMerges, m_numberSplits, NOT_DRAWABLE, serialVersionUID, m_numberOfClusters, BayesNet]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [m_acuity, m_saveInstances, m_numberOfClustersDetermined, m_normal, TREE, m_cutoff, NOT_DRAWABLE, stateStorage2, serialVersionUID, m_numberOfClusters, Newick, BayesNet]
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [m_acuity, m_saveInstances, m_numberOfClustersDetermined, m_normal, TREE, m_cutoff, NOT_DRAWABLE, stateStorage2, serialVersionUID, m_numberOfClusters, Newick, BayesNet]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [m_acuity, m_saveInstances, m_numberOfClustersDetermined, m_normal, TREE, m_cutoff, NOT_DRAWABLE, stateStorage2, serialVersionUID, m_numberOfClusters, Newick, BayesNet]
+]
+]

@@ -1,0 +1,1728 @@
+weka-3-4-1vs.weka-3-4-2
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_modelNormal, m_model, __metamorphicOutput, m_priors, m_num_clusters, m_loglikely]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-2vs.weka-3-4-1
+[Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_model, __metamorphicOutput, m_priors, stateStorage1, m_num_clusters, m_loglikely, stateStorage5, m_weights, stateStorage3]
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_model, __metamorphicOutput, m_priors, m_num_clusters, m_weights]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_model, __metamorphicOutput, m_priors, stateStorage1, m_num_clusters, m_loglikely, m_weights]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-2vs.weka-3-4-3
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-3vs.weka-3-4-2
+[Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-3vs.weka-3-4-4
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-4vs.weka-3-4-3
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [stateStorage5, stateStorage3]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-4vs.weka-3-4-5
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [stateStorage11, stateStorage8]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [stateStorage11, stateStorage8]
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [stateStorage11]
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [stateStorage11]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [stateStorage11]
+]
+]
+weka-3-4-5vs.weka-3-4-4
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [stateStorage15, stateStorage13, stateStorage14, stateStorage12, stateStorage9, stateStorage18]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [stateStorage15, stateStorage13, stateStorage14, stateStorage12, stateStorage9, stateStorage18]
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [stateStorage15, stateStorage13, stateStorage14, stateStorage12, stateStorage9, stateStorage18]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [stateStorage15, stateStorage13, stateStorage14, stateStorage12, stateStorage9, stateStorage18]
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [stateStorage15, stateStorage13, stateStorage14, stateStorage12, stateStorage9, stateStorage18]
+]
+]
+weka-3-4-5vs.weka-3-4-6
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-6vs.weka-3-4-5
+[Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-6vs.weka-3-4-7
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-7vs.weka-3-4-6
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-7vs.weka-3-4-8
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-8vs.weka-3-4-7
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-8vs.weka-3-4-9
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-9vs.weka-3-4-8
+[Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-4-9vs.weka-3-5-0
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-0vs.weka-3-4-9
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-0vs.weka-3-5-1
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-1vs.weka-3-5-0
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-1vs.weka-3-5-2
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-2vs.weka-3-5-1
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-2vs.weka-3-5-3
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-3vs.weka-3-5-2
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [serialVersionUID]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [serialVersionUID]
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [serialVersionUID]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [serialVersionUID]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [serialVersionUID]
+]
+]
+weka-3-5-3vs.weka-3-5-4
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_rseed]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_rseed]
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_rseed]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_rseed]
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_rseed]
+]
+]
+weka-3-5-4vs.weka-3-5-3
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-4vs.weka-3-5-5
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-5vs.weka-3-5-4
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-5vs.weka-3-5-6
+[Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-6vs.weka-3-5-5
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-6vs.weka-3-5-7
+[Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-7vs.weka-3-5-6
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_replaceMissing]
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_replaceMissing]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_replaceMissing]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_replaceMissing]
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_replaceMissing]
+]
+]
+weka-3-5-7vs.weka-3-5-8
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-5-8vs.weka-3-5-7
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_displayModelInOldFormat]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_displayModelInOldFormat]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_displayModelInOldFormat]
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_displayModelInOldFormat]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_displayModelInOldFormat]
+]
+]
+weka-3-5-8vs.weka-3-6-0
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-0vs.weka-3-5-8
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-0vs.weka-3-6-1
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-1vs.weka-3-6-0
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-1vs.weka-3-6-2
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-2vs.weka-3-6-1
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-2vs.weka-3-6-3
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-3vs.weka-3-6-2
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-3vs.weka-3-6-4
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-4vs.weka-3-6-3
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-4vs.weka-3-6-5
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-5vs.weka-3-6-4
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-5vs.weka-3-6-6
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-6vs.weka-3-6-5
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-6vs.weka-3-6-7
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-7vs.weka-3-6-6
+[Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-7vs.weka-3-6-8
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-8vs.weka-3-6-7
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-8vs.weka-3-6-9
+[Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]
+weka-3-6-9vs.weka-3-6-8
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: []
+]
+]

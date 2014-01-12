@@ -1,0 +1,1088 @@
+weka-3-5-1vs.weka-3-5-2
+[Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-2vs.weka-3-5-1
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-2vs.weka-3-5-3
+[Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-3vs.weka-3-5-2
+[Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-3vs.weka-3-5-4
+[Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-4vs.weka-3-5-3
+[Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-4vs.weka-3-5-5
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-5vs.weka-3-5-4
+[Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-5vs.weka-3-5-6
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-6vs.weka-3-5-5
+[Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-6vs.weka-3-5-7
+[Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-7vs.weka-3-5-6
+[Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-7vs.weka-3-5-8
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-8vs.weka-3-5-7
+[Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-5-8vs.weka-3-6-0
+[Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-0vs.weka-3-5-8
+[Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-0vs.weka-3-6-1
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-1vs.weka-3-6-0
+[Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-1vs.weka-3-6-2
+[Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-2vs.weka-3-6-1
+[Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-2vs.weka-3-6-3
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-3vs.weka-3-6-2
+[Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-3vs.weka-3-6-4
+[Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-4vs.weka-3-6-3
+[Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-4vs.weka-3-6-5
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-5vs.weka-3-6-4
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-5vs.weka-3-6-6
+[Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-6vs.weka-3-6-5
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-6vs.weka-3-6-7
+[Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-7vs.weka-3-6-6
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-7vs.weka-3-6-8
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-8vs.weka-3-6-7
+[Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-8vs.weka-3-6-9
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]
+weka-3-6-9vs.weka-3-6-8
+[Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: []
+]
+]

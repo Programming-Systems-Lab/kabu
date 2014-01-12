@@ -1,0 +1,40 @@
+ejml-0.24
+[Adapter: EJMLAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: [__metamorphicOutput]
+, Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: [stateStorage4, maxRows, stateStorage5, maxCols, stateStorage3, stateStorage7]
+]
+, Adapter: EJMLAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: [stateStorage4, maxRows, stateStorage5, maxCols, stateStorage3]
+]
+, Adapter: EJMLAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: [gammas, stateStorage4, maxRows, stateStorage5, maxCols, stateStorage3]
+, Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: [__metamorphicOutput]
+]
+, Adapter: EJMLAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: [gammas, stateStorage4, maxRows, stateStorage5, maxCols, stateStorage3]
+, Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: [__metamorphicOutput]
+]
+, Adapter: EJMLAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: [__metamorphicOutput]
+, Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: [stateStorage4, maxRows, stateStorage5, maxCols, stateStorage3]
+]
+]

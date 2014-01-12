@@ -1,6 +1,7 @@
 package edu.columbia.cs.psl.mountaindew.example;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
@@ -11,6 +12,8 @@ public class MyObject {
 	private static int __metamorphicCount = 0;
 	
 	private static HashMap __meta_static_map;
+	
+	private static HashMap __meta_static_record = new HashMap(); 
 	
 	private HashMap __meta_obj_map = new HashMap();
 	
@@ -24,6 +27,14 @@ public class MyObject {
 	
 	private HashMap dummyMap2 = new HashMap();
 	
+	static {
+		System.out.println("Static block 1");
+	}
+	
+	static {
+		System.out.println("Static block 2");
+	}
+	
 	public MyObject(int i) {
 		myArray = new Integer[]{1, 2, 3, 4, 5};
 		__meta_static_map = new HashMap();
@@ -31,13 +42,13 @@ public class MyObject {
 	
 	public void pushObjMap() {
 		HashMap __meta_local_map = new HashMap();
+		this.__meta_obj_map.put("pushObjMap", __meta_local_map);
 		int i = 0;
 		__meta_local_map.put(0, i);
 		int j = 1;
 		__meta_local_map.put(1, j);
 		String k = "Friday";
 		__meta_local_map.put(2, k);
-		this.__meta_obj_map.put("pushObjMap", __meta_local_map);
 	}
 	
 	public void pushOriObjMap() {
@@ -49,15 +60,24 @@ public class MyObject {
 		dummyMap2.put(2, k);
 	}
 	
-	public static void pushStaticMap() {		
+	public static String getName() {
+		return "Test123";
+	}
+	
+	public static void pushStaticMap(int test) {
+		HashMap localMap = new HashMap();
+		long threadId = Thread.currentThread().getId();
+		__meta_static_record.put(getName() + "_" + threadId, localMap);
 		int i = 0;
-		__meta_static_map.put(0, i);
+		localMap.put(0, i);
 		int j = 1;
-		__meta_static_map.put(1, j);
+		localMap.put(1, j);
 		String k = "Friday";
-		__meta_static_map.put(2, k);
+		localMap.put(2, k);
+		localMap.put(3, test);
 		
-		System.out.println("My static map: " + __meta_static_map);
+		System.out.println("My meta static record: " + __meta_static_record);
+		System.out.println("My current thread id: " + Thread.currentThread().getId());
 	}
 	
 	public void pushOriMap() {
@@ -130,9 +150,27 @@ public class MyObject {
 		return 1;
 	}
 	
-	public static void main (String args[]) {
+	public static void main (String args[]) throws InterruptedException {
 		MyObject mo = new MyObject(5);
 		//mo.sumUp(5);
-		mo.pushStaticMap();
+		System.out.println("In main check thread id: " + Thread.currentThread().getId());
+		
+		Thread t = new Thread() {
+			public void run() {
+				System.out.println("Check thread id in thread: " + Thread.currentThread().getId());
+				MyObject.pushStaticMap(10);
+			}
+		};
+		t.start();
+		t.join();
+		
+		/*Thread t2 = new Thread() {
+			public void run() {
+				System.out.println("Check thread id in thread: " + Thread.currentThread().getId());
+				MyObject.pushStaticMap();
+			}
+		};
+		t2.start();*/
+		mo.pushStaticMap(-1);
 	}
 }

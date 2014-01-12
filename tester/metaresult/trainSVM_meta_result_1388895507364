@@ -1,0 +1,16 @@
+weka-3-6-8vs.weka-3-6-9
+[Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+]
+weka-3-6-9vs.weka-3-6-8
+[Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+]

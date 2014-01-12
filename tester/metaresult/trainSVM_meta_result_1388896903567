@@ -1,0 +1,64 @@
+weka-3-5-5vs.weka-3-5-6
+[Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+]
+weka-3-5-6vs.weka-3-5-5
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: []
+]
+]

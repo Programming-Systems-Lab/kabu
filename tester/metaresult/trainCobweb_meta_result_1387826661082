@@ -1,0 +1,128 @@
+weka-3-6-2vs.weka-3-6-3
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+]
+weka-3-6-3vs.weka-3-6-2
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [Newick]
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [Newick]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [Newick]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [Newick]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [Newick]
+]
+]
+weka-3-6-3vs.weka-3-6-4
+[Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+]
+weka-3-6-4vs.weka-3-6-3
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: []
+]
+]

@@ -1,0 +1,64 @@
+weka-3-6-7vs.weka-3-6-8
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: [m_local]
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: [m_local]
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: [m_local]
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: [m_local]
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: [m_local]
+]
+]
+weka-3-6-8vs.weka-3-6-7
+[Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: [randF_local, svmClass_local]
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: [randF_local, svmClass_local]
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: [randF_local, svmClass_local]
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: [randF_local, svmClass_local]
+]
+, Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: [randF_local, svmClass_local]
+]
+]

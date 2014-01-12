@@ -1,0 +1,32 @@
+weka-3-6-9
+[Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: [m_NumFolds, m_Vote, serialVersionUID, stateStorage3, stateStorage8, m_Verbose]
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: [m_NumFolds, m_Vote, serialVersionUID, stateStorage3, stateStorage8, m_Verbose]
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: [m_NumFolds, m_Vote, serialVersionUID, stateStorage3, stateStorage8, m_Verbose]
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: [m_NumFolds, m_Vote, serialVersionUID, stateStorage3, stateStorage8, m_Verbose]
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.Dagging
+Field names: [m_NumFolds, m_Vote, serialVersionUID, stateStorage3, stateStorage8, m_Verbose]
+]
+]

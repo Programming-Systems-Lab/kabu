@@ -1,0 +1,80 @@
+ejml-0.23vs.ejml-0.24
+[Adapter: EJMLAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: []
+]
+, Adapter: EJMLAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: []
+, Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: []
+]
+, Adapter: EJMLAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: []
+, Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: []
+]
+, Adapter: EJMLAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: []
+, Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: []
+]
+, Adapter: EJMLAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: []
+, Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: []
+]
+]
+ejml-0.24vs.ejml-0.23
+[Adapter: EJMLAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: []
+, Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: []
+]
+, Adapter: EJMLAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: []
+]
+, Adapter: EJMLAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: []
+, Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: []
+]
+, Adapter: EJMLAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: []
+, Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: []
+]
+, Adapter: EJMLAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.alg.dense.linsol.LinearSolverSafe
+Field names: []
+, Class name: org.ejml.alg.dense.linsol.qr.LinearSolverQrHouseCol
+Field names: []
+]
+]

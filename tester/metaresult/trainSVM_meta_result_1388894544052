@@ -1,0 +1,8 @@
+weka-3-6-8
+[Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.functions.LibSVM
+Field names: [CLASS_SVMMODEL, m_eps, m_WeightLabel, TAGS_SVMTYPE, m_Degree, SVMTYPE_ONE_CLASS_SVM, svmClass_local, CLASS_SVMPROBLEM, m_GammaActual, KERNELTYPE_POLYNOMIAL, m_Present, CLASS_SVMNODE, m_ProbabilityEstimates, m_nu, KERNELTYPE_RBF, SVMTYPE_EPSILON_SVR, m_Coef0, m_Cost, m_SVMType, CLASS_SVM, serialVersionUID, SVMTYPE_C_SVC, m_ReplaceMissingValues, randF_local, m_KernelType, TAGS_KERNELTYPE, m_CacheSize, SVMTYPE_NU_SVC, m_Loss, m_noReplaceMissingValues, m_Gamma, KERNELTYPE_SIGMOID, m_Weight, KERNELTYPE_LINEAR, max_index_local, vy_local, SVMTYPE_NU_SVR, CLASS_SVMPARAMETER, m_Shrinking, m_Normalize]
+]
+]

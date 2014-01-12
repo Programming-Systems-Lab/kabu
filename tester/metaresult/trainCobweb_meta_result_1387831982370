@@ -1,0 +1,32 @@
+weka-3-4-1
+[Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [m_acuity, m_saveInstances, m_numberMerges, m_normal, TREE, m_cutoff, m_numberSplits, NOT_DRAWABLE, stateStorage2, m_numberOfClusters, BayesNet]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [m_acuity, m_saveInstances, __metamorphicOutput, m_numberMerges, m_normal, TREE, m_cutoff, m_numberSplits, NOT_DRAWABLE, stateStorage2, m_numberOfClusters, BayesNet]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [m_acuity, m_saveInstances, m_numberMerges, m_normal, TREE, m_cutoff, m_numberSplits, NOT_DRAWABLE, stateStorage2, m_numberOfClusters, BayesNet]
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [m_acuity, m_saveInstances, m_normal, TREE, m_cutoff, NOT_DRAWABLE, BayesNet]
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.Cobweb
+Field names: [m_acuity, m_saveInstances, m_numberMerges, m_normal, TREE, m_cutoff, m_numberSplits, NOT_DRAWABLE, stateStorage2, m_numberOfClusters, BayesNet]
+]
+]

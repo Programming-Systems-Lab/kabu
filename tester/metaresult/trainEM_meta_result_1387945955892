@@ -1,0 +1,32 @@
+weka-3-6-3
+[Adapter: WekaClusterAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_replaceMissing, m_num_attribs, m_theInstances, m_displayModelInOldFormat, stateStorage9, stateStorage18, m_verbose, stateStorage7, m_num_instances, m_minStdDev, stateStorage15, stateStorage13, stateStorage14, m_minValues, m_normConst, stateStorage12, m_initialNumClusters, serialVersionUID, m_maxValues, m_max_iterations]
+]
+, Adapter: WekaClusterAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_model, m_replaceMissing, stateStorage1, m_theInstances, stateStorage5, stateStorage3, stateStorage8, stateStorage9, m_verbose, stateStorage7, m_minStdDev, m_normConst, m_loglikely, m_initialNumClusters, serialVersionUID, m_weights, m_num_attribs, m_num_clusters, m_displayModelInOldFormat, stateStorage18, m_num_instances, stateStorage15, stateStorage13, __metamorphicOutput, m_priors, stateStorage14, stateStorage12, m_max_iterations]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_replaceMissing, m_num_attribs, m_theInstances, m_displayModelInOldFormat, stateStorage9, stateStorage18, m_verbose, stateStorage7, m_num_instances, m_minStdDev, stateStorage15, stateStorage13, stateStorage14, m_minValues, m_normConst, stateStorage12, m_initialNumClusters, serialVersionUID, m_maxValues, m_max_iterations]
+]
+, Adapter: WekaClusterAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_model, m_replaceMissing, m_num_attribs, m_num_clusters, m_theInstances, stateStorage8, m_displayModelInOldFormat, stateStorage9, stateStorage18, m_verbose, stateStorage7, m_minStdDev, m_num_instances, stateStorage15, __metamorphicOutput, stateStorage13, m_priors, stateStorage14, m_normConst, stateStorage12, m_initialNumClusters, serialVersionUID, m_weights, m_max_iterations]
+]
+, Adapter: WekaClusterAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.clusterers.EM
+Field names: [m_model, m_replaceMissing, stateStorage1, m_theInstances, stateStorage5, stateStorage3, stateStorage8, stateStorage9, m_verbose, stateStorage7, m_minStdDev, m_normConst, m_loglikely, m_initialNumClusters, serialVersionUID, m_weights, m_num_attribs, m_num_clusters, m_displayModelInOldFormat, stateStorage18, m_num_instances, stateStorage15, stateStorage13, __metamorphicOutput, m_priors, stateStorage14, stateStorage12, m_max_iterations]
+]
+]

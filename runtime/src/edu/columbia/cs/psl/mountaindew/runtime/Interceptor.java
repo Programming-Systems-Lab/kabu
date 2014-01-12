@@ -359,10 +359,13 @@ public class Interceptor extends AbstractInterceptor {
 		}
 		inv.children = new MethodInvocation[children.size()];
 		inv.children = children.toArray(inv.children);
+		//For getting the correct local variable map
+		inv.thread = Thread.currentThread();
 		
 		System.out.println("Method name " + inv.getMethod().getName());
 		System.out.println("Children size: " + inv.children.length);
 		System.out.println("Callee: " + callee.getClass().getName());
+		System.out.println("Thread id: " + inv.thread.getId());
 		
 		this.reportTransformerChecker();
 		return retId;

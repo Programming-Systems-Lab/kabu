@@ -1,0 +1,32 @@
+weka-3-4-14
+[Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.LogitBoost
+Field names: [m_NumFolds, m_Offset, m_WeightThreshold, m_ClassAttribute, m_NumGenerated, stateStorage4, stateStorage5, stateStorage2, stateStorage3, m_NumericClassData, Z_MAX, stateStorage7, __metamorphicOutput, m_Shrinkage, m_Precision, m_NumClasses, m_NumRuns, m_UseResampling]
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.LogitBoost
+Field names: [m_NumFolds, m_Offset, m_WeightThreshold, m_ClassAttribute, stateStorage4, m_NumGenerated, m_NumericClassData, stateStorage7, Z_MAX, m_Shrinkage, m_Precision, m_NumClasses, m_NumRuns, m_UseResampling]
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.LogitBoost
+Field names: [m_NumFolds, m_Offset, m_WeightThreshold, m_ClassAttribute, stateStorage4, m_NumGenerated, m_NumericClassData, stateStorage7, Z_MAX, m_Shrinkage, m_Precision, m_NumClasses, m_NumRuns, m_UseResampling]
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.LogitBoost
+Field names: [m_NumFolds, m_Offset, m_WeightThreshold, m_ClassAttribute, m_NumGenerated, stateStorage4, stateStorage5, stateStorage2, stateStorage3, m_NumericClassData, Z_MAX, stateStorage7, __metamorphicOutput, m_Shrinkage, m_Precision, m_NumClasses, m_NumRuns, m_UseResampling]
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.meta.LogitBoost
+Field names: [m_NumFolds, m_Offset, m_WeightThreshold, m_ClassAttribute, m_NumGenerated, stateStorage4, stateStorage5, stateStorage2, stateStorage3, m_NumericClassData, Z_MAX, stateStorage7, __metamorphicOutput, m_Shrinkage, m_Precision, m_NumClasses, m_NumRuns, m_UseResampling]
+]
+]

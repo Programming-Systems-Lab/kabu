@@ -34,6 +34,8 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 	
 	private static String objMap = "__meta_obj_map";
 	
+	private static String staticMap = "__meta_static_map";
+	
 	private MethodProfiler mProfiler = new MethodProfiler();
 	
 	private Map<String, Set<String>> classFieldMap = new HashMap<String, Set<String>>();
@@ -67,9 +69,6 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								HashMap<String, Object> recorder1 = new HashMap<String, Object>();
 								HashMap<String, Object> recorder2 = new HashMap<String, Object>();
 								
-								HashMap<String, Set<String>> fieldRecorder1 = new HashMap<String, Set<String>>();
-								HashMap<String, Set<String>> fieldRecorder2 = new HashMap<String, Set<String>>();
-								
 								//Get the classmap from child
 								this.targetAdapter.setStateDefinition(j.getClassMap());
 								
@@ -77,10 +76,15 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								Object calleei = i.getCallee();
 								Object calleej = j.getCallee();
 								
-								this.recursiveRecordState(recorder1, calleei, true);
-								this.recursiveRecordState(recorder2, calleej, false);
+								long parentId = i.thread.getId();
+								long childId = j.thread.getId();
 								
 								System.out.println("Check callee: " + calleei.getClass().getName());
+								System.out.println("Parent thread id: " + parentId);
+								System.out.println("Child thread id: " + childId);
+								
+								this.recursiveRecordState(recorder1, calleei, true, parentId);
+								this.recursiveRecordState(recorder2, calleej, false, childId);
 						
 								Object adaptRt1 = this.targetAdapter.adaptOutput(i.returnValue, o1);
 								Object adaptRt2 = this.targetAdapter.adaptOutput(j.returnValue, o2);
@@ -100,8 +104,8 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								}
 								
 								//Recursively check if field in output object is metamorphic
-								this.recursiveRecordState(recorder1, i.returnValue, true);
-								this.recursiveRecordState(recorder2, j.returnValue, false);
+								this.recursiveRecordState(recorder1, i.returnValue, true, parentId);
+								this.recursiveRecordState(recorder2, j.returnValue, false, childId);
 								
 								Object tmpObj1 = null;
 								Object tmpObj2 = null;
@@ -154,7 +158,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 		
 	}
 	
-	private void recursiveRecordState(HashMap<String, Object> recorder, Object obj, boolean shouldSerialize) {
+	private void recursiveRecordState(HashMap<String, Object> recorder, Object obj, boolean shouldSerialize, long threadId) {
 		if (obj == null)
 			return ;
 		
@@ -221,16 +225,36 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 						Map varMap = (HashMap)(methodVarMap.get(localKey));
 						
 						for (Object innerKey: tmpMap.keySet()) {
-							recorder.put(localKey + "_" + varMap.get(innerKey), tmpMap.get(innerKey));
-							allFields.add(localKey + "_" + varMap.get(innerKey));
+							String fullKey = localKey + "_" + varMap.get(innerKey) + MetaSerializer.localSuffix;
+							recorder.put(fullKey, tmpMap.get(innerKey));
+							allFields.add(fullKey);
 						}
 					}
+				} else if (fieldName.equals(staticMap)) {
+					Map allMaps = (Map)fieldValue;
+					Map myMaps = new HashMap();
 					
-					/*Map tmpMap = (HashMap)ClassChecker.comparableClasses(fieldValue);
-					for (Object key: tmpMap.keySet()) {
-						recorder.put(objClassName + ":" + localVarMap.get(key) + MetaSerializer.localSuffix, tmpMap.get(key));
-						allFields.add(localVarMap.get(key) + MetaSerializer.localSuffix);
-					}*/
+					//Filter out correct maps based on thread id
+					for (Object methodName: allMaps.keySet()) {
+						String tmpName = methodName.toString();
+						int start = tmpName.lastIndexOf("_");
+						String tName = tmpName.substring(0, start);
+						String tId = tmpName.substring(start + 1);
+						
+						if (tId.equals(String.valueOf(threadId))) {
+							System.out.println("Get correct method: " + allMaps.get(methodName));
+							Map tmpMap = (HashMap)ClassChecker.comparableClasses(allMaps.get(methodName));
+							String localKey = objClassName + ":" + tName;
+							
+							Map varMap = (HashMap)(methodVarMap.get(localKey));
+							
+							for (Object innerKey: tmpMap.keySet()) {
+								String fullKey = localKey + "_" + varMap.get(innerKey) + MetaSerializer.localSuffix;
+								recorder.put(fullKey, tmpMap.get(innerKey));
+								allFields.add(fullKey);
+							}
+						}
+					}
 				} else if (fieldValue != null) {
 					if (comparable || basic)
 						recorder.put(objClassName + ":" + fieldName, fieldValue);
@@ -243,7 +267,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 					allFields.add(fieldName);
 				}
 				
-				recursiveRecordState(recorder, fieldValue, shouldSerialize);
+				recursiveRecordState(recorder, fieldValue, shouldSerialize, threadId);
 			}
 			
 			if (shouldSerialize) {

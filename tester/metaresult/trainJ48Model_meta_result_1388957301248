@@ -1,0 +1,32 @@
+weka-3-6-9
+[Adapter: WekaAdapter
+Transformer: Negate
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.trees.J48
+Field names: [m_minNumObj, TREE, m_reducedErrorPruning, m_CF, m_Seed, Newick, m_useLaplace, m_numFolds, m_binarySplits, __metamorphicOutput, m_noCleanup, NOT_DRAWABLE, serialVersionUID, m_unpruned, BayesNet, m_subtreeRaising]
+]
+, Adapter: WekaAdapter
+Transformer: Shuffle
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.trees.J48
+Field names: [m_minNumObj, TREE, m_reducedErrorPruning, m_CF, m_Seed, Newick, m_root, m_useLaplace, m_numFolds, m_binarySplits, __metamorphicOutput, m_noCleanup, NOT_DRAWABLE, serialVersionUID, m_unpruned, BayesNet, m_subtreeRaising]
+]
+, Adapter: WekaAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.trees.J48
+Field names: [m_minNumObj, TREE, m_reducedErrorPruning, m_CF, m_Seed, Newick, m_useLaplace, m_numFolds, m_binarySplits, __metamorphicOutput, m_noCleanup, NOT_DRAWABLE, serialVersionUID, m_unpruned, BayesNet, m_subtreeRaising]
+]
+, Adapter: WekaAdapter
+Transformer: AddNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.trees.J48
+Field names: [m_minNumObj, TREE, m_reducedErrorPruning, m_CF, m_Seed, Newick, m_useLaplace, m_numFolds, m_binarySplits, __metamorphicOutput, m_noCleanup, NOT_DRAWABLE, serialVersionUID, m_unpruned, BayesNet, m_subtreeRaising]
+]
+, Adapter: WekaAdapter
+Transformer: Reverse
+Checker: ContentEqualer
+Class spec: [Class name: weka.classifiers.trees.J48
+Field names: [m_minNumObj, TREE, m_reducedErrorPruning, m_CF, m_Seed, Newick, m_root, m_useLaplace, m_numFolds, m_binarySplits, __metamorphicOutput, m_noCleanup, NOT_DRAWABLE, serialVersionUID, m_unpruned, BayesNet, m_subtreeRaising]
+]
+]

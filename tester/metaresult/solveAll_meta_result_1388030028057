@@ -1,0 +1,8 @@
+ejml-0.23
+[Adapter: EJMLAdapter
+Transformer: MultiplyByNumericConstant
+Checker: ContentEqualer
+Class spec: [Class name: org.ejml.simple.SimpleMatrix
+Field names: [__metamorphicOutput]
+]
+]
