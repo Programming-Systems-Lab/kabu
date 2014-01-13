@@ -100,11 +100,9 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 
 	@Override
 	protected boolean propertyApplies(MethodInvocation i1, MethodInvocation i2, int interestedVariable) {
-		Object o1 = i1.params[interestedVariable];
-		Object o2 = i2.params[interestedVariable];
-		for(int i = 0;i<i1.params.length;i++)
+		/*for(int i = 0;i<i1.params.length;i++)
 			if(i!=interestedVariable && !i1.params[i].equals(i2.params[i]))
-				return false;
+				return false;*/
 		
 		//If i1 is not i2's parent, no need to compare
 		if (i2.getParent() != i1) {
@@ -170,8 +168,9 @@ public class Shufflable extends PairwiseMetamorphicProperty {
 		ArrayList<Integer> rets = new ArrayList<Integer>();
 		for(int i = 0;i<getMethod().getParameterTypes().length; i++)
 		{
-			if(getMethod().getParameterTypes()[i].isArray() 
-					|| Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
+			if(getMethod().getParameterTypes()[i].isArray() ||
+					Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]) ||
+					String.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
 				rets.add(i);
 		}
 		

@@ -3,6 +3,7 @@ package edu.columbia.cs.psl.mountaindew.absprop;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -196,7 +197,16 @@ public abstract class MetamorphicProperty {
 			boolean[] paramFlipping = new boolean[inv.params.length];
 			HashMap<String, HashSet<String>> classMap = processor.getClassMap();
 			
-			ArrayList<boolean[]> combis = computeCombinations(paramFlipping);		
+			ArrayList<boolean[]> combis = computeCombinations(paramFlipping);
+			
+			System.out.println("Check combis: " + combis.size());
+			for (boolean[] tmp: combis) {
+				System.out.println("Check in combis: " + tmp.length);
+				for (Boolean t: tmp) {
+					System.out.println(t);
+				}
+			}
+			
 			for (Object[] propertyParams: processor.getBoundaryDefaultParameters()) {
 				CombiLoop: for (boolean[] pset : combis) {
 					PossiblyMetamorphicMethodInvocation child = new PossiblyMetamorphicMethodInvocation();
@@ -208,8 +218,11 @@ public abstract class MetamorphicProperty {
 					child.setBackendC(this.getName());
 					child.setClassMap(classMap);
 					boolean atLeastOneTrue = false;
+					boolean allTrue = true;
 					for (int i = 0; i < pset.length; i++) {
 						atLeastOneTrue = atLeastOneTrue || pset[i];
+						allTrue = allTrue && pset[i];
+						System.out.println("All true: " + allTrue);
 						if (pset[i]) {
 							child.inputFlippedParams[i] = true;
 							
@@ -219,8 +232,7 @@ public abstract class MetamorphicProperty {
 							
 							try {
 								child.propertyParams[i] = propertyParams;
-								//child.params[i] = processor.apply((Object) cloner.deepClone(inv.params[i]), propertyParams);
-								//child.params[i] = this.targetAdapter.adaptInput((Object)cloner.deepClone(inv.params[i]), propertyParams);
+
 								Object input = (Object)cloner.deepClone(inv.params[i]);
 								Object unboxInput;
 								Object transformed;
@@ -230,33 +242,12 @@ public abstract class MetamorphicProperty {
 									transformed = processor.apply(unboxInput, propertyParams);
 									child.params[i] = this.targetAdapter.adaptInput(transformed);
 								} else {
-									//System.out.println("Check input class: " + input.getClass().getName());
 									List<Object> skipList = this.targetAdapter.skipColumn(input);
 									this.targetAdapter.setSkipList(skipList);
 									unboxInput = this.targetAdapter.unboxInput(input);
 									
-									/*double[][] testOri1Array = (double[][])unboxInput;
-									for (int a = 0; a < testOri1Array.length; a++) {
-										System.out.print("Ori array: " + a + " ");
-										for (int b = 0; b < testOri1Array[0].length; b++) {
-											System.out.print(testOri1Array[a][b]);
-											System.out.print(" ");
-										}
-										System.out.println("");
-									}*/
-									
 									this.targetAdapter.setupComplementMap(unboxInput);
 									transformed = processor.apply(unboxInput, propertyParams);
-									
-									/*testOri1Array = (double[][])transformed;
-									for (int a = 0; a < testOri1Array.length; a++) {
-										System.out.print("Trans array: " + a + " ");
-										for (int b = 0; b < testOri1Array[0].length; b++) {
-											System.out.print(testOri1Array[a][b]);
-											System.out.print(" ");
-										}
-										System.out.println("");
-									}*/
 
 									this.targetAdapter.complementTransformInput(transformed);
 									child.params[i] = this.targetAdapter.adaptInput(transformed);
@@ -269,13 +260,22 @@ public abstract class MetamorphicProperty {
 						} else
 							child.params[i] = cloner.deepClone(inv.params[i]);
 					}
-					if(atLeastOneTrue)
+					
+					/*if(atLeastOneTrue)
 					{
 						ret.add(child);
+					}*/
+					
+					if (allTrue) {
+						ret.add(child);
+						
+						System.out.println("Check children input after transformation");
+						for (Object obj: child.params) {
+							System.out.println(obj);
+						}
 					}
 				}
 			}
-			
 		}
 
 		/*boolean[] paramFlipping = new boolean[inv.params.length];

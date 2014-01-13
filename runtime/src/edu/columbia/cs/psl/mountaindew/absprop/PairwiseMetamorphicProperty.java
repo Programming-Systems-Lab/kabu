@@ -90,7 +90,8 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								Object adaptRt2 = this.targetAdapter.adaptOutput(j.returnValue, o2);
 								
 								//Include output into comparison
-								String outputFullName = i.returnValue.getClass().getName() + ":" + outputKey;
+								//String outputFullName = i.returnValue.getClass().getName() + ":" + outputKey;
+								String outputFullName = calleei.getClass().getName() + ":" + i.getMethod().getName() + "_" +outputKey;
 								if (adaptRt1 != null) {
 									recorder1.put(outputFullName, adaptRt1);
 								} else {
@@ -217,6 +218,7 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 					
 				if (fieldName.equals(objMap)) {
 					//Flatten all local variable map
+					System.out.println("Show obj map: " + fieldValue);
 					Map allMaps = (Map)fieldValue;
 					
 					for (Object methodName: allMaps.keySet()) {
@@ -225,9 +227,15 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 						Map varMap = (HashMap)(methodVarMap.get(localKey));
 						
 						for (Object innerKey: tmpMap.keySet()) {
-							String fullKey = localKey + "_" + varMap.get(innerKey) + MetaSerializer.localSuffix;
-							recorder.put(fullKey, tmpMap.get(innerKey));
-							allFields.add(fullKey);
+							Object innerObj = tmpMap.get(innerKey);
+							
+							if (innerObj.getClass().getAnnotation(LogState.class) != null) {
+								recursiveRecordState(recorder, innerObj, shouldSerialize, threadId);
+							} else {
+								String fullKey = localKey + "_" + varMap.get(innerKey) + MetaSerializer.localSuffix;
+								recorder.put(fullKey, tmpMap.get(innerKey));
+								allFields.add(fullKey);
+							}
 						}
 					}
 				} else if (fieldName.equals(staticMap)) {
@@ -249,9 +257,15 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 							Map varMap = (HashMap)(methodVarMap.get(localKey));
 							
 							for (Object innerKey: tmpMap.keySet()) {
-								String fullKey = localKey + "_" + varMap.get(innerKey) + MetaSerializer.localSuffix;
-								recorder.put(fullKey, tmpMap.get(innerKey));
-								allFields.add(fullKey);
+								Object innerObj = tmpMap.get(innerKey);
+								
+								if (innerObj.getClass().getAnnotation(LogState.class) != null) {
+									recursiveRecordState(recorder, innerObj, shouldSerialize, threadId);
+								} else {
+									String fullKey = localKey + "_" + varMap.get(innerKey) + MetaSerializer.localSuffix;
+									recorder.put(fullKey, tmpMap.get(innerKey));
+									allFields.add(fullKey);
+								}
 							}
 						}
 					}
@@ -377,6 +391,36 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 
 	protected abstract boolean returnValuesApply(Object p1, Object returnValue1, Object p2, Object returnValue2);
 	protected abstract boolean propertyApplies(MethodInvocation i1, MethodInvocation i2, int interestedVariable);
-	protected abstract int[] getInterestedVariableIndices();
+	
+	protected int[] getInterestedVariableIndices() {
+		ArrayList<Integer> rets = new ArrayList<Integer>();
+		for(int i = 0;i<getMethod().getParameterTypes().length; i++)
+		{
+			Class paramClass = getMethod().getParameterTypes()[i];
+			if(paramClass.isArray() || 
+					Collection.class.isAssignableFrom(paramClass) ||
+					Number.class.isAssignableFrom(paramClass) ||
+					String.class.isAssignableFrom(paramClass) ||
+					paramClass.equals(Integer.TYPE) ||
+					paramClass.equals(Double.TYPE) ||
+					paramClass.equals(Long.TYPE) ||
+					paramClass.equals(Short.TYPE) ||
+					paramClass.equals(Float.TYPE)) {
+				rets.add(i);
+			}
+		}
+		
+		System.out.println("Check interested variables: " + rets);
+		
+		//If no input type matches, target on first param
+		if (rets.size() == 0) {
+			rets.add(0);
+		}
+		
+		int[] ret = new int[rets.size()];
+		for(int i = 0;i<rets.size();i++)
+			ret[i]=rets.get(i);
+		return ret;
+	}
 
 }

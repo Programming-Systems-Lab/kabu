@@ -213,7 +213,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			Double newLength = oString.length() * divisor;
 			System.out.println("Check oString: " + oString);
 			
-			if (newLength > oString.length())
+			if (newLength > oString.length() || newLength < 0)
 				return null;
 			else
 				return oString.substring(0, newLength.intValue());
@@ -345,11 +345,9 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 	@Override
 	protected boolean propertyApplies(MethodInvocation i1, MethodInvocation i2,
 			int interestedVariable) {
-		Object o1 = i1.params[interestedVariable];
-		Object o2 = i2.params[interestedVariable];
-		for(int i = 0;i<i1.params.length;i++)
+		/*for(int i = 0;i<i1.params.length;i++)
 			if(i!=interestedVariable && !i1.params[i].equals(i2.params[i]))
-				return false;
+				return false;*/
 		
 		//If i1 is not i2's parent, no need to compare
 		if (i2.getParent() != i1) {			
@@ -403,35 +401,6 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		}
 		
 		return true;*/
-	}
-
-	@Override
-	protected int[] getInterestedVariableIndices() {
-		//Find a way to make this more flexible
-		ArrayList<Integer> rets = new ArrayList<Integer>();
-		for(int i = 0;i<getMethod().getParameterTypes().length; i++)
-		{
-			if(getMethod().getParameterTypes()[i].equals(Integer.TYPE) || 
-					getMethod().getParameterTypes()[i].equals(Short.TYPE) || 
-					getMethod().getParameterTypes()[i].equals(Long.TYPE) || 
-					getMethod().getParameterTypes()[i].equals(Double.TYPE) || 
-					Integer.class.isAssignableFrom(getMethod().getParameterTypes()[i]) || 
-					Float.class.isAssignableFrom(getMethod().getParameterTypes()[i])|| 
-					Double.class.isAssignableFrom(getMethod().getParameterTypes()[i])||
-					getMethod().getParameterTypes()[i].isArray()||
-					Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i])||
-					Instances.class.isAssignableFrom(getMethod().getParameterTypes()[i])||
-					String.class.isAssignableFrom(getMethod().getParameterTypes()[i]))
-				rets.add(i);
-		}
-		
-		if (rets.size() == 0)
-			rets.add(0);
-		
-		int[] ret = new int[rets.size()];
-		for(int i = 0;i<rets.size();i++)
-			ret[i]=rets.get(i);
-		return ret;
 	}
 
 	@Override

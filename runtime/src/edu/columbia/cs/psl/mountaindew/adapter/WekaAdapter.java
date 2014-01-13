@@ -148,53 +148,6 @@ public class WekaAdapter extends AbstractAdapter{
 		
 		return ret;
 	}
-			
-	/*public Object adaptInput(Object input, Object[] propertyParams) {
-		Class objClazz = input.getClass();
-		
-		if (objClazz == Instances.class) {
-			Instances inputInstances = (Instances)input;
-			
-			Attribute tmpAttribute;
-			for (int i = 0; i < inputInstances.numAttributes(); i++) {
-				tmpAttribute = inputInstances.attribute(i);
-				
-				System.out.println("Check attribute: " + tmpAttribute.name());
-				System.out.println("Check attribute idx: " + tmpAttribute.type());
-				
-				if (!tmpAttribute.isNumeric())
-					this.skipList.add(i);
-			}
-			
-			int classifierIdx = inputInstances.classIndex();
-		
-			Enumeration e = inputInstances.enumerateInstances();
-			
-			Object tmpObj;
-			Instance tmpInstance;
-			double[] vals;
-			double[] newVals;
-			while (e.hasMoreElements()) {
-				tmpObj = e.nextElement();				
-				tmpInstance = (Instance)tmpObj;
-				vals = tmpInstance.toDoubleArray();
-				newVals = new double[vals.length];
-				
-				for (int i = 0; i < vals.length; i++) {
-					if (this.shouldSkipped(i) || i == classifierIdx) {
-						newVals[i] = vals[i];
-					} else {
-						newVals[i] = this.getProcessor().apply(vals[i], propertyParams);
-					}
-				}
-				tmpInstance.setMAttValues(newVals);	
-			}
-
-			return inputInstances;
-		} else {
-			return this.getProcessor().apply(input, propertyParams);
-		}
-	}*/
 	
 	@Override
 	public Object adaptOutput(Object outputModel, Object...testingData) {		

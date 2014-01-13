@@ -14,29 +14,6 @@ import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 public abstract class EqualerAbstract extends PairwiseMetamorphicProperty{
 	
 	@Override
-	protected int[] getInterestedVariableIndices() {
-		ArrayList<Integer> rets = new ArrayList<Integer>();
-		for(int i = 0;i<getMethod().getParameterTypes().length; i++)
-		{
-			if(getMethod().getParameterTypes()[i].isArray() || 
-					Collection.class.isAssignableFrom(getMethod().getParameterTypes()[i]) ||
-					String.class.isAssignableFrom(getMethod().getParameterTypes()[i])) {
-				rets.add(i);
-			}
-		}
-		
-		//If no input type matches, target on first param
-		if (rets.size() == 0) {
-			rets.add(0);
-		}
-		
-		int[] ret = new int[rets.size()];
-		for(int i = 0;i<rets.size();i++)
-			ret[i]=rets.get(i);
-		return ret;
-	}
-	
-	@Override
 	public MetamorphicInputProcessor getInputProcessor() {
 		// TODO Auto-generated method stub
 		return null;

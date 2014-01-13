@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import edu.columbia.cs.psl.metamorphic.runtime.annotation.LogState;
+
 public class ClassChecker {
 	
 	public static Class<?> checkClass(Object o) {
@@ -44,7 +46,9 @@ public class ClassChecker {
 				filterResult.put(key, val);
 			} else {
 				try {
-					if (comparableClass(val, "equals", Object.class)) 
+					if (val.getClass().getAnnotation(LogState.class) != null)
+						filterResult.put(key, val);
+					else if (comparableClass(val, "equals", Object.class))
 						filterResult.put(key, val);
 					else if (comparableClass(val, "toString"))
 						filterResult.put(key, val.toString());

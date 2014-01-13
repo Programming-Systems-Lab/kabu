@@ -5,9 +5,9 @@ import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 import knapsack.Knapsack;
 import knapsack.KnapsackItem;
 
+@LogState
 public class KnapsackExample {
 	
-	@Metamorphic
 	public Knapsack buildKnapsack(int[][] inputData) {
 		int capacity = inputData[0][2];
 		int dataNum = inputData.length;
@@ -27,6 +27,42 @@ public class KnapsackExample {
 		
 		return k;
 	}
+	
+	public Knapsack buildKnapsack2(int[][]data, int capacity) {
+		System.out.println("Confirm capacity: " + capacity);
+		
+		int dataNum = data.length;
+		KnapsackItem[] input = new KnapsackItem[dataNum];
+		
+		int count = 0;
+		for (int i = 0; i < dataNum; i++) {
+			KnapsackItem item = new KnapsackItem(data[i][0], data[i][1]);
+			input[count++] = item;
+		}
+		
+		Knapsack k = new Knapsack();
+		k.solve(input, capacity);
+		return k;
+	}
+	
+	@Metamorphic
+	@LogState
+	public int[] buildKnapsack3(int[][]data, int capacity) {
+		System.out.println("Confirm capacity: " + capacity);
+		
+		int dataNum = data.length;
+		KnapsackItem[] input = new KnapsackItem[dataNum];
+		
+		int count = 0;
+		for (int i = 0; i < dataNum; i++) {
+			KnapsackItem item = new KnapsackItem(data[i][0], data[i][1]);
+			input[count++] = item;
+		}
+		
+		Knapsack k = new Knapsack();
+		int[] sol = k.solve(input, capacity);
+		return sol;
+	}
 
 	/**
 	 * @param args
@@ -34,21 +70,16 @@ public class KnapsackExample {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		KnapsackExample ex = new KnapsackExample();
-		int[][] inputData = new int[][]{{12, 4, 15}, {2, 2, 15}, {1, 1, 15}, {4, 10, 15}, {1, 2, 15}};
-		//int[][] inputData = new int[][]{{1, 2, 15}, {4, 10, 15}, {1, 1, 15}, {2, 2, 15}, {12, 4, 15}};
-		Knapsack k = ex.buildKnapsack(inputData);
+		//int[][] inputData = new int[][]{{12, 4}, {2, 2}, {1, 1}, {4, 10}, {1, 2}};
+		int[][] inputData = new int[][]{{1, 2}, {4, 10}, {1, 1}, {2, 2}, {12, 4}};
+		//Knapsack k = ex.buildKnapsack(inputData);
+		//Knapsack k = ex.buildKnapsack3(inputData, 15);
 		
-		int[] solution = k.getSolution();
+		int[] solution = ex.buildKnapsack3(inputData, 15);
 		
 		for (int i = 0; i < solution.length; i++) {
 			System.out.println("Sol: " + solution[i]);
 		}
-		
-		Integer a = new Integer(120);
-		Double b = new Double(120.0);
-		double neg = -1;
-		System.out.println("Check equal: " + (a.equals(b)));
-		System.out.println("Check equal: " + (-1 == 1 * neg));
 	}
 
 }

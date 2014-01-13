@@ -95,13 +95,11 @@ public class Invertable extends PairwiseMetamorphicProperty{
 	protected boolean propertyApplies(MethodInvocation i1, MethodInvocation i2,
 			int interestedVariable) {
 		// TODO Auto-generated method stub
-		Object o1 = i1.params[interestedVariable];
-		Object o2 = i2.params[interestedVariable];
-		for (int i = 0 ; i < i2.params.length; i++) {
+		/*for (int i = 0 ; i < i2.params.length; i++) {
 			if (i != interestedVariable && i1.params[i] != i2.params[i]) {
 				return false;
 			}
-		}
+		}*/
 		
 		//If i1 is not i2's parent, no need to compare
 		if (i2.getParent() != i1) {

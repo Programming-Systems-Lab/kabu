@@ -31,9 +31,12 @@ public class ContentEqualer extends EqualerAbstract{
 	@Override
 	protected boolean propertyApplies(MethodInvocation i1, MethodInvocation i2,
 			int interestedVariable) {
-		for(int i = 0;i<i1.params.length;i++)
+		/*for(int i = 0;i<i1.params.length;i++) {
+			System.out.println("i1: " + " " + i + " " + i1.params[i]);
+			System.out.println("i2: " + " " + i + " " + i2.params[i]);
 			if(i!=interestedVariable && !i1.params[i].equals(i2.params[i]))
 				return false;
+		}*/
 		
 		//If i1 is not i2's parent, no need to compare
 		if (i2.getParent() != i1) {
