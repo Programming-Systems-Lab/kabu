@@ -91,7 +91,8 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								
 								//Include output into comparison
 								//String outputFullName = i.returnValue.getClass().getName() + ":" + outputKey;
-								String outputFullName = calleei.getClass().getName() + ":" + i.getMethod().getName() + "_" +outputKey;
+								//String outputFullName = calleei.getClass().getName() + ":" + i.getMethod().getName() + "_" +outputKey;
+								String outputFullName = MetaSerializer.composeFullMethodName(calleei.getClass().getName(), i.getMethod()) + "_" + outputKey;
 								if (adaptRt1 != null) {
 									recorder1.put(outputFullName, adaptRt1);
 								} else {
@@ -189,10 +190,14 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 			combinedMethods.addAll(parentMethods);
 			
 			String objClassName = obj.getClass().getName();
+			String superClassName = obj.getClass().getSuperclass().getName();
 			Map<String, Map<Integer, String>> methodVarMap = 
 					MetaSerializer.deserializedAllClassLocalVarMap(objClassName, combinedMethods);
+			Map<String, Map<Integer, String>> sMethodVarMap = 
+					MetaSerializer.deserializedAllClassLocalVarMap(superClassName, parentMethods);
 			
 			System.out.println("Check all localVarMap in pairwise: " + methodVarMap);
+			System.out.println("Check all parentVarMap in pairwise: " + sMethodVarMap);
 			
 			Set<String> allFields = new HashSet<String>();
 			for(Field field: combinedFields) {
@@ -226,12 +231,23 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 						String localKey = objClassName + ":" + methodName;
 						Map varMap = (HashMap)(methodVarMap.get(localKey));
 						
+						if (varMap == null) {
+							System.out.println("No var map. Check parent: " + superClassName);
+							localKey = superClassName + ":" + methodName;
+							
+							System.out.println("Check super method var map: " + sMethodVarMap);
+							
+							varMap = (HashMap)(sMethodVarMap.get(localKey));
+						}
+						
 						for (Object innerKey: tmpMap.keySet()) {
 							Object innerObj = tmpMap.get(innerKey);
 							
 							if (innerObj.getClass().getAnnotation(LogState.class) != null) {
 								recursiveRecordState(recorder, innerObj, shouldSerialize, threadId);
 							} else {
+								System.out.println("Local key: " + localKey);
+								System.out.println("Innerkey val: " + varMap.get(innerKey));
 								String fullKey = localKey + "_" + varMap.get(innerKey) + MetaSerializer.localSuffix;
 								recorder.put(fullKey, tmpMap.get(innerKey));
 								allFields.add(fullKey);

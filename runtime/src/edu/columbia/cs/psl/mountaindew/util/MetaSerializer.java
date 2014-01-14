@@ -10,11 +10,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.objectweb.asm.Type;
+
 public class MetaSerializer {
 	
 	public static String localSuffix = "_local";
 	
 	public static String fieldSuffix = "_field";
+	
+	public static Map<String, String> bytecodeMap = new HashMap<String, String>();
+	
+	static {
+		bytecodeMap.put("int", "I");
+		bytecodeMap.put("double", "");
+		bytecodeMap.put("float", "");
+		bytecodeMap.put("short", "");
+		bytecodeMap.put("long", "");
+		bytecodeMap.put("char", "");
+	}
 	
 	public static String extractVersion(Object obj) {
 		try {
@@ -38,12 +51,14 @@ public class MetaSerializer {
 	public static Map<String, Map<Integer,String>> deserializedAllClassLocalVarMap(String className, Set<Method> mSet) {
 		Map<String, Map<Integer, String>> ret = new HashMap<String, Map<Integer, String>>();
 		
-		String tmpName;
 		String tmpKey;
 		Map tmpVarMap;
 		for (Method m: mSet) {
-			tmpName = m.getName();
-			tmpKey = className + ":" + tmpName;
+			//Tmp key = classname:methodname:returntype:parameter:modifier
+			tmpKey = composeFullMethodName(className, m);
+			
+			System.out.println("Check path before deserialization: " + tmpKey);
+			
 			tmpVarMap = deserializeLocalVarMap(tmpKey);
 			
 			if (tmpVarMap == null)
@@ -53,6 +68,16 @@ public class MetaSerializer {
 		}
 		
 		return ret;
+	}
+	
+	public static String composeFullMethodName(String className, Method m) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(className + ":");
+		sb.append(m.getName() + "->");
+		sb.append(Type.getMethodDescriptor(m) + "->");
+		sb.append(m.getModifiers());
+		
+		return sb.toString().replace("/", ".");
 	}
 	
 	public static Map<Integer, String> deserializeLocalVarMap(String className) {
@@ -77,7 +102,6 @@ public class MetaSerializer {
 			File file = new File(path);
 			
 			if (!file.exists()) {
-				System.out.println("Warning: File does not exist: " + file.getAbsolutePath());
 				return null;
 			}
 			

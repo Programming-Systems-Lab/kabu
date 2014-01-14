@@ -12,11 +12,6 @@
 	<classpathentry kind="lib" path="lib/mujava.jar"/>
 	<classpathentry kind="lib" path="lib/reflections-0.9.9-RC1.jar"/>
 	<classpathentry kind="lib" path="lib/javassist.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mahout_dep"/>
-	<classpathentry kind="lib" path="lib/mahout-math-0.7.jar"/>
-	<classpathentry kind="lib" path="lib/mahout-core-0.7-job.jar"/>
-	<classpathentry kind="lib" path="lib/mahout-core-0.7.jar"/>
-	<classpathentry kind="lib" path="lib/mahout-integration-0.7.jar"/>
 	<classpathentry kind="lib" path="lib/hadoop-core-0.20.204.0.jar"/>
 	<classpathentry kind="lib" path="lib/java-cup.jar"/>
 	<classpathentry kind="lib" path="lib/JFlex.jar"/>
@@ -30,5 +25,11 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/encog-core-3.2.0"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/knapsack"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/superstring"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/commons-collections-3.2.1-src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/mahout_dep"/>
+	<classpathentry kind="lib" path="lib/mahout-core-0.7-job.jar"/>
+	<classpathentry kind="lib" path="lib/mahout-core-0.7.jar"/>
+	<classpathentry kind="lib" path="lib/mahout-integration-0.7.jar"/>
+	<classpathentry kind="lib" path="lib/mahout-math-0.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
