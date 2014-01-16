@@ -50,13 +50,19 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 		{
 			for(int k : interestedIndices)
 			{
-				Object v = i.params[k];
+				Object v = null;
+				if (i.params.length > k) {
+					v = i.params[k];
+				}
 					for(MethodInvocation j : getInvocations())
 					{
 						if(i!=j)
 						{
 							Object o1 = v;
-							Object o2 = j.params[k];
+							Object o2 = null;
+							if (j.params.length > k) {
+								o2 = j.params[k];
+							}
 							
 							if(propertyApplies(i, j, k))
 							{								

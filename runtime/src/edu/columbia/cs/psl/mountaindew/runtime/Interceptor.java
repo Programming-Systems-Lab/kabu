@@ -6,9 +6,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,7 +39,9 @@ import edu.columbia.cs.psl.mountaindew.struct.MConfig.TransTuple;
 import edu.columbia.cs.psl.mountaindew.struct.MethodProfile;
 import edu.columbia.cs.psl.mountaindew.struct.MConfig.StateItem;
 import edu.columbia.cs.psl.mountaindew.struct.TransClassTuple;
+import edu.columbia.cs.psl.mountaindew.util.FieldCollector;
 import edu.columbia.cs.psl.mountaindew.util.MetamorphicConfigurer;
+import edu.columbia.cs.psl.mountaindew.util.TransformPlugin;
 
 
 /**
@@ -257,6 +261,8 @@ public class Interceptor extends AbstractInterceptor {
 					new HashMap<Class<? extends MetamorphicProperty>, HashSet<TransClassTuple>>();
 			
 			//String methodPFile = "config/" + method.getName() + ".property";
+			System.out.println("Callee in the beginning: " + callee);
+			System.out.println("Method in the beginning: " + method);
 			String methodJson = "config/" + method.getName() + ".json";
 			File tmpFile = new File(methodJson);
 			
@@ -345,15 +351,21 @@ public class Interceptor extends AbstractInterceptor {
 			for(MethodInvocation child : p.createChildren(inv))
 			{
 				//System.out.println("Check children frontend backend: " + child.getFrontend() + " " + child.getBackend());
-				child.callee = deepClone(inv.callee);
-				child.method = inv.method;
-				children.add(child);
-				child.thread = createChildThread(child);
-				child.thread.start();
 				try {
+					child.callee = deepClone(inv.callee);
+					child.method = inv.method;
+					children.add(child);
+					
+					System.out.println("Check children processor: " + child.getFrontend());
+					
+					TransformPlugin.recursiveSetAdapterProcessor(child.callee, child.getAdapter(), child.getFrontendProcessor());
+					child.thread = createChildThread(child);
+					child.thread.start();
 					child.thread.join();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+				} catch (Exception ex) {
+					ex.printStackTrace();
 				}
 			}
 		}

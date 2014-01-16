@@ -156,7 +156,7 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 				return false;
 			}
 			//return getDifference(p1, p2) == getDifference(returnValue1, returnValue2);
-		} catch(IllegalArgumentException ex) {
+		} catch(Exception ex) {
 			ex.printStackTrace();
 			return false;
 		}

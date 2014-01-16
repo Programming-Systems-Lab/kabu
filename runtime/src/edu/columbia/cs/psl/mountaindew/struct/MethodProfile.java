@@ -116,15 +116,30 @@ public class MethodProfile {
 		StringBuilder sBuilder = new StringBuilder();
 		sBuilder.append(this.ori.getMethod().getName() + delim);
 		//Target on single input first
-		sBuilder.append(interpretParams(ori.getParams()[0]) + delim);
-		sBuilder.append(interpretParams(ori.getReturnValue()) + delim);
-		sBuilder.append(interpretParams(trans.getParams()[0]) + delim);
-		sBuilder.append(interpretParams(trans.getReturnValue()) + delim);
-		/*sBuilder.append(this.oriInOriOut + delim);
-		sBuilder.append(this.transInTransOut + delim);
-		sBuilder.append(this.oriInTransIn + delim);
-		sBuilder.append(this.oriOutTransOut + delim);
-		sBuilder.append(this.result.property.toString() + delim);*/
+		if (ori.getParams().length > 0) {
+			sBuilder.append(interpretParams(ori.getParams()[0]) + delim);
+		} else {
+			sBuilder.append("" + delim); 
+		}
+
+		if (ori.getReturnValue() != null) {
+			sBuilder.append(interpretParams(ori.getReturnValue()) + delim);
+		} else {
+			sBuilder.append(interpretParams("") + delim);
+		}
+		
+		if (trans.getParams().length > 0) {
+			sBuilder.append(interpretParams(trans.getParams()[0]) + delim);
+		} else {
+			sBuilder.append("" + delim); 
+		}
+
+		if (trans.getReturnValue() != null) {
+			sBuilder.append(interpretParams(trans.getReturnValue()) + delim);
+		} else {
+			sBuilder.append(interpretParams("") + delim);
+		}
+
 		sBuilder.append(trans.getFrontend() + delim);
 		sBuilder.append(trans.getBackend() + delim);
 		sBuilder.append(this.result.holds + newLine);

@@ -1,7 +1,9 @@
 package edu.columbia.cs.psl.mountaindew.absprop;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,6 +24,7 @@ import edu.columbia.cs.psl.mountaindew.adapter.DefaultAdapter;
 import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 import edu.columbia.cs.psl.mountaindew.struct.PossiblyMetamorphicMethodInvocation;
 import edu.columbia.cs.psl.mountaindew.struct.TransClassTuple;
+import edu.columbia.cs.psl.mountaindew.util.FieldCollector;
 import edu.columbia.cs.psl.mountaindew.util.MetamorphicConfigurer;
 
 public abstract class MetamorphicProperty {
@@ -189,11 +192,15 @@ public abstract class MetamorphicProperty {
 
 	public HashSet<PossiblyMetamorphicMethodInvocation> createChildren(MethodInvocation inv) {
 		//this.loadTargetAdapter();
-		System.out.println("Check adapter class: " + this.targetAdapter.getClass().getName());
-
+		
+		//Check all fields
+		List<Field> collector = new ArrayList<Field>();
+		FieldCollector.collectFields(inv.callee.getClass(), collector);
+		System.out.println("Confirm all fields for creating children: " + collector);
+		
 		HashSet<PossiblyMetamorphicMethodInvocation> ret = new HashSet<PossiblyMetamorphicMethodInvocation>();
 		
-		for (MetamorphicInputProcessor processor: this.processors) {			
+		for (MetamorphicInputProcessor processor: this.processors) {
 			boolean[] paramFlipping = new boolean[inv.params.length];
 			HashMap<String, HashSet<String>> classMap = processor.getClassMap();
 			
@@ -208,13 +215,17 @@ public abstract class MetamorphicProperty {
 			}
 			
 			for (Object[] propertyParams: processor.getBoundaryDefaultParameters()) {
-				CombiLoop: for (boolean[] pset : combis) {
+				CombiLoop: for (boolean[] pset: combis) {
 					PossiblyMetamorphicMethodInvocation child = new PossiblyMetamorphicMethodInvocation();
 					child.parent = inv;
 					child.params = new Object[inv.params.length];
 					child.inputFlippedParams = new boolean[pset.length];
 					child.propertyParams = new Object[pset.length][];
-					child.setFrontend(processor.getName());
+					//child.setTotalFields(inv.getTotalFields());
+					child.setFrontendProcessor(processor);
+					System.out.println("Set children processor: " + child.getFrontend());
+					//Probabaly need to clone?
+					child.setAdapter(this.targetAdapter);
 					child.setBackendC(this.getName());
 					child.setClassMap(classMap);
 					boolean atLeastOneTrue = false;
@@ -261,67 +272,23 @@ public abstract class MetamorphicProperty {
 							child.params[i] = cloner.deepClone(inv.params[i]);
 					}
 					
-					/*if(atLeastOneTrue)
+					if(atLeastOneTrue)
 					{
 						ret.add(child);
-					}*/
+					}
 					
-					if (allTrue) {
+					/*if (allTrue) {
 						ret.add(child);
 						
 						System.out.println("Check children input after transformation");
 						for (Object obj: child.params) {
 							System.out.println(obj);
 						}
-					}
+					}*/
 				}
 			}
 		}
 
-		/*boolean[] paramFlipping = new boolean[inv.params.length];
-		
-		ArrayList<boolean[]> combis = computeCombinations(paramFlipping);		
-		for (Object[] propertyParams : getInputProcessor().getBoundaryDefaultParameters()) {
-			CombiLoop: for (boolean[] pset : combis) {
-				PossiblyMetamorphicMethodInvocation child = new PossiblyMetamorphicMethodInvocation();
-				child.parent = inv;
-				child.params = new Object[inv.params.length];
-				child.inputFlippedParams = new boolean[pset.length];
-				child.propertyParams = new Object[pset.length][];
-				boolean atLeastOneTrue = false;
-				for (int i = 0; i < pset.length; i++) {
-					atLeastOneTrue = atLeastOneTrue || pset[i];
-					if (pset[i]) {
-						child.inputFlippedParams[i] = true;
-						try {
-							child.propertyParams[i] = propertyParams;
-							child.params[i] = getInputProcessor().apply((Object) cloner.deepClone(inv.params[i]), propertyParams);
-						} catch (Exception ex) {
-							ex.printStackTrace();
-							continue CombiLoop;
-						}
-
-					} else
-						child.params[i] = cloner.deepClone(inv.params[i]);
-				}
-				if(atLeastOneTrue)
-				{
-					ret.add(child);
-				}
-			}
-		}*/
-		
-		//For debuggin purpose
-		/*for (int i = 0; i < Array.getLength(inv.params[0]); i++) {
-			System.out.println("Ori input in MP: " + (Number)Array.get(inv.params[0], i));
-		}
-		
-		for (PossiblyMetamorphicMethodInvocation child: ret) {
-			for (int j = 0; j < Array.getLength(child.params[0]); j++) {
-				System.out.println("Transformed input " + j + " in MP: " + (Number)Array.get(child.params[0], j));
-			}
-		}*/
-		
 		return ret;
 	}
 	

@@ -8,11 +8,8 @@ import org.apache.commons.collections.bag.HashBag;
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.LogState;
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 
-@LogState
 public class CmnCollectionTest {
 	
-	@Metamorphic
-	@LogState
 	public Object[] testToArray(List items) {
 		HashBag hb = new HashBag();
 		hb.addAll(items);
@@ -24,8 +21,8 @@ public class CmnCollectionTest {
 	public static void main(String args[]) {
 		List input = new ArrayList();
 		input.add(1);
-		input.add(1);
 		input.add(3);
+		input.add(1);
 		
 		CmnCollectionTest cct = new CmnCollectionTest();
 		Object[] result = cct.testToArray(input);

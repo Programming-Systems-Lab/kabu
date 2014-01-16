@@ -30,6 +30,8 @@ public class MetaSerializer {
 	}
 	
 	public static String extractVersion(Object obj) {
+		if (obj == null)
+			return null;
 		try {
 			Class objClass = obj.getClass();
 			String objFullName = objClass.getName().replace(".", "/") + ".class";

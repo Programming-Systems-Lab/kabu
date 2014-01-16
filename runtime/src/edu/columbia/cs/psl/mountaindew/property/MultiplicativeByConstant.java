@@ -147,7 +147,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 			}
 			//return getDivisor(p1, p2) == getDivisor(returnValue1, returnValue2);
 		}
-		catch(IllegalArgumentException ex)
+		catch(Exception ex)
 		{
 			ex.printStackTrace();
 			return false;
