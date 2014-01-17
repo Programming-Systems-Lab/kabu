@@ -201,7 +201,7 @@ public abstract class MetamorphicProperty {
 		HashSet<PossiblyMetamorphicMethodInvocation> ret = new HashSet<PossiblyMetamorphicMethodInvocation>();
 		
 		for (MetamorphicInputProcessor processor: this.processors) {
-			boolean[] paramFlipping = new boolean[inv.params.length];
+			boolean[] paramFlipping = new boolean[inv.params.length + collector.size()];
 			HashMap<String, HashSet<String>> classMap = processor.getClassMap();
 			
 			ArrayList<boolean[]> combis = computeCombinations(paramFlipping);
@@ -217,11 +217,11 @@ public abstract class MetamorphicProperty {
 			for (Object[] propertyParams: processor.getBoundaryDefaultParameters()) {
 				CombiLoop: for (boolean[] pset: combis) {
 					PossiblyMetamorphicMethodInvocation child = new PossiblyMetamorphicMethodInvocation();
+					child.callee = cloner.deepClone(inv.callee);
 					child.parent = inv;
 					child.params = new Object[inv.params.length];
 					child.inputFlippedParams = new boolean[pset.length];
 					child.propertyParams = new Object[pset.length][];
-					//child.setTotalFields(inv.getTotalFields());
 					child.setFrontendProcessor(processor);
 					System.out.println("Set children processor: " + child.getFrontend());
 					//Probabaly need to clone?
@@ -229,11 +229,8 @@ public abstract class MetamorphicProperty {
 					child.setBackendC(this.getName());
 					child.setClassMap(classMap);
 					boolean atLeastOneTrue = false;
-					boolean allTrue = true;
 					for (int i = 0; i < pset.length; i++) {
 						atLeastOneTrue = atLeastOneTrue || pset[i];
-						allTrue = allTrue && pset[i];
-						System.out.println("All true: " + allTrue);
 						if (pset[i]) {
 							child.inputFlippedParams[i] = true;
 							
@@ -243,48 +240,58 @@ public abstract class MetamorphicProperty {
 							
 							try {
 								child.propertyParams[i] = propertyParams;
-
-								Object input = (Object)cloner.deepClone(inv.params[i]);
-								Object unboxInput;
-								Object transformed;
-								
-								if  (this.nonValueChangeProcessors.contains(processor.getClass())) {
-									unboxInput = this.targetAdapter.unboxInput(input);
-									transformed = processor.apply(unboxInput, propertyParams);
-									child.params[i] = this.targetAdapter.adaptInput(transformed);
-								} else {
-									List<Object> skipList = this.targetAdapter.skipColumn(input);
-									this.targetAdapter.setSkipList(skipList);
-									unboxInput = this.targetAdapter.unboxInput(input);
+								//If branch handle input, else handles field
+								if (i < inv.params.length) {
+									Object input = (Object)cloner.deepClone(inv.params[i]);
+									Object unboxInput;
+									Object transformed;
 									
-									this.targetAdapter.setupComplementMap(unboxInput);
-									transformed = processor.apply(unboxInput, propertyParams);
+									if  (this.nonValueChangeProcessors.contains(processor.getClass())) {
+										unboxInput = this.targetAdapter.unboxInput(input);
+										transformed = processor.apply(unboxInput, propertyParams);
+										child.params[i] = this.targetAdapter.adaptInput(transformed);
+									} else {
+										List<Object> skipList = this.targetAdapter.skipColumn(input);
+										this.targetAdapter.setSkipList(skipList);
+										unboxInput = this.targetAdapter.unboxInput(input);
+										
+										this.targetAdapter.setupComplementMap(unboxInput);
+										transformed = processor.apply(unboxInput, propertyParams);
 
-									this.targetAdapter.complementTransformInput(transformed);
-									child.params[i] = this.targetAdapter.adaptInput(transformed);
+										this.targetAdapter.complementTransformInput(transformed);
+										child.params[i] = this.targetAdapter.adaptInput(transformed);
+									}
+								} else {
+									Field f = collector.get(pset.length - i - 1);
+									
+									//Temporarily skip static field
+									if (Modifier.isStatic(f.getModifiers()))
+										continue;
+									
+									String shouldTrans = "__meta_should_trans_" + f.getName();
+									String adapterField = "__meta_gen_adapter";
+									String processField = "__meta_gen_processor";
+									child.callee.getClass().getField(shouldTrans).set(child.callee, true);
+									child.callee.getClass().getField(adapterField).set(child.callee, child.getAdapter());
+									child.callee.getClass().getField(processField).set(child.callee, child.getFrontendProcessor());
+									
+									System.out.println("Double check child callee: " + child.callee.getClass().getField(adapterField).get(child.callee));
 								}
 							} catch (Exception ex) {
 								ex.printStackTrace();
 								continue CombiLoop;
 							}
 
-						} else
-							child.params[i] = cloner.deepClone(inv.params[i]);
+						} else {
+							if (i < inv.params.length)
+								child.params[i] = cloner.deepClone(inv.params[i]);
+						}
 					}
 					
 					if(atLeastOneTrue)
 					{
 						ret.add(child);
 					}
-					
-					/*if (allTrue) {
-						ret.add(child);
-						
-						System.out.println("Check children input after transformation");
-						for (Object obj: child.params) {
-							System.out.println(obj);
-						}
-					}*/
 				}
 			}
 		}

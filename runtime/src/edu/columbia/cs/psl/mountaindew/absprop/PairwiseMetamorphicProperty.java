@@ -211,7 +211,9 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 				
 				if (fieldName.contains("__invivoCloned") || 
 						fieldName.contains("___interceptor__by_mountaindew") ||
-						fieldName.contains("__metamorphicChildCount"))
+						fieldName.contains("__metamorphicChildCount") ||
+						fieldName.contains("__meta_gen") ||
+						fieldName.contains("__meta_should_trans"))
 					continue;
 				
 				field.setAccessible(true);

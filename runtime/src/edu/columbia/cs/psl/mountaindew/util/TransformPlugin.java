@@ -19,50 +19,43 @@ public class TransformPlugin {
 		Object unboxInput;
 		Object transformed;
 		
+		System.out.println("Check obj in transforming plugin: " + obj.getClass());
 		System.out.println("Check processor in transforming plugin: " + processor.getClass());
 		
-		if  (nonValueChangeProcessors.contains(processor.getClass())) {
-			unboxInput = adapter.unboxInput(obj);
-			transformed = processor.apply(unboxInput, params);
-			return (T)adapter.adaptInput(obj);
-		} else {
-			List<Object> skipList = adapter.skipColumn(obj);
-			adapter.setSkipList(skipList);
-			unboxInput = adapter.unboxInput(obj);
-			
-			adapter.setupComplementMap(unboxInput);
-			transformed = processor.apply(unboxInput, params);
+		try {
+			if  (nonValueChangeProcessors.contains(processor.getClass())) {
+				unboxInput = adapter.unboxInput(obj);
+				transformed = processor.apply(unboxInput, params);
+				return (T)adapter.adaptInput(obj);
+			} else {
+				List<Object> skipList = adapter.skipColumn(obj);
+				adapter.setSkipList(skipList);
+				unboxInput = adapter.unboxInput(obj);
+				
+				adapter.setupComplementMap(unboxInput);
+				transformed = processor.apply(unboxInput, params);
 
-			adapter.complementTransformInput(transformed);
-			return (T)adapter.adaptInput(transformed);
+				adapter.complementTransformInput(transformed);
+				return (T)adapter.adaptInput(transformed);
+			}
+		} catch(Exception ex) {
+			System.out.println("Warning: " + ex.getMessage());
+			return obj;
 		}
 	}
 	
-	public static void recursiveSetAdapterProcessor(Object callee, AbstractAdapter adapter, MetamorphicInputProcessor processor) {
+	public static void setAdapterTransformer(Object callee, AbstractAdapter adapter, MetamorphicInputProcessor processor) {
+		if (callee == null)
+			return ;
+		
 		if (callee.getClass().getAnnotation(LogState.class) != null) {
 			try {
+				System.out.println("Check obj: in transforming plugin: " + callee.getClass());				
 				callee.getClass().getField("__meta_gen_adapter").set(callee, adapter);
-				callee.getClass().getField("__meta_gen_processor").set(callee, processor);
-				
-				for (Field f: callee.getClass().getFields()) {
-					if (f.getName().equals("__meta_obj_map")) {
-						System.out.println("Recursive set the obj map");
-						
-						f.setAccessible(true);
-						Map objMap = (Map)f.get(callee);
-						System.out.println("Check obj map: " + objMap);
-						
-						for (Object key: objMap.keySet()) {
-							recursiveSetAdapterProcessor(objMap.get(key), adapter, processor);
-						}
-					}
-					
-					recursiveSetAdapterProcessor(f, adapter, processor);
-				}
+				callee.getClass().getField("__meta_gen_processor").set(callee, processor);	
 			} catch(Exception ex) {
 				ex.printStackTrace();
 			}
 		}
 	}
-
 }

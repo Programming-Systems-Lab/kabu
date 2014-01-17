@@ -70,6 +70,18 @@ public class MyObject2 {
 		return sum;
 	}
 	
+	public Map<String, Integer> returnMap(Map<String, Integer> input) {
+		input = __metamorphic_process(input);
+		System.out.println("Transform inpu: " + input);
+		Map<String, Integer> ret = new HashMap<String, Integer>();
+		for (String s: input.keySet()) {
+			int t = input.get(s) + 2;
+			ret.put(s, t);
+		}
+		return ret;
+		
+	}
+	
 	public void testIfElse(boolean t) {
 		if (t) {
 			System.out.println("It's true");
@@ -124,7 +136,10 @@ public class MyObject2 {
 	}
 	
 	public <T> T __metamorphic_process(T obj) {
-		return TransformPlugin.__meta_transform_basic(obj, this.adapter, this.processor, this.params);
+		if (this.adapter != null && this.processor != null)
+			return TransformPlugin.__meta_transform_basic(obj, this.adapter, this.processor, this.params);
+		else
+			return obj;
 	}
 	
 	public static <T> T __metamorphic_static_process(T obj, String methodName) {
@@ -151,7 +166,10 @@ public class MyObject2 {
 		mo.adapter = new DefaultAdapter();
 		mo.params = new Object[]{5};
 		
-		System.out.println("Return restul: " + mo.returnInt(3));
+		Map<String, Integer> input = new HashMap<String, Integer>();
+		input.put("a", 1);
+		input.put("b", 2);
+		System.out.println("Check map: " + mo.returnMap(input));
 		
 	}
 

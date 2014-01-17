@@ -90,6 +90,7 @@ public class Interceptor extends AbstractInterceptor {
 	public Interceptor(Object intercepted) {
 		super(intercepted);
 		System.out.println("Interceptor created");
+		System.out.println("Intercepted object: " + intercepted.getClass());
 		mConfigurer.loadConfiguration(metaJson);
 		configMap = mConfigurer.getConfigMap();
 		propertyPrototypes = MetamorphicObserver.getInstance().registerInterceptor(this);
@@ -261,8 +262,8 @@ public class Interceptor extends AbstractInterceptor {
 					new HashMap<Class<? extends MetamorphicProperty>, HashSet<TransClassTuple>>();
 			
 			//String methodPFile = "config/" + method.getName() + ".property";
-			System.out.println("Callee in the beginning: " + callee);
-			System.out.println("Method in the beginning: " + method);
+			System.out.println("Callee in the beginning: " + callee.getClass());
+			System.out.println("Method in the beginning: " + method.getName());
 			String methodJson = "config/" + method.getName() + ".json";
 			File tmpFile = new File(methodJson);
 			
@@ -352,13 +353,14 @@ public class Interceptor extends AbstractInterceptor {
 			{
 				//System.out.println("Check children frontend backend: " + child.getFrontend() + " " + child.getBackend());
 				try {
-					child.callee = deepClone(inv.callee);
+					//child.callee = deepClone(inv.callee); //Put in createChildren
 					child.method = inv.method;
 					children.add(child);
 					
-					System.out.println("Check children processor: " + child.getFrontend());
+					System.out.println("Check children processor: " + child.getFrontendProcessor().getClass());
+					System.out.println("Check children adapter: " + child.getAdapter().getClass());
 					
-					TransformPlugin.recursiveSetAdapterProcessor(child.callee, child.getAdapter(), child.getFrontendProcessor());
+					TransformPlugin.setAdapterTransformer(child.callee, child.getAdapter(), child.getFrontendProcessor());
 					child.thread = createChildThread(child);
 					child.thread.start();
 					child.thread.join();
