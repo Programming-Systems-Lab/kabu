@@ -342,6 +342,13 @@ public class Interceptor extends AbstractInterceptor {
 		inv.callee = getInterceptedObject();
 		invocations.put(retId, inv);
 		
+		//Set validity of each case
+		try {
+			inv.callee.getClass().getField("__meta_valid_case").set(inv.callee, true);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
 		this.calleeName = callee.getClass().getName();
 		int namePos = this.calleeName.lastIndexOf(".");
 		this.calleeName = this.calleeName.substring(namePos+1, calleeName.length());
@@ -357,10 +364,9 @@ public class Interceptor extends AbstractInterceptor {
 					child.method = inv.method;
 					children.add(child);
 					
-					System.out.println("Check children processor: " + child.getFrontendProcessor().getClass());
-					System.out.println("Check children adapter: " + child.getAdapter().getClass());
-					
+					//Inject adapter and transformer into callee
 					TransformPlugin.setAdapterTransformer(child.callee, child.getAdapter(), child.getFrontendProcessor());
+					
 					child.thread = createChildThread(child);
 					child.thread.start();
 					child.thread.join();

@@ -43,7 +43,7 @@ public class MyObject2 {
 	
 	private int[] a = new int[]{1, 2, 3};
 	
-	public boolean __meta_should_trans_a = false;
+	public boolean __meta_should_trans_a = true;
 	
 	public List b = new ArrayList();
 	
@@ -52,6 +52,8 @@ public class MyObject2 {
 	private Map c = new HashMap();
 	
 	public boolean __meta_should_trans_c = false;
+	
+	public boolean __meta_valid_case = true;
 	
 	public int returnInt(int abc) {
 		Iterator it = b.iterator();
@@ -70,16 +72,20 @@ public class MyObject2 {
 		return sum;
 	}
 	
-	public Map<String, Integer> returnMap(Map<String, Integer> input) {
-		input = __metamorphic_process(input);
-		System.out.println("Transform inpu: " + input);
-		Map<String, Integer> ret = new HashMap<String, Integer>();
-		for (String s: input.keySet()) {
-			int t = input.get(s) + 2;
-			ret.put(s, t);
+	public Map returnMap(Map input) {
+		if (this.__meta_should_trans_a) {
+			this.c = __metamorphic_process(this.c);
+			System.out.println("Check input after transformation: " + input);
+			System.out.println("Check case validity: " + __meta_valid_case);
 		}
-		return ret;
+			
+		Map newMap = new HashMap();
+		for (Object key: input.keySet()) {
+			Object val = new Integer(1);
+			newMap.put(key, val);
+		}
 		
+		return newMap;
 	}
 	
 	public void testIfElse(boolean t) {
@@ -136,10 +142,25 @@ public class MyObject2 {
 	}
 	
 	public <T> T __metamorphic_process(T obj) {
-		if (this.adapter != null && this.processor != null)
-			return TransformPlugin.__meta_transform_basic(obj, this.adapter, this.processor, this.params);
-		else
+		try {
+			if(this.adapter != null && this.processor != null)
+				return TransformPlugin.__meta_transform_basic(obj, this.adapter, this.processor, this.params);
+		} catch (Exception ex) {
+			System.out.println(ex);
+			System.out.println("Change valid case to false: " + obj);
+			this.__meta_valid_case = false;
 			return obj;
+		}
+		System.out.println("Empty adapter or processor");
+		return obj;
+	}
+	
+	public void testTryCatch() {
+		try {
+			double a = 2/5;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	public static <T> T __metamorphic_static_process(T obj, String methodName) {
@@ -156,6 +177,15 @@ public class MyObject2 {
 	}
 	
 	public static void main(String args[]) {
+		MyObject2 mo2 = new MyObject2();
+		mo2.processor = new MultiplyByNumericConstant();
+		mo2.adapter = new DefaultAdapter();
+		mo2.params = new Object[]{5};
+		Map<String, Integer> input2 = new HashMap<String, Integer>();
+		input2.put("a", 1);
+		input2.put("b", 2);
+		System.out.println("Check map2: " + mo2.returnMap(input2));
+		
 		MyObject2 mo = new MyObject2();
 		
 		mo.b.add(1);
@@ -166,10 +196,12 @@ public class MyObject2 {
 		mo.adapter = new DefaultAdapter();
 		mo.params = new Object[]{5};
 		
-		Map<String, Integer> input = new HashMap<String, Integer>();
-		input.put("a", 1);
-		input.put("b", 2);
+		Map<String, Object> input = new HashMap<String, Object>();
+		input.put("a", new Object());
+		input.put("b", new Object());
 		System.out.println("Check map: " + mo.returnMap(input));
+		
+
 		
 	}
 

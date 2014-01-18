@@ -37,14 +37,7 @@ public class FieldCollector {
 		Field[] myFields = clazz.getDeclaredFields();
 		
 		for (Field f: myFields) {
-			if (f.getName().contains("__meta_should_trans") || 
-					f.getName().contains("__invivoCloned") ||
-					f.getName().contains("__meta_gen") ||
-					f.getName().contains("___interceptor__by_mountaindew") ||
-					f.getName().contains("___interceptor__by_mountaindew_static") ||
-					f.getName().contains("__metamorphicChildCount") ||
-					f.getName().equals("__meta_obj_map") || 
-					f.getName().equals("__meta_static_map")) {
+			if (shouldFilterField(f.getName())) {
 				continue;
 			}
 			
@@ -53,6 +46,22 @@ public class FieldCollector {
 		
 		Class superClass = clazz.getSuperclass();
 		collectFields(superClass, collector);
+	}
+	
+	public static boolean shouldFilterField(String fieldName) {
+		if (fieldName.contains("__meta_should_trans") ||
+				fieldName.contains("__invivoCloned") ||
+				fieldName.contains("__meta_gen") ||
+				fieldName.contains("___interceptor__by_mountaindew") ||
+				fieldName.contains("___interceptor__by_mountaindew_static") ||
+				fieldName.contains("__metamorphicChildCount") ||
+				fieldName.equals("__meta_obj_map") ||
+				fieldName.equals("__meta_static_map") ||
+				fieldName.equals("__meta_valid_case")) {
+			return true;
+		}
+		
+		return false;
 	}
 
 }

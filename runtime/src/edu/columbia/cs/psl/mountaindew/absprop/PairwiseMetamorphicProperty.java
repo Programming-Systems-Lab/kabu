@@ -24,6 +24,7 @@ import edu.columbia.cs.psl.metamorphic.runtime.annotation.Metamorphic;
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty.PropertyResult.Result;
 import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 import edu.columbia.cs.psl.mountaindew.util.ClassChecker;
+import edu.columbia.cs.psl.mountaindew.util.FieldCollector;
 import edu.columbia.cs.psl.mountaindew.util.MetaSerializer;
 
 public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
@@ -89,6 +90,18 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								System.out.println("Parent thread id: " + parentId);
 								System.out.println("Child thread id: " + childId);
 								
+								boolean validCase = false;
+								
+								try {
+									System.out.println("Check valid case");
+									validCase = calleej.getClass().getField("__meta_valid_case").getBoolean(calleej);
+								} catch (Exception ex) {
+									ex.printStackTrace();
+								}
+								System.out.println("Valid case? " + validCase);
+								System.out.println("Field record: " + j.getFieldRecord());
+								
+								
 								this.recursiveRecordState(recorder1, calleei, true, parentId);
 								this.recursiveRecordState(recorder2, calleej, false, childId);
 						
@@ -96,8 +109,6 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								Object adaptRt2 = this.targetAdapter.adaptOutput(j.returnValue, o2);
 								
 								//Include output into comparison
-								//String outputFullName = i.returnValue.getClass().getName() + ":" + outputKey;
-								//String outputFullName = calleei.getClass().getName() + ":" + i.getMethod().getName() + "_" +outputKey;
 								String outputFullName = MetaSerializer.composeFullMethodName(calleei.getClass().getName(), i.getMethod()) + "_" + outputKey;
 								if (adaptRt1 != null) {
 									recorder1.put(outputFullName, adaptRt1);
@@ -209,12 +220,9 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 			for(Field field: combinedFields) {
 				fieldName = field.getName();
 				
-				if (fieldName.contains("__invivoCloned") || 
-						fieldName.contains("___interceptor__by_mountaindew") ||
-						fieldName.contains("__metamorphicChildCount") ||
-						fieldName.contains("__meta_gen") ||
-						fieldName.contains("__meta_should_trans"))
+				if (FieldCollector.shouldFilterField(fieldName))
 					continue;
+				
 				
 				field.setAccessible(true);
 				fieldValue = field.get(obj);

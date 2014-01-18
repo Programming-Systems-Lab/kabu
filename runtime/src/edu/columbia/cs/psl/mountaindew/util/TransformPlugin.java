@@ -39,8 +39,7 @@ public class TransformPlugin {
 				return (T)adapter.adaptInput(transformed);
 			}
 		} catch(Exception ex) {
-			System.out.println("Warning: " + ex.getMessage());
-			return obj;
+			throw new IllegalArgumentException("Transformation fails for: " + obj + " " + ex);
 		}
 	}
 	

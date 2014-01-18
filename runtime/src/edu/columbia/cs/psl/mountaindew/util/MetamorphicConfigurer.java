@@ -60,7 +60,7 @@ public class MetamorphicConfigurer {
 		this.adapterName = mconfig.getAdapter();
 		this.adapterClassName = adapterPackage + dot + this.adapterName;
 		
-		System.out.println("Check raw config map in Meta Configu: " + mconfig.getConfigMap());
+		System.out.println("Check raw config map in Meta Configurer: " + mconfig.getConfigMap());
 		
 		//Add package name to checker and transformer
 		this.packageConfigMap(mconfig.getConfigMap());

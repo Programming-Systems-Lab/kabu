@@ -223,7 +223,6 @@ public abstract class MetamorphicProperty {
 					child.inputFlippedParams = new boolean[pset.length];
 					child.propertyParams = new Object[pset.length][];
 					child.setFrontendProcessor(processor);
-					System.out.println("Set children processor: " + child.getFrontend());
 					//Probabaly need to clone?
 					child.setAdapter(this.targetAdapter);
 					child.setBackendC(this.getName());
@@ -242,6 +241,7 @@ public abstract class MetamorphicProperty {
 								child.propertyParams[i] = propertyParams;
 								//If branch handle input, else handles field
 								if (i < inv.params.length) {
+									child.addFieldRecord("Input" + i);
 									Object input = (Object)cloner.deepClone(inv.params[i]);
 									Object unboxInput;
 									Object transformed;
@@ -262,20 +262,15 @@ public abstract class MetamorphicProperty {
 										child.params[i] = this.targetAdapter.adaptInput(transformed);
 									}
 								} else {
-									Field f = collector.get(pset.length - i - 1);
+									Field f = collector.get(i - inv.params.length);
 									
 									//Temporarily skip static field
 									if (Modifier.isStatic(f.getModifiers()))
 										continue;
 									
 									String shouldTrans = "__meta_should_trans_" + f.getName();
-									String adapterField = "__meta_gen_adapter";
-									String processField = "__meta_gen_processor";
 									child.callee.getClass().getField(shouldTrans).set(child.callee, true);
-									child.callee.getClass().getField(adapterField).set(child.callee, child.getAdapter());
-									child.callee.getClass().getField(processField).set(child.callee, child.getFrontendProcessor());
-									
-									System.out.println("Double check child callee: " + child.callee.getClass().getField(adapterField).get(child.callee));
+									child.addFieldRecord(f.getName());
 								}
 							} catch (Exception ex) {
 								ex.printStackTrace();
@@ -290,7 +285,15 @@ public abstract class MetamorphicProperty {
 					
 					if(atLeastOneTrue)
 					{
-						ret.add(child);
+						String adapterField = "__meta_gen_adapter";
+						String processField = "__meta_gen_processor";
+						try {
+							child.callee.getClass().getField(adapterField).set(child.callee, child.getAdapter());
+							child.callee.getClass().getField(processField).set(child.callee, child.getFrontendProcessor());
+							ret.add(child);
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
 					}
 				}
 			}

@@ -14,9 +14,7 @@ public class CmnCollectionTest {
 		HashBag hb = new HashBag();
 		hb.addAll(items);
 		
-		//Object[] ret = hb.toArray();
-		Object[] ret = new Object[3];
-		ret = hb.toArray(ret);
+		Object[] ret = hb.toArray();
 		return ret;
 	}
 	
