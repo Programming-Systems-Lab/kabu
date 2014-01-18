@@ -190,37 +190,27 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 			String fieldName;
 			Object fieldValue;
 			
-			//Get all Fields in this obj and its parent
-			Set<Field> myFields = new HashSet(Arrays.asList(obj.getClass().getDeclaredFields()));
-			Set<Field> parentFields = new HashSet(Arrays.asList(obj.getClass().getFields()));
+			//Get all Fields in this obj and its parents			
+			Set<Field> combinedFields = new HashSet<Field>();
+			FieldCollector.collectFields(obj.getClass(), combinedFields);
 			
-			Set<Field> combinedFields = new HashSet();
-			combinedFields.addAll(myFields);
-			combinedFields.addAll(parentFields);
+			//Need a Map<methodName, localVarMap>			
+			Map<Class, Map<String, Map<Integer, String>>> inheritenceMaps = 
+					new HashMap<Class, Map<String, Map<Integer, String>>>();
+			FieldCollector.collectMethodMaps(obj.getClass(), inheritenceMaps);
 			
-			//Need a Map<methodName, localVarMap>
-			Set<Method> myMethods = new HashSet(Arrays.asList(obj.getClass().getDeclaredMethods()));
-			Set<Method> parentMethods = new HashSet(Arrays.asList(obj.getClass().getMethods()));
+			Class objClass = obj.getClass();
+			String objClassName = objClass.getName();
 			
-			Set<Method> combinedMethods = new HashSet();
-			combinedMethods.addAll(myMethods);
-			combinedMethods.addAll(parentMethods);
-			
-			String objClassName = obj.getClass().getName();
-			String superClassName = obj.getClass().getSuperclass().getName();
-			Map<String, Map<Integer, String>> methodVarMap = 
-					MetaSerializer.deserializedAllClassLocalVarMap(objClassName, combinedMethods);
-			Map<String, Map<Integer, String>> sMethodVarMap = 
-					MetaSerializer.deserializedAllClassLocalVarMap(superClassName, parentMethods);
-			
-			System.out.println("Check all localVarMap in pairwise: " + methodVarMap);
-			System.out.println("Check all parentVarMap in pairwise: " + sMethodVarMap);
+			System.out.println("Check inheritence map in pairwise: " + inheritenceMaps);
 			
 			Set<String> allFields = new HashSet<String>();
 			for(Field field: combinedFields) {
 				fieldName = field.getName();
 				
-				if (FieldCollector.shouldFilterField(fieldName))
+				if (FieldCollector.shouldFilterField(fieldName) && 
+						!fieldName.equals("__meta_obj_map") && 
+						!fieldName.equals("__meta_static_map"))
 					continue;
 				
 				
@@ -244,17 +234,13 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 					
 					for (Object methodName: allMaps.keySet()) {
 						Map tmpMap = (HashMap)ClassChecker.comparableClasses(allMaps.get(methodName));
-						String localKey = objClassName + ":" + methodName;
-						Map varMap = (HashMap)(methodVarMap.get(localKey));
 						
-						if (varMap == null) {
-							System.out.println("No var map. Check parent: " + superClassName);
-							localKey = superClassName + ":" + methodName;
-							
-							System.out.println("Check super method var map: " + sMethodVarMap);
-							
-							varMap = (HashMap)(sMethodVarMap.get(localKey));
-						}
+						//Find method varmap
+						Class methodOwner = FieldCollector.getCorrectMethodOwner(objClass, inheritenceMaps);
+						Map methodVarMap = inheritenceMaps.get(methodOwner);
+						
+						String localKey = methodOwner.getName() + ":" + methodName;
+						Map varMap = (HashMap)(methodVarMap.get(localKey));
 						
 						for (Object innerKey: tmpMap.keySet()) {
 							Object innerObj = tmpMap.get(innerKey);
@@ -284,7 +270,10 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 						if (tId.equals(String.valueOf(threadId))) {
 							System.out.println("Get correct method: " + allMaps.get(methodName));
 							Map tmpMap = (HashMap)ClassChecker.comparableClasses(allMaps.get(methodName));
-							String localKey = objClassName + ":" + tName;
+							
+							Class methodOwner = FieldCollector.getCorrectMethodOwner(objClass, inheritenceMaps);
+							Map methodVarMap = inheritenceMaps.get(methodOwner);
+							String localKey = methodOwner.getName() + ":" + tName;
 							
 							Map varMap = (HashMap)(methodVarMap.get(localKey));
 							

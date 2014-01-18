@@ -195,7 +195,7 @@ public abstract class MetamorphicProperty {
 		
 		//Check all fields
 		List<Field> collector = new ArrayList<Field>();
-		FieldCollector.collectFields(inv.callee.getClass(), collector);
+		FieldCollector.collectAndFilterFields(inv.callee.getClass(), inv.method, collector);
 		System.out.println("Confirm all fields for creating children: " + collector);
 		
 		HashSet<PossiblyMetamorphicMethodInvocation> ret = new HashSet<PossiblyMetamorphicMethodInvocation>();

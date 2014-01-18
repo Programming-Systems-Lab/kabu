@@ -50,16 +50,14 @@ public class MetaSerializer {
 		}
 	}
 	
-	public static Map<String, Map<Integer,String>> deserializedAllClassLocalVarMap(String className, Set<Method> mSet) {
-		Map<String, Map<Integer, String>> ret = new HashMap<String, Map<Integer, String>>();
+	public static HashMap<String, Map<Integer,String>> deserializedAllClassLocalVarMap(String className, Method[] mArray) {
+		HashMap<String, Map<Integer, String>> ret = new HashMap<String, Map<Integer, String>>();
 		
 		String tmpKey;
 		Map tmpVarMap;
-		for (Method m: mSet) {
+		for (Method m: mArray) {
 			//Tmp key = classname:methodname:returntype:parameter:modifier
 			tmpKey = composeFullMethodName(className, m);
-			
-			System.out.println("Check path before deserialization: " + tmpKey);
 			
 			tmpVarMap = deserializeLocalVarMap(tmpKey);
 			
@@ -86,6 +84,14 @@ public class MetaSerializer {
 		String path = "ser/" + className + ".ser";
 		Map<Integer, String> localVarMap = (Map<Integer, String>)deserializeBasic(path);
 		return localVarMap;
+	}
+	
+	public static Set<String> deserializeUsedVarSet(String name, Method m) {
+		String fullName = "ser/" + composeFullMethodName(name, m) + "_usedvars.ser";
+		System.out.println("Full name: " + fullName);
+		Set<String> usedVar = (Set<String>)deserializeBasic(fullName);
+		System.out.println("Used var: " + usedVar);
+		return usedVar;
 	}
 	
 	public static void serializeClassFieldMap(String version, Map<String, Set<String>> classFieldMap) {

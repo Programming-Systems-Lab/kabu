@@ -1,51 +1,80 @@
 package edu.columbia.cs.psl.mountaindew.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
+import java.util.Map;
+import java.util.HashMap;
 
 public class FieldCollector {
 	
-	public static Field[] collectFields(Class clazz) {
-		HashSet<Field> myFields = new HashSet<Field>(Arrays.asList(clazz.getFields()));
-		HashSet<Field> parentFields = new HashSet<Field>(Arrays.asList(clazz.getFields()));
-		
-		Comparator<Field> fieldSorter = new Comparator<Field>() {
-			public int compare(Field a, Field b) {
-				String aString = a.toString() + a.getName();
-				String bString = b.toString() + b.getName();
-				
-				return aString.compareTo(bString);
+	public static void collectFields(Class clazz, Set<Field> allFields) {
+		try {
+			Field[] fields = clazz.getDeclaredFields();
+			
+			for (Field f: fields) {
+				allFields.add(f);
 			}
-		};
-		
-		TreeSet<Field> totalFields = new TreeSet<Field>(fieldSorter);
-		totalFields.addAll(myFields);
-		totalFields.addAll(parentFields);
-		
-		return (Field[])totalFields.toArray();
+			
+			Class superClass = clazz.getSuperclass();
+			if (superClass != null)
+				collectFields(superClass, allFields);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 	
-	public static void collectFields(Class clazz, List<Field> collector) {
+	public static void collectMethodMaps(Class clazz, 
+			Map<Class, Map<String, Map<Integer, String>>> inheritenceMap) {
+		try {
+			Method[] methods = clazz.getDeclaredMethods();
+			inheritenceMap.put(clazz, MetaSerializer.deserializedAllClassLocalVarMap(clazz.getName(), methods));
+			
+			Class superClass = clazz.getSuperclass();
+			if (superClass != null)
+				collectMethodMaps(superClass, inheritenceMap);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public static void collectAndFilterFields(Class clazz, Method m, List<Field> collector) {
 		if (clazz == null)
 			return;
 		
 		System.out.println("Collecting fields for: " + clazz.getCanonicalName());
 		Field[] myFields = clazz.getDeclaredFields();
+		Set<String> usedVar = MetaSerializer.deserializeUsedVarSet(clazz.getName(), m);
 		
-		for (Field f: myFields) {
-			if (shouldFilterField(f.getName())) {
-				continue;
+		if (usedVar != null) {
+			for (Field f: myFields) {
+				if (shouldFilterField(f.getName())) {
+					continue;
+				}
+				
+				if (usedVar.contains(f.getType().getName() + ":" + f.getName()))
+					collector.add(f);
 			}
-			
-			collector.add(f);
 		}
-		
+				
 		Class superClass = clazz.getSuperclass();
-		collectFields(superClass, collector);
+		collectAndFilterFields(superClass, m, collector);
+	}
+	
+	public static Class getCorrectMethodOwner(Class clazz, 
+			Map<Class, Map<String, Map<Integer, String>>> inheritenceMap) {
+		Map<String, Map<Integer, String>> methodMap = inheritenceMap.get(clazz);
+		
+		if (methodMap != null && methodMap.size() > 0) {
+			return clazz;
+		} else {
+			return getCorrectMethodOwner(clazz.getSuperclass(), inheritenceMap);
+		}
 	}
 	
 	public static boolean shouldFilterField(String fieldName) {

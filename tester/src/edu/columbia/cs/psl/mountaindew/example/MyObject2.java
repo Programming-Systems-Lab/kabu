@@ -78,6 +78,8 @@ public class MyObject2 {
 			System.out.println("Check input after transformation: " + input);
 			System.out.println("Check case validity: " + __meta_valid_case);
 		}
+		
+		this.__meta_should_trans_b = true;
 			
 		Map newMap = new HashMap();
 		for (Object key: input.keySet()) {
