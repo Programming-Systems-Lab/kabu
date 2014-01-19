@@ -1,8 +1,10 @@
 package edu.columbia.cs.psl.mountaindew.struct;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -15,14 +17,6 @@ public class MethodProfile {
 	private MethodInvocation ori;
 	
 	private MethodInvocation trans;
-	
-	/*private double oriInOriOut;
-	
-	private double transInTransOut;
-	
-	private double oriInTransIn;
-	
-	private double oriOutTransOut;*/
 	
 	private PropertyResult result;
 	
@@ -110,6 +104,14 @@ public class MethodProfile {
 	 */
 	public String getBackend() {
 		return trans.getBackend();
+	}
+	
+	public String getClassName() {
+		return ori.callee.getClass().getName();
+	}
+	
+	public ArrayList<String> getTransformedField() {
+		return trans.getFieldRecord();
 	}
 	
 	public String toString() {

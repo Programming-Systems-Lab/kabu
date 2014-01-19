@@ -73,11 +73,20 @@ public class MetaSerializer {
 	public static String composeFullMethodName(String className, Method m) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(className + ":");
+		sb.append(describeMethod(m));
+		/*sb.append(m.getName() + "->");
+		sb.append(Type.getMethodDescriptor(m) + "->");
+		sb.append(m.getModifiers());*/
+		
+		return sb.toString().replace("/", ".");
+	}
+	
+	public static String describeMethod(Method m) {
+		StringBuilder sb = new StringBuilder();
 		sb.append(m.getName() + "->");
 		sb.append(Type.getMethodDescriptor(m) + "->");
 		sb.append(m.getModifiers());
-		
-		return sb.toString().replace("/", ".");
+		return sb.toString();
 	}
 	
 	public static Map<Integer, String> deserializeLocalVarMap(String className) {

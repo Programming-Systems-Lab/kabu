@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
-import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty.PropertyResult;
-import edu.columbia.cs.psl.mountaindew.stats.Correlationer;
 import edu.columbia.cs.psl.mountaindew.struct.MethodProfile;
 
 public class MethodProfiler {
@@ -42,7 +40,10 @@ public class MethodProfiler {
 		ArrayList<MethodProfile> ret = new ArrayList<MethodProfile>();
 		String identifier = null;
 		for (MethodProfile mp: this.profiles) {
-			identifier = mp.getFrontend() + mp.getBackend() + mp.getResult().stateItem;
+			identifier = mp.getFrontend() + 
+					mp.getBackend() + 
+					mp.getTransformedField().toString() +
+					mp.getResult().stateItem;
 			
 			if (this.holdMap.get(identifier)) {
 				ret.add(mp);
@@ -54,7 +55,11 @@ public class MethodProfiler {
 	private void summarizeProfilers() {
 		String identifier = null;
 		for (MethodProfile tmp: this.profiles) {
-			identifier = tmp.getFrontend() + tmp.getBackend() + tmp.getResult().stateItem;
+			//Use front+back+trans_params+(method desc+param) as identity
+			identifier = tmp.getFrontend() + 
+					tmp.getBackend() + 
+					tmp.getTransformedField().toString() +  
+					tmp.getResult().stateItem;
 
 			if (!holdMap.keySet().contains(identifier)) {
 				holdMap.put(identifier, tmp.getResult().holds);

@@ -40,6 +40,8 @@ import edu.columbia.cs.psl.mountaindew.struct.MethodProfile;
 import edu.columbia.cs.psl.mountaindew.struct.MConfig.StateItem;
 import edu.columbia.cs.psl.mountaindew.struct.TransClassTuple;
 import edu.columbia.cs.psl.mountaindew.util.FieldCollector;
+import edu.columbia.cs.psl.mountaindew.util.JsonManager;
+import edu.columbia.cs.psl.mountaindew.util.MetaSerializer;
 import edu.columbia.cs.psl.mountaindew.util.MetamorphicConfigurer;
 import edu.columbia.cs.psl.mountaindew.util.TransformPlugin;
 
@@ -261,10 +263,10 @@ public class Interceptor extends AbstractInterceptor {
 			HashMap<Class<? extends MetamorphicProperty>, HashSet<TransClassTuple>> checkerTransformerMap = 
 					new HashMap<Class<? extends MetamorphicProperty>, HashSet<TransClassTuple>>();
 			
-			//String methodPFile = "config/" + method.getName() + ".property";
+			String methodName = MetaSerializer.composeFullMethodName(callee.getClass().getName(), method);
 			System.out.println("Callee in the beginning: " + callee.getClass());
-			System.out.println("Method in the beginning: " + method.getName());
-			String methodJson = "config/" + method.getName() + ".json";
+			System.out.println("Method in the beginning: " + methodName);
+			String methodJson = "config/" + methodName + ".json";
 			File tmpFile = new File(methodJson);
 			
 			if (tmpFile.exists()) {
@@ -561,70 +563,7 @@ public class Interceptor extends AbstractInterceptor {
 	
 	public void exportHoldStates() {
 		HashMap<String, HashSet<MConfig.MethodStateItem>> records = this.collectMethodStates();
-		
-		JsonWriter jw = null;
-		
-		try {
-			for (String methodName: records.keySet()) {
-				HashSet<MConfig.MethodStateItem> mStateSet = records.get(methodName);
-				
-				String outputPath = this.configRoot + "/" + methodName + ".json";
-				
-				jw = new JsonWriter(new FileWriter(outputPath));
-				jw.setIndent("	");
-				jw.beginObject();
-				jw.name("methodConfig");
-				
-				jw.beginObject();
-				jw.name("Adapter").value(this.mConfigurer.getAdapterName());
-				jw.name("HoldStates");
-				
-				jw.beginArray();
-				for (MConfig.MethodStateItem tmpItem: mStateSet) {
-					jw.beginObject();
-					jw.name("Checker").value(tmpItem.getChecker().replace("C:", ""));
-					//jw.name("Transformer").value(tmpItem.getTransformer().getTransformer().replace("T:", ""));
-					
-					jw.name("Transformer");
-					jw.beginObject();
-					jw.name(tmpItem.getTransformer().getTransformer().replace("T:", ""));
-					jw.beginArray();
-					for (Number num: tmpItem.getTransformer().getTimes()) {
-						jw.value(num);
-					}
-					jw.endArray();
-					jw.endObject();
-					
-					jw.name("ClassSpec");
-					
-					jw.beginArray();
-					for (StateItem tmpSI: tmpItem.getStateItems()) {
-						jw.beginObject();
-						jw.name("ClassName").value(tmpSI.getClassName());
-						jw.name("FieldNames");
-						
-						jw.beginArray();
-						for (String tmpField: tmpSI.getFieldNames()) {
-							jw.value(tmpField);
-						}
-						jw.endArray();
-						
-						jw.endObject();
-					}
-					jw.endArray();
-					
-					jw.endObject();
-				}
-				jw.endArray();
-				jw.endObject();
-				
-				jw.endObject();
-				
-				jw.close();
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		JsonManager.writeMetaResult(records, this.configRoot, this.mConfigurer.getAdapterName());
 	}
 	
 	public HashMap<String, HashSet<MConfig.MethodStateItem>> collectMethodStates() {
@@ -632,10 +571,12 @@ public class Interceptor extends AbstractInterceptor {
 				new HashMap<String, HashSet<MConfig.MethodStateItem>>();
 		for (MethodProfiler mProfiler: this.profilerList) {		
 			for (MethodProfile mProfile: mProfiler.getHoldMethodProfiles()) {
-				String methodName = mProfile.getOri().getMethod().getName();
+				//String methodName = mProfile.getOri().getMethod().getName();
+				String methodName = MetaSerializer.describeMethod(mProfile.getOri().method);
 				
 				String checker = mProfile.getBackend();
 				String transformer = mProfile.getFrontend();
+				String fieldSetting = mProfile.getTransformedField().toString();
 				String stateItem = mProfile.getResult().stateItem;
 				
 				StringTokenizer st = new StringTokenizer(stateItem, ":");
@@ -655,7 +596,9 @@ public class Interceptor extends AbstractInterceptor {
 				if (records.keySet().contains(methodName)) {
 					boolean foundMS = false;
 					for (MConfig.MethodStateItem ms: records.get(methodName)) {
-						if (ms.getChecker().equalsIgnoreCase(checker) && ms.getTransformer().getTransformer().equalsIgnoreCase(transformer)) {
+						if (ms.getChecker().equalsIgnoreCase(checker) && 
+								ms.getTransformer().getTransformer().equalsIgnoreCase(transformer) &&
+								ms.getFieldSetting().equals(fieldSetting)) {
 							boolean foundSI = false;
 							for (StateItem tmpSI: ms.getStateItems()) {
 								if (tmpSI.getClassName().equalsIgnoreCase(className)) {
@@ -683,6 +626,8 @@ public class Interceptor extends AbstractInterceptor {
 						tmpTrans = new TransTuple(transformer, new ArrayList<Number>());
 						ms.setTransformer(tmpTrans);
 						
+						ms.setFieldSetting(fieldSetting);
+						
 						StateItem si = new StateItem();
 						si.setClassName(className);
 						si.addFieldName(fieldName);
@@ -697,6 +642,8 @@ public class Interceptor extends AbstractInterceptor {
 					
 					TransTuple transTuple = new TransTuple(transformer, new ArrayList<Number>());
 					ms.setTransformer(transTuple);
+					
+					ms.setFieldSetting(fieldSetting);
 					
 					StateItem si = new StateItem();
 					si.setClassName(className);

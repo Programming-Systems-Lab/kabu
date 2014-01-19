@@ -93,14 +93,12 @@ public abstract class PairwiseMetamorphicProperty extends MetamorphicProperty{
 								boolean validCase = false;
 								
 								try {
-									System.out.println("Check valid case");
 									validCase = calleej.getClass().getField("__meta_valid_case").getBoolean(calleej);
 								} catch (Exception ex) {
 									ex.printStackTrace();
 								}
 								System.out.println("Valid case? " + validCase);
 								System.out.println("Field record: " + j.getFieldRecord());
-								
 								
 								this.recursiveRecordState(recorder1, calleei, true, parentId);
 								this.recursiveRecordState(recorder2, calleej, false, childId);

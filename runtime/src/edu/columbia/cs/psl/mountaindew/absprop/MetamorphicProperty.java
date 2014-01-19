@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -196,6 +198,11 @@ public abstract class MetamorphicProperty {
 		//Check all fields
 		List<Field> collector = new ArrayList<Field>();
 		FieldCollector.collectAndFilterFields(inv.callee.getClass(), inv.method, collector);
+		Collections.sort(collector, new Comparator<Field>() {
+			public int compare(Field a, Field b) {
+				return a.toString().compareTo(b.toString());
+			}
+		});
 		System.out.println("Confirm all fields for creating children: " + collector);
 		
 		HashSet<PossiblyMetamorphicMethodInvocation> ret = new HashSet<PossiblyMetamorphicMethodInvocation>();
@@ -270,7 +277,7 @@ public abstract class MetamorphicProperty {
 									
 									String shouldTrans = "__meta_should_trans_" + f.getName();
 									child.callee.getClass().getField(shouldTrans).set(child.callee, true);
-									child.addFieldRecord(f.getName());
+									child.addFieldRecord(f.toString());
 								}
 							} catch (Exception ex) {
 								ex.printStackTrace();

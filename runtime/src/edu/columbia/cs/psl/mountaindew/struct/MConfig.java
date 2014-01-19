@@ -416,6 +416,8 @@ public class MConfig {
 		
 		private String checker;
 		
+		private String fieldSetting;
+		
 		private List<StateItem> mStateItems = new ArrayList<StateItem>();
 				
 		public void setTransformer(TransTuple transformer) {
@@ -440,6 +442,14 @@ public class MConfig {
 		
 		public List<StateItem> getStateItems() {
 			return this.mStateItems;
+		}
+		
+		public void setFieldSetting(String fieldSetting) {
+			this.fieldSetting = fieldSetting;
+		}
+		
+		public String getFieldSetting() {
+			return this.fieldSetting;
 		}
 		
 		@Override
