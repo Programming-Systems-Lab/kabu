@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.metamorphic.inputProcessor.MetamorphicInputProcessor;
 import edu.columbia.cs.psl.metamorphic.runtime.MetamorphicInputProcessorGroup;
 import edu.columbia.cs.psl.metamorphic.runtime.annotation.LogState;
@@ -56,5 +57,25 @@ public class TransformPlugin {
 				ex.printStackTrace();
 			}
 		}
+	}
+	
+	public static void setupForStaticFields(MethodInvocation inv) {
+		String methodThreadName = MetaSerializer.describeMethod(inv.method) + inv.thread.getId();
+		try {
+			Map sMethodBoolMap = (Map)inv.callee.getClass().getField("__meta_gen_static_bool_map").get(inv.callee);
+			Map<String, Boolean> boolMap = inv.getStaticBoolMap();
+			sMethodBoolMap.put(methodThreadName, boolMap);
+			
+			Map sMethodAMap = (Map)inv.callee.getClass().getField("__meta_gen_static_a_map").get(inv.callee);
+			sMethodAMap.put(methodThreadName, inv.getAdapter());
+		
+			Map sMethodPMap = (Map)inv.callee.getClass().getField("__meta_gen_static_p_map").get(inv.callee);
+			sMethodPMap.put(methodThreadName, inv.getFrontendProcessor());
+			
+			Map sMethodParamMap = (Map)inv.callee.getClass().getField("__meta_gen_static_param_map").get(inv.callee);
+			sMethodParamMap.put(methodThreadName, inv.getParams());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}		
 	}
 }

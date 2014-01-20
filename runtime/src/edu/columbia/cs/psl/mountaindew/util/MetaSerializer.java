@@ -86,7 +86,7 @@ public class MetaSerializer {
 		sb.append(m.getName() + "->");
 		sb.append(Type.getMethodDescriptor(m) + "->");
 		sb.append(m.getModifiers());
-		return sb.toString();
+		return sb.toString().replace("/", ".");
 	}
 	
 	public static Map<Integer, String> deserializeLocalVarMap(String className) {

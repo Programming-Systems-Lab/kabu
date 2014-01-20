@@ -39,31 +39,7 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 		double fDiff = 0;
 		try
 		{
-			if (Number.class.isAssignableFrom(p1.getClass()) && Number.class.isAssignableFrom(p2.getClass()) 
-					&& Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
-				double diff1 = this.roundDouble(getDifference(p1, p2), roundDigit);
-				double diff2 = this.roundDouble(getDifference(returnValue1, returnValue2), roundDigit);
-				
-				System.out.println("Additive diff1: " + diff1);
-				System.out.println("Additive diff2: " + diff2);
-				
-				if (diff1 == 0)
-					return false;
-				else
-					return diff1 == diff2;
-			} else if (String.class.isAssignableFrom(p1.getClass()) && String.class.isAssignableFrom(p2.getClass()) 
-					&&String.class.isAssignableFrom(returnValue1.getClass()) && String.class.isAssignableFrom(returnValue2.getClass())) {
-				int diff1 = (int)getDifference(p1, p2);
-				int diff2 = (int)getDifference(returnValue1, returnValue2);
-				
-				System.out.println("Additive string diff1: " + diff1);
-				System.out.println("Additive string diff2: " + diff2);
-				
-				if (diff1 == 0)
-					return false;
-				else
-					return diff1 == diff2;
-			} else if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
+			if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 				
 				if (Array.getLength(returnValue1) != Array.getLength(returnValue2))
 					return false;
@@ -152,12 +128,36 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 					}	
 				}
 				return true;
-			} else {
+			} else if (Number.class.isAssignableFrom(p1.getClass()) && Number.class.isAssignableFrom(p2.getClass()) 
+					&& Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
+				double diff1 = this.roundDouble(getDifference(p1, p2), roundDigit);
+				double diff2 = this.roundDouble(getDifference(returnValue1, returnValue2), roundDigit);
+				
+				System.out.println("Additive diff1: " + diff1);
+				System.out.println("Additive diff2: " + diff2);
+				
+				if (diff1 == 0)
+					return false;
+				else
+					return diff1 == diff2;
+			} else if (String.class.isAssignableFrom(p1.getClass()) && String.class.isAssignableFrom(p2.getClass()) 
+					&&String.class.isAssignableFrom(returnValue1.getClass()) && String.class.isAssignableFrom(returnValue2.getClass())) {
+				int diff1 = (int)getDifference(p1, p2);
+				int diff2 = (int)getDifference(returnValue1, returnValue2);
+				
+				System.out.println("Additive string diff1: " + diff1);
+				System.out.println("Additive string diff2: " + diff2);
+				
+				if (diff1 == 0)
+					return false;
+				else
+					return diff1 == diff2;
+			}  else {
 				return false;
 			}
 			//return getDifference(p1, p2) == getDifference(returnValue1, returnValue2);
 		} catch(Exception ex) {
-			ex.printStackTrace();
+			System.err.println(this.getName() + ": Unable to compare." + ex);
 			return false;
 		}
 	}
@@ -205,10 +205,11 @@ public class AdditiveByConstant extends PairwiseMetamorphicProperty {
 					return ret;
 				}
 			} else {
-				return getDifference(o1, o2);
+				double ret = getDifference(o1, o2);
+				return ret;
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw ex;
 		}
 		return Double.MAX_VALUE;
 	}

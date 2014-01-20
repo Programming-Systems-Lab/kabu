@@ -30,19 +30,7 @@ public class Negatable extends MultiplicativeByConstant{
 		List rt2List = null;
 		double neg = -1;
 		try {
-			if (Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
-				double rv1 = ((Number)returnValue1).doubleValue();
-				double rv2 = ((Number)returnValue2).doubleValue();
-				
-				System.out.println("Negatable check rv1: " + rv1);
-				System.out.println("Negatable check rv2: " + rv2);
-				
-				//Leave this case to equality checker
-				if (rv1 == rv2)
-					return false;
-				else
-					return rv1 == rv2 * neg;
-			} else if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
+			if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 				//Because propertiesApply now not check length, check them here
 				if (Array.getLength(returnValue1) != Array.getLength(returnValue2))
 					return false;
@@ -117,13 +105,25 @@ public class Negatable extends MultiplicativeByConstant{
 					}	
 				}
 				return true;
+			} else if (Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
+				double rv1 = ((Number)returnValue1).doubleValue();
+				double rv2 = ((Number)returnValue2).doubleValue();
+				
+				System.out.println("Negatable check rv1: " + rv1);
+				System.out.println("Negatable check rv2: " + rv2);
+				
+				//Leave this case to equality checker
+				if (rv1 == rv2)
+					return false;
+				else
+					return rv1 == rv2 * neg;
 			} else {
 				return false;
 			}
 		}
 		catch(IllegalArgumentException ex)
 		{
-			ex.printStackTrace();
+			System.err.println(this.getName() + ": Unable to compare. " + ex);
 			return false;
 		}
 	}

@@ -32,34 +32,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		List rt2List = null;
 		double fDivisor = 0;
 		try {
-			if (Number.class.isAssignableFrom(p1.getClass()) && Number.class.isAssignableFrom(p2.getClass()) 
-					&& Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
-				double div1 = this.roundDouble(getDivisor(p1, p2), roundDigit);
-				double div2 = this.roundDouble(getDivisor(returnValue1, returnValue2), roundDigit);
-				
-				System.out.println("Check div1: " + div1);
-				System.out.println("Check div2: " + div2);
-				
-				//Leave 1 for equaler and -1 or negater to check
-				if (div1 == 1 || div1 == -1)
-					return false;
-				else
-					return div1 == div2;
-			} else if (String.class.isAssignableFrom(returnValue1.getClass()) && String.class.isAssignableFrom(returnValue2.getClass())) {
-				double div = getDivisor(returnValue1, returnValue2);
-				
-				System.out.println("Check p1: " + p1);
-				System.out.println("Check p2: " + p2);
-				if (div == Double.MAX_VALUE || div == 1)
-					return false;
-				
-				System.out.println("Check return value1: " + returnValue1);
-				System.out.println("Check return value2: " + returnValue2);
-				String rv1 = (String)this.multiplyObject(returnValue1, 1.0);
-				String rv2 = (String)this.multiplyObject(returnValue2, div);
-				
-				return rv1.equals(rv2);
-			} else if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
+			if (returnValue1.getClass().isArray() && returnValue2.getClass().isArray()) {
 				//Because propertiesApply now not check length, check them here
 				if (Array.getLength(returnValue1) != Array.getLength(returnValue2))
 					return false;
@@ -142,6 +115,33 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					}	
 				}
 				return true;
+			} else if (Number.class.isAssignableFrom(p1.getClass()) && Number.class.isAssignableFrom(p2.getClass()) 
+					&& Number.class.isAssignableFrom(returnValue1.getClass()) && Number.class.isAssignableFrom(returnValue2.getClass())) {
+				double div1 = this.roundDouble(getDivisor(p1, p2), roundDigit);
+				double div2 = this.roundDouble(getDivisor(returnValue1, returnValue2), roundDigit);
+				
+				System.out.println("Check div1: " + div1);
+				System.out.println("Check div2: " + div2);
+				
+				//Leave 1 for equaler and -1 or negater to check
+				if (div1 == 1 || div1 == -1)
+					return false;
+				else
+					return div1 == div2;
+			} else if (String.class.isAssignableFrom(returnValue1.getClass()) && String.class.isAssignableFrom(returnValue2.getClass())) {
+				double div = getDivisor(returnValue1, returnValue2);
+				
+				System.out.println("Check p1: " + p1);
+				System.out.println("Check p2: " + p2);
+				if (div == Double.MAX_VALUE || div == 1)
+					return false;
+				
+				System.out.println("Check return value1: " + returnValue1);
+				System.out.println("Check return value2: " + returnValue2);
+				String rv1 = (String)this.multiplyObject(returnValue1, 1.0);
+				String rv2 = (String)this.multiplyObject(returnValue2, div);
+				
+				return rv1.equals(rv2);
 			} else {
 				return false;
 			}
@@ -149,7 +149,7 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 		}
 		catch(Exception ex)
 		{
-			ex.printStackTrace();
+			System.err.println(this.getName() + ": Unable to compare. " + ex);
 			return false;
 		}
 	}
@@ -197,10 +197,11 @@ public class MultiplicativeByConstant extends PairwiseMetamorphicProperty {
 					return ret;
 				}
 			} else {
-				return getDivisor(o1, o2);
+				double ret = getDivisor(o1, o2);
+				return ret;
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw ex;
 		}
 		return Double.MAX_VALUE;
 	}

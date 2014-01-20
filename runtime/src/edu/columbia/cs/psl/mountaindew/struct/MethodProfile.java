@@ -2,6 +2,7 @@ package edu.columbia.cs.psl.mountaindew.struct;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import java.util.Collection;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Map;
 import edu.columbia.cs.psl.invivo.struct.MethodInvocation;
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty;
 import edu.columbia.cs.psl.mountaindew.absprop.MetamorphicProperty.PropertyResult;
+import edu.columbia.cs.psl.mountaindew.util.MetaSerializer;
 
 public class MethodProfile {
 	
@@ -19,6 +21,8 @@ public class MethodProfile {
 	private MethodInvocation trans;
 	
 	private PropertyResult result;
+	
+	private boolean isValidCase;
 	
 	public static String interpretParams(Object params) {
 		StringBuilder sBuilder = new StringBuilder();
@@ -78,6 +82,20 @@ public class MethodProfile {
 		this.result = result;
 	}
 	
+	public void setIsValidCase() {
+		try {
+			if (Modifier.isStatic(trans.method.getModifiers())) {
+				Map<String, Boolean> boolMap = (Map<String, Boolean>)trans.callee.getClass().getField("__meta_static_bool_map").get(trans.callee);
+				String methodThreadName = MetaSerializer.describeMethod(trans.method) + trans.getThread().getId();
+				this.isValidCase = boolMap.get(methodThreadName);
+			} else {
+				this.isValidCase = trans.callee.getClass().getField("__meta_valid_case").getBoolean(trans.callee);
+			}
+		} catch (Exception e) {
+			System.err.println("Fail to set up validity in MethodProfile " + e);
+		}
+	}
+	
 	public MethodInvocation getOri() {
 		return this.ori;
 	}
@@ -112,6 +130,10 @@ public class MethodProfile {
 	
 	public ArrayList<String> getTransformedField() {
 		return trans.getFieldRecord();
+	}
+	
+	public boolean isValidCase() {
+		return this.isValidCase;
 	}
 	
 	public String toString() {

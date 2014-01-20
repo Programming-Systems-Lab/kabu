@@ -11,6 +11,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import com.rits.cloning.Cloner;
 
@@ -27,6 +28,7 @@ import edu.columbia.cs.psl.mountaindew.runtime.MethodProfiler;
 import edu.columbia.cs.psl.mountaindew.struct.PossiblyMetamorphicMethodInvocation;
 import edu.columbia.cs.psl.mountaindew.struct.TransClassTuple;
 import edu.columbia.cs.psl.mountaindew.util.FieldCollector;
+import edu.columbia.cs.psl.mountaindew.util.MetaSerializer;
 import edu.columbia.cs.psl.mountaindew.util.MetamorphicConfigurer;
 
 public abstract class MetamorphicProperty {
@@ -270,13 +272,18 @@ public abstract class MetamorphicProperty {
 									}
 								} else {
 									Field f = collector.get(i - inv.params.length);
-									
-									//Temporarily skip static field
-									if (Modifier.isStatic(f.getModifiers()))
-										continue;
-									
-									String shouldTrans = "__meta_should_trans_" + f.getName();
-									child.callee.getClass().getField(shouldTrans).set(child.callee, true);
+									if (Modifier.isStatic(f.getModifiers())) {
+										if (child.getStaticBoolMap() == null) {
+											Map<String, Boolean> staticBoolMap = new HashMap<String, Boolean>();
+											staticBoolMap.put(f.getName(), true);
+											child.setStaticBoolMap(staticBoolMap);
+										} else {
+											child.getStaticBoolMap().put(f.getName(), true);
+										}
+									} else {
+										String shouldTrans = "__meta_should_trans_" + f.getName();
+										child.callee.getClass().getField(shouldTrans).set(child.callee, true);
+									}
 									child.addFieldRecord(f.toString());
 								}
 							} catch (Exception ex) {

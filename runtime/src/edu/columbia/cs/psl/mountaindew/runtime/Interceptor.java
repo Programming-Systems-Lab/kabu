@@ -370,6 +370,8 @@ public class Interceptor extends AbstractInterceptor {
 					TransformPlugin.setAdapterTransformer(child.callee, child.getAdapter(), child.getFrontendProcessor());
 					
 					child.thread = createChildThread(child);
+					//After chreateChildThread, because we need thread id
+					TransformPlugin.setupForStaticFields(child);
 					child.thread.start();
 					child.thread.join();
 				} catch (InterruptedException e) {
@@ -578,6 +580,7 @@ public class Interceptor extends AbstractInterceptor {
 				String transformer = mProfile.getFrontend();
 				String fieldSetting = mProfile.getTransformedField().toString();
 				String stateItem = mProfile.getResult().stateItem;
+				boolean isValidCase = mProfile.isValidCase();
 				
 				StringTokenizer st = new StringTokenizer(stateItem, ":");
 				String className = null;
@@ -598,7 +601,8 @@ public class Interceptor extends AbstractInterceptor {
 					for (MConfig.MethodStateItem ms: records.get(methodName)) {
 						if (ms.getChecker().equalsIgnoreCase(checker) && 
 								ms.getTransformer().getTransformer().equalsIgnoreCase(transformer) &&
-								ms.getFieldSetting().equals(fieldSetting)) {
+								ms.getFieldSetting().equals(fieldSetting) &&
+								ms.getIsValidCase() == isValidCase) {
 							boolean foundSI = false;
 							for (StateItem tmpSI: ms.getStateItems()) {
 								if (tmpSI.getClassName().equalsIgnoreCase(className)) {
@@ -625,8 +629,8 @@ public class Interceptor extends AbstractInterceptor {
 						//Empty list for users to fill in
 						tmpTrans = new TransTuple(transformer, new ArrayList<Number>());
 						ms.setTransformer(tmpTrans);
-						
 						ms.setFieldSetting(fieldSetting);
+						ms.setIsValidCase(isValidCase);
 						
 						StateItem si = new StateItem();
 						si.setClassName(className);
@@ -642,8 +646,8 @@ public class Interceptor extends AbstractInterceptor {
 					
 					TransTuple transTuple = new TransTuple(transformer, new ArrayList<Number>());
 					ms.setTransformer(transTuple);
-					
 					ms.setFieldSetting(fieldSetting);
+					ms.setIsValidCase(isValidCase);
 					
 					StateItem si = new StateItem();
 					si.setClassName(className);

@@ -418,6 +418,8 @@ public class MConfig {
 		
 		private String fieldSetting;
 		
+		private boolean isValidCase;
+		
 		private List<StateItem> mStateItems = new ArrayList<StateItem>();
 				
 		public void setTransformer(TransTuple transformer) {
@@ -452,6 +454,14 @@ public class MConfig {
 			return this.fieldSetting;
 		}
 		
+		public void setIsValidCase(boolean isValidCase) {
+			this.isValidCase = isValidCase;
+		}
+		
+		public boolean getIsValidCase() {
+			return this.isValidCase;
+		}
+		
 		@Override
 		public boolean equals(Object tmp) {
 			if (!(tmp instanceof MethodStateItem))
@@ -464,6 +474,12 @@ public class MConfig {
 			if (!tmpItem.getTransformer().equals(this.transformer))
 				return false;
 			
+			if (!tmpItem.getFieldSetting().equals(this.fieldSetting))
+				return false;
+			
+			if (tmpItem.getIsValidCase() != this.isValidCase)
+				return false;
+			
 			return true;
 		}
 		
@@ -472,6 +488,8 @@ public class MConfig {
 			StringBuilder sb = new StringBuilder();
 			sb.append(this.transformer);
 			sb.append(this.checker);
+			sb.append(this.fieldSetting);
+			sb.append(this.isValidCase);
 			
 			for (StateItem si: this.mStateItems) {
 				sb.append(si.toString());

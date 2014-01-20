@@ -35,6 +35,11 @@ public class MyObject2 {
 	//Key method name + thread id, Val Map<Static field name, Boolean>
 	public static HashMap<String, HashMap<String, Boolean>> __meta_static_bool_map = new HashMap<String, HashMap<String, Boolean>>();
 	
+	//Key method name + thread id, Val valid case
+	public static HashMap<String, Boolean> __meta_static_valid_map = new HashMap<String, Boolean>();
+	
+	public static Map testStaticMap = new HashMap();
+	
 	public AbstractAdapter adapter;
 	
 	public MetamorphicInputProcessor processor;
@@ -54,6 +59,10 @@ public class MyObject2 {
 	public boolean __meta_should_trans_c = false;
 	
 	public boolean __meta_valid_case = true;
+	
+	public List reflectTest = new ArrayList();
+	
+	public static List fakeData = new ArrayList();
 	
 	public int returnInt(int abc) {
 		Iterator it = b.iterator();
@@ -101,6 +110,10 @@ public class MyObject2 {
 	public int returnInt() {
 		int a = 3;
 		return a;
+	}
+	
+	public int returnIntAdd3(int a) {
+		return a + 3;
 	}
 	
 	public int[] returnIntArray() {
@@ -165,17 +178,36 @@ public class MyObject2 {
 		}
 	}
 	
-	public static <T> T __metamorphic_static_process(T obj, String methodName) {
-		Object unboxInput;
-		Object transformed;
+	public static void fakeStaticMethod() {
+		try {
+			fakeData = __metamorphic_static_process(fakeData, "fakeStaticMethod", "fakeData");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		
+		fakeData.add(5);
+	}
+	
+	public static <T> T __metamorphic_static_process(T obj, String methodName, String fieldName) {		
 		long id = Thread.currentThread().getId();
 		String key = methodName + id;
-		AbstractAdapter adapter = __meta_static_a_map.get(key);
-		MetamorphicInputProcessor processor = __meta_static_p_map.get(key);
-		Object[] params = __meta_static_param_map.get(key);
 		
-		return TransformPlugin.__meta_transform_basic(obj, adapter, processor, params);
+		Map<String, Boolean> fieldBoolMap = __meta_static_bool_map.get(key);
+		
+		if (fieldBoolMap.get(fieldName)) {
+			AbstractAdapter adapter = __meta_static_a_map.get(key);
+			MetamorphicInputProcessor processor = __meta_static_p_map.get(key);
+			Object[] params = __meta_static_param_map.get(key);
+			try {
+				return TransformPlugin.__meta_transform_basic(obj, adapter, processor, params);
+			} catch (Exception ex) {
+				System.out.println(ex);
+				System.out.println("Change valid case to false: " + obj);
+				
+				__meta_static_valid_map.put(key, false);
+			}
+		}
+		return obj;
 	}
 	
 	public static void main(String args[]) {
@@ -183,10 +215,11 @@ public class MyObject2 {
 		mo2.processor = new MultiplyByNumericConstant();
 		mo2.adapter = new DefaultAdapter();
 		mo2.params = new Object[]{5};
-		Map<String, Integer> input2 = new HashMap<String, Integer>();
+		/*Map<String, Integer> input2 = new HashMap<String, Integer>();
 		input2.put("a", 1);
 		input2.put("b", 2);
-		System.out.println("Check map2: " + mo2.returnMap(input2));
+		System.out.println("Check map2: " + mo2.returnMap(input2));*/
+		System.out.println(mo2.__metamorphic_process(2));
 		
 		MyObject2 mo = new MyObject2();
 		
@@ -203,8 +236,13 @@ public class MyObject2 {
 		input.put("b", new Object());
 		System.out.println("Check map: " + mo.returnMap(input));
 		
-
-		
+		try {
+			List reflectList = (List)mo.getClass().getField("reflectTest").get(mo);
+			reflectList.add(28);
+			System.out.println("After reflect setting: " + mo.reflectTest);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 }

@@ -51,6 +51,7 @@ public class JsonManager {
 					jw.endArray();
 					jw.endObject();
 					
+					jw.name("IsValidCase").value(tmpItem.getIsValidCase());
 					jw.name("FieldSetting").value(tmpItem.getFieldSetting());
 					
 					jw.name("ClassSpec");

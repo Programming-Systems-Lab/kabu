@@ -40,10 +40,7 @@ public class MethodProfiler {
 		ArrayList<MethodProfile> ret = new ArrayList<MethodProfile>();
 		String identifier = null;
 		for (MethodProfile mp: this.profiles) {
-			identifier = mp.getFrontend() + 
-					mp.getBackend() + 
-					mp.getTransformedField().toString() +
-					mp.getResult().stateItem;
+			identifier = generateIdentifier(mp);
 			
 			if (this.holdMap.get(identifier)) {
 				ret.add(mp);
@@ -56,10 +53,7 @@ public class MethodProfiler {
 		String identifier = null;
 		for (MethodProfile tmp: this.profiles) {
 			//Use front+back+trans_params+(method desc+param) as identity
-			identifier = tmp.getFrontend() + 
-					tmp.getBackend() + 
-					tmp.getTransformedField().toString() +  
-					tmp.getResult().stateItem;
+			identifier = generateIdentifier(tmp);
 
 			if (!holdMap.keySet().contains(identifier)) {
 				holdMap.put(identifier, tmp.getResult().holds);
@@ -67,5 +61,15 @@ public class MethodProfiler {
 				holdMap.put(identifier, holdMap.get(identifier) && tmp.getResult().holds);
 			}
 		}
+	}
+	
+	private static String generateIdentifier(MethodProfile mp) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(mp.getFrontend());
+		sb.append(mp.getBackend());
+		sb.append(mp.getTransformedField().toString());
+		sb.append(mp.getResult().stateItem);
+		
+		return sb.toString();
 	}
 }
