@@ -302,8 +302,8 @@ public abstract class MetamorphicProperty {
 						String adapterField = "__meta_gen_adapter";
 						String processField = "__meta_gen_processor";
 						try {
-							child.callee.getClass().getField(adapterField).set(child.callee, child.getAdapter());
-							child.callee.getClass().getField(processField).set(child.callee, child.getFrontendProcessor());
+//							child.callee.getClass().getField(adapterField).set(child.callee, child.getAdapter());
+//							child.callee.getClass().getField(processField).set(child.callee, child.getFrontendProcessor());
 							ret.add(child);
 						} catch (Exception ex) {
 							ex.printStackTrace();
