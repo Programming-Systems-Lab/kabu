@@ -100,7 +100,7 @@
     <hadoop.version>0.20.204.0</hadoop.version>
     <lucene.version>3.5.0</lucene.version>
     <mongodb.version>2.5</mongodb.version>
-    <cassandra.version>0.8.1</cassandra.version>
+    <cassandra.version>3.0.26</cassandra.version>
   </properties>
   <issueManagement>
     <system>Jira</system>
